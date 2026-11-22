@@ -8,3 +8,4 @@ infomap==2.16.0
 pytest
 pyyaml
 anthropic
+virtualenv>=20.26

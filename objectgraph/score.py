@@ -83,6 +83,19 @@ def _collect(out: dict, kind: str, text: str, work: Path, language: str) -> None
         out.setdefault("log_tails", {})[kind] = text[-1500:]
 
 
+def _make_venv(venv: Path) -> None:
+    """Create a fresh venv with pip. Some hosts (e.g. Google Colab) ship Python
+    without ensurepip, so fall back to the virtualenv package, which bundles pip."""
+    r = subprocess.run([sys.executable, "-m", "venv", str(venv)], capture_output=True, text=True)
+    if r.returncode == 0 and (venv / "bin" / "pip").exists():
+        return
+    shutil.rmtree(venv, ignore_errors=True)
+    if subprocess.run([sys.executable, "-m", "virtualenv", "--version"],
+                      capture_output=True).returncode != 0:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "virtualenv"], check=True)
+    subprocess.run([sys.executable, "-m", "virtualenv", "-q", str(venv)], check=True)
+
+
 def score_project(project_dir: Path, files: dict[str, str], scorer: str = "auto",
                   docker_image: str = "devbench:complete", timeout: int = 1800) -> dict:
     cfg = json.loads((Path(project_dir) / "repo_config.json").read_text())
@@ -98,7 +111,7 @@ def score_project(project_dir: Path, files: dict[str, str], scorer: str = "auto"
             env = dict(os.environ, PYTHONPATH=str(work))
             if lang == "python":
                 venv = tmp / "venv"
-                subprocess.run([sys.executable, "-m", "venv", str(venv)], check=True)
+                _make_venv(venv)
                 env.update(VIRTUAL_ENV=str(venv), PATH=f"{venv}/bin:{os.environ['PATH']}")
                 setup = ["pip install -q pytest"] + setup
             sh = lambda c: subprocess.run(c, shell=True, cwd=work, env=env, capture_output=True,
