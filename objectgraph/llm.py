@@ -72,11 +72,14 @@ class LLM:
     def __init__(self, provider: str = "anthropic", model: str = "claude-sonnet-5-5",
                  cache_dir: str | Path = "cache", offline: bool = False,
                  temperature: float = 0.0, max_tokens: int = 8000,
-                 token_budget: int | None = None, fake_fn=None, reasoning_effort: str | None = None):
+                 token_budget: int | None = None, fake_fn=None, reasoning_effort: str | None = None,
+                 reasoning_enabled: bool | None = None):
         self.provider, self.model = provider, model
         self.params = {"temperature": temperature, "max_tokens": max_tokens}
         if reasoning_effort:            # only added when set, so existing cache keys are unchanged
             self.params["reasoning_effort"] = reasoning_effort
+        if reasoning_enabled is not None:   # OpenRouter: switch hidden reasoning on or off
+            self.params["reasoning_enabled"] = bool(reasoning_enabled)
         self.offline = offline
         self.token_budget = token_budget
         self.usage = Usage()
@@ -151,7 +154,9 @@ class LLM:
                 messages=[{"role": "system", "content": system},
                           {"role": "user", "content": user}],
                 temperature=self.params["temperature"], max_tokens=self.params["max_tokens"],
-                **({"reasoning_effort": self.params["reasoning_effort"]} if "reasoning_effort" in self.params else {}))
+                **({"reasoning_effort": self.params["reasoning_effort"]} if "reasoning_effort" in self.params else {}),
+                **({"extra_body": {"reasoning": {"enabled": self.params["reasoning_enabled"]}}}
+                   if "reasoning_enabled" in self.params else {}))
             text = resp.choices[0].message.content or ""
             u = resp.usage
             inp = getattr(u, "prompt_tokens", 0) or 0 if u else 0

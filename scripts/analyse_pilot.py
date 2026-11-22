@@ -109,7 +109,7 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
 
     # markdown
     md = ["# Experiment 1 (pilot) summary", "",
-          f"Model: `{plan['model']['name']}` · design: {plan['design']} · runs per condition: {plan['runs_per_condition']}", ""]
+          f"Model: `{', '.join(sorted({json.loads(f.read_text()).get('model', '?') for f in files})) or plan['model']['name']}` · design: {plan['design']} · runs per condition: {plan['runs_per_condition']}", ""]
     for p, t in table.items():
         md += [f"## {p} (k* = {t['k_star']})", "",
                "| Condition | Agents | Pass rate (mean) | Runs | Tokens (mean) | Messages | Traceability | Note |",

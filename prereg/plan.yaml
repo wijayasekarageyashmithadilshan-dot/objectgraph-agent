@@ -37,6 +37,14 @@ amendments:
       endpoint) with reasoning_effort low, as the stronger model meant to lift scores off the floor. Fallback
       fixed in advance: if gemini-3.8-flash is unavailable to this key (quota or access error) before any
       successful call, use gemini-2.5-flash with reasoning_effort none, and report the switch.
+  - date: 2026-11-23
+    tag: prereg-v1.6
+    before_any_model_run: false  # second_model attempt 1 ran and is excluded as invalid
+    change: >
+      second_model attempt 1 is invalid: deepseek/deepseek-v4.1-flash-1017 spent the whole 8,000-token output
+      budget on hidden reasoning in 37 of 45 calls and returned no code, so no condition could be scored.
+      The model is re-run with hidden reasoning switched off (reasoning_enabled: false), everything else
+      unchanged. Attempt 1 is kept in results/second_model_attempt1_invalid/ and in the cache.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -98,6 +106,7 @@ reported_metrics: [pass_rate, tokens, messages, message_tokens, traceability, st
 second_model:
   provider: openrouter          # key in OPENROUTER_API_KEY (Colab Secrets only, never in files)
   name: deepseek/deepseek-v4.1-flash-1017   # open weights, dated snapshot (not a "latest" alias)
+  reasoning_enabled: false      # attempt 1 spent the output budget on hidden reasoning (see amendments)
   why: "Replication with a second model family; answers 'does it hold beyond one model?'"
   tasks: [python/stocktrends, python/lice, python/geotext, python/particle-swarm-optimization]
   analysis: "Same go/no-go rules and H3a/H3b as the primary model, reported separately (results/second_model/)."
