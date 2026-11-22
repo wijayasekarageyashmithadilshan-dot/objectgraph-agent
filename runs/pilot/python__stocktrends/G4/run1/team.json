@@ -1,0 +1,71 @@
+{
+  "method": "G4",
+  "k": 3,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "Instrument.__init__",
+        "Instrument._validate_df",
+        "LineBreak.uptrend_reversal",
+        "LineBreak.downtrend_reversal",
+        "Renko.period_close_bricks"
+      ],
+      "classes": [
+        "Instrument",
+        "LineBreak",
+        "Renko"
+      ],
+      "depends_on": [
+        "agent_2"
+      ],
+      "cut_to": {
+        "agent_2": 5.0,
+        "agent_3": 4.0
+      }
+    },
+    {
+      "agent_id": "agent_2",
+      "duties": [
+        "LineBreak.get_ohlc_data",
+        "PnF.roundit",
+        "PnF.get_ohlc_data",
+        "Renko.shift_bricks"
+      ],
+      "classes": [
+        "LineBreak",
+        "PnF",
+        "Renko"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_1": 5.0,
+        "agent_3": 6.0
+      }
+    },
+    {
+      "agent_id": "agent_3",
+      "duties": [
+        "PnF.get_state",
+        "PnF.get_bar_ohlc_data",
+        "Renko.get_ohlc_data",
+        "Renko.price_movement_bricks"
+      ],
+      "classes": [
+        "PnF",
+        "Renko"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_1": 4.0,
+        "agent_2": 6.0
+      }
+    }
+  ],
+  "order": [
+    "agent_2",
+    "agent_1",
+    "agent_3"
+  ],
+  "cut": 15.0
+}

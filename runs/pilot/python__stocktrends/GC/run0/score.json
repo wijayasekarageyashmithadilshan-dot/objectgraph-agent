@@ -1,0 +1,23 @@
+{
+  "status": "scored",
+  "scorer": "native",
+  "language": "python",
+  "passed": 1,
+  "total": 9,
+  "unit_test": {
+    "passed": 1,
+    "failed": 6,
+    "errors": 0,
+    "skipped": 0,
+    "total": 7
+  },
+  "acceptance_test": {
+    "passed": 0,
+    "failed": 2,
+    "errors": 0,
+    "skipped": 0,
+    "total": 2
+  },
+  "pass_rate": 0.1111,
+  "reference_total": 9
+}

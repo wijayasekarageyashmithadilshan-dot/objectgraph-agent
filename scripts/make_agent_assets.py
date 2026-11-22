@@ -39,6 +39,7 @@ def ref_totals() -> dict:
 
 def to_latex(s: str) -> str:
     s = s.replace("%", r"\%").replace("&", r"\&").replace("≈", r"$\approx$").replace("≥", r"$\ge$")
+    s = s.replace("(Fig. 4)", r"(Figure~\ref{fig:pilot})").replace("Section VII", r"Section~\ref{sec:discussion}").replace("(Section VI)", r"(Section~\ref{sec:agents})")
     s = s.replace("k* =", r"$k^\ast$ =").replace("×", r"$\times$").replace("–", "--").replace("—", "---").replace("’", "'")
     s = re.sub(r"\{bi:([^{}]*)\}", r"\\textbf{\\emph{\1}}", s)
     s = re.sub(r"\{b:([^{}]*)\}", r"\\textbf{\1}", s)
@@ -120,39 +121,98 @@ def main() -> None:
                 rows.append([p.split("/")[1], f"{c} {NAME[c]}", str(v["k"]), tests, runs,
                              "–" if v["tokens"] is None else f"{v['tokens']:,.0f}",
                              "–" if v["messages"] is None else f"{v['messages']:.1f}",
-                             (f"same team as {v['same_as']}" if v["same_as"] else "")])
+                             (f"same team as {v['same_as']}" if v["same_as"] else "–")])
         A["pilot_rows"] = rows
         verdict = D["verdict"]
-        r1 = D["rule_G7_beats_G4_majority"]
-        bits = []
-        for p, t in T.items():
-            c = t["conditions"]
+        prov = "provisional" in verdict
+        vword = verdict.split(" ")[0]
+
+        def stats(p):
+            t = T[p]
             tot = totals.get(p) or 1
-            if "G7" in c and "G4" in c and c["G7"]["pass_rate"] is not None and c["G4"]["pass_rate"] is not None:
-                g7, g4 = c["G7"]["pass_rate"] * tot, c["G4"]["pass_rate"] * tot
-                if t["k_star"] and t["k_star"] > 1:
-                    bits.append(f"on {p.split('/')[1]} (k* = {t['k_star']}) the criterion team passed {g7:.1f} tests "
-                                f"on average against {g4:.1f} for random teams of the same sizes, using "
-                                f"{c['G7']['tokens']:,.0f} against {c['G4']['tokens']:,.0f} tokens per run")
-            if t["k_star"] == 1 and "G2" in c and c["G2"]["pass_rate"] is not None:
-                oth = {x: c[x]["pass_rate"] * tot for x in ("G4", "GC") if x in c and c[x]["pass_rate"] is not None}
-                if oth:
-                    bits.append(f"on {p.split('/')[1]} (k* = 1) the single agent passed {c['G2']['pass_rate'] * tot:.1f} "
-                                f"tests against " + " and ".join(f"{v:.1f} ({k})" for k, v in oth.items()))
-        A["pilot"] = (
-            "{bi:Pilot (Python projects):} Table V reports three runs per condition. " +
-            (("; ".join(bits)[:1].upper() + "; ".join(bits)[1:] + ". ") if bits else "") +
-            (f"The pre-registered go/no-go analysis gives a provisional {verdict.split(' ')[0]} on the Python "
-             f"projects alone; the decision becomes final once the C++ and Java pilot projects are scored"
-             if "provisional" in verdict else f"The pre-registered go/no-go analysis returns {verdict}") +
-            ". Absolute pass rates are low for every condition, because several tests require identifiers that "
-            "appear neither in the requirements nor in the design (for example, a class constant named in a test "
-            "only); conditions are therefore compared only with each other. With two projects and three runs, the "
-            "pilot shows direction and cost, not statistical significance; H1–H4 are tested in the main study. "
-            f"The Python pilot used {sum((v.get('tokens') or 0) * (v.get('runs') or 0) for t in T.values() for v in t['conditions'].values() if not v.get('same_as')):,.0f} "
-            "tokens in total, which cost less than one US dollar with this model.")
-        A["pilot_short"] = ("; ".join(bits) + ".") if bits else ""
+            c = {k: v for k, v in t["conditions"].items() if v.get("pass_rate") is not None}
+            tests = {k: v["pass_rate"] * tot for k, v in c.items()}
+            toks = {k: v["tokens"] for k, v in c.items()}
+            msgs = {k: v["messages"] for k, v in c.items()}
+            runs_flat = [x for v in c.values() for x in v["pass_rate_runs"] if x is not None]
+            same = len({round(x, 4) for x in runs_flat}) == 1
+            return t["k_star"], tot, tests, toks, msgs, same, runs_flat
+        floor_bits, cost_bits, single_proj = [], [], []
+        all_same = True
+        for p in T:
+            ks, tot, tests, toks, msgs, same, rf = stats(p)
+            name = p.split("/")[1]
+            all_same &= same
+            if same:
+                floor_bits.append(f"on {name} every condition passed the same {rf[0] * tot:.0f} of {tot} tests in every run")
+            if ks == 1 and "G2" in toks:
+                split = {k: v for k, v in toks.items() if k in ("G4", "GC")}
+                if split:
+                    lo = min(1 - toks["G2"] / v for v in split.values()) * 100
+                    hi = max(1 - toks["G2"] / v for v in split.values()) * 100
+                    single_proj.append((name, lo, hi))
+                    cost_bits.append(
+                        f"On {name}, where the criterion recommends a single agent, the single agent used "
+                        f"{toks['G2']:,.0f} tokens per run against "
+                        + " and ".join(f"{v:,.0f} for " + ("random teams" if k == "G4" else NAME[k].lower())
+                                       for k, v in split.items())
+                        + f" ({lo:.0f}–{hi:.0f}% fewer) and exchanged no messages against "
+                        + " and ".join(f"{msgs[k]:.0f}" for k in split) + ", at equal correctness.")
+            if ks and ks > 1 and "G7" in toks and "G4" in toks:
+                d4 = (toks["G7"] / toks["G4"] - 1) * 100
+                extra = ""
+                if "GC" in toks:
+                    dc = (1 - toks["G7"] / toks["GC"]) * 100
+                    extra = (f" and {toks['GC']:,.0f} for one agent per class"
+                             + (" and Infomap, which formed the same team" if T[p]["conditions"].get("G6", {}).get("same_as") == "GC" else "")
+                             + f" ({dc:.0f}% fewer)")
+                cost_bits.append(
+                    f"On {name} (k* = {ks}) the criterion team used {toks['G7']:,.0f} tokens per run against "
+                    f"{toks['G4']:,.0f} for random teams of equal sizes ({d4:+.0f}%, within the pre-registered 10% "
+                    f"margin){extra}, and exchanged {msgs['G7']:.0f} messages against {msgs['G4']:.0f} for random "
+                    f"teams and {msgs.get('GC', float('nan')):.0f} for one agent per class.")
+        A["pilot_rows"] = rows
         A["verdict"] = verdict
+        if all_same:
+            corr = ("Correctness showed a floor effect: " + "; ".join(floor_bits) +
+                    ". The pilot therefore cannot separate the conditions on correctness. ")
+        else:
+            corr = ""
+        A["pilot"] = (
+            "{bi:Pilot (Python projects):} Table V reports three runs per condition. " + corr +
+            "Costs did differ (Fig. 4). " + " ".join(cost_bits) + " " +
+            (f"Under the pre-registered rules the pilot is a {'provisional ' if prov else ''}{vword}"
+             + (": the criterion team did not pass more tests than random teams, and where k* = 1 the single "
+                "agent did not pass more tests than the split teams, because all of them scored zero"
+                if vword == "NO-GO" else "")
+             + ("; the decision becomes final once the C++ and Java pilot projects are scored. " if prov else ". ")) +
+            "Inspection of the failing tests shows two causes that affect every condition alike: tests that "
+            "require identifiers appearing in neither the requirements nor the design (for example, a class "
+            "constant or a default argument named only in a test), and errors in the model’s own code, such as "
+            "wrong numeric logic or a module that fails at import. The harness itself is not a cause, since the reference code passes every test after the "
+            "same split and merge. The main study therefore needs tasks on which the model passes a meaningful "
+            "share of tests; Section VII discusses this. "
+            f"The whole Python pilot used {sum((v.get('tokens') or 0) * (v.get('runs') or 0) for t in T.values() for v in t['conditions'].values() if not v.get('same_as')):,.0f} "
+            "tokens, which cost less than one US dollar with this model.")
+        lo_all = min(x[1] for x in single_proj) if single_proj else None
+        hi_all = max(x[2] for x in single_proj) if single_proj else None
+        if all_same and single_proj:
+            A["pilot_short"] = (f"all conditions passed almost no tests (a floor effect), but following the "
+                                f"criterion’s single-agent recommendation used {lo_all:.0f}–{hi_all:.0f}% fewer tokens "
+                                f"than split teams at equal correctness")
+            A["abstract"] = ("A pre-registered pilot was inconclusive on correctness, as all conditions passed almost "
+                             "no tests, but where the criterion recommends one agent, a single agent used "
+                             f"{lo_all:.0f}–{hi_all:.0f}% fewer tokens than split teams.")
+            A["conclusion"] = ("A first pre-registered pilot could not separate the conditions on correctness, because "
+                               "every team passed almost no tests, and its go/no-go rules therefore return "
+                               f"{'a provisional ' if prov else ''}{vword}; it did show that following the "
+                               f"criterion’s single-agent recommendation cut token use by {lo_all:.0f}–{hi_all:.0f}% "
+                               "at equal correctness. The main study will use tasks on which models pass a meaningful "
+                               "share of tests, add a second model, and test H1–H4.")
+        else:
+            A["pilot_short"] = " ".join(cost_bits)
+            A["abstract"] = "{P:pilot sentence}"
+            A["conclusion"] = "{P:pilot conclusion}"
         # figure
         import matplotlib
         matplotlib.use("Agg")
@@ -160,7 +220,7 @@ def main() -> None:
         import matplotlib.pyplot as plt
         import numpy as np
         pj = list(T)
-        fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.6))
+        fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.9))
         colors = {"G2": "#888780", "G4": "#B4B2A9", "GC": "#7F77DD", "G6": "#378ADD", "G7": "#1D9E75"}
         w = 0.16
         for i, c in enumerate(COND):
@@ -176,38 +236,32 @@ def main() -> None:
             ax.set_ylabel(lab, fontsize=8)
             ax.tick_params(labelsize=7)
             ax.spines[["top", "right"]].set_visible(False)
-        axes[0].legend(fontsize=6, frameon=False, loc="upper right")
-        fig.tight_layout()
+        h, l = axes[0].get_legend_handles_labels()
+        fig.legend(h, l, fontsize=6.5, frameon=False, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.01))
+        fig.tight_layout(rect=(0, 0.1, 1, 1))
         (ROOT / "paper" / "figures").mkdir(exist_ok=True)
         fig.savefig(ROOT / "paper" / "figures" / "pilot.pdf")
         fig.savefig(ROOT / "paper" / "figures_docx" / "fig_pilot.png", dpi=220)
         plt.close(fig)
-        ab = []
-        for p, t in T.items():
-            c, tot = t["conditions"], totals.get(p) or 1
-            if (t["k_star"] or 1) > 1 and all(x in c and c[x]["pass_rate"] is not None for x in ("G7", "G4")):
-                ab.append(f"the criterion team passed {c['G7']['pass_rate'] * tot:.1f} of {tot} tests on "
-                          f"{p.split('/')[1]} against {c['G4']['pass_rate'] * tot:.1f} for equal-size random teams")
-            if t["k_star"] == 1 and "G2" in c and c["G2"]["pass_rate"] is not None:
-                oth = [c[x]["pass_rate"] for x in ("G4", "GC") if x in c and c[x]["pass_rate"] is not None]
-                if oth:
-                    better = c["G2"]["pass_rate"] >= max(oth)
-                    ab.append(f"where it recommends one agent ({p.split('/')[1]}), the single agent "
-                              f"{'matched or beat' if better else 'trailed'} every split team")
-        A["abstract"] = ("In a pre-registered pilot with an open-weight coding model, " + "; ".join(ab) +
-                         "; absolute scores are low for all teams, and the main study adds tasks and a second model.")
-        A["conclusion"] = ("In a first pre-registered pilot, " + A["pilot_short"] +
-                           " These pilot results show direction and cost only; the main study tests the hypotheses "
-                           "on more projects and a second model.")
     else:
         A["pilot_rows"] = None
         A["pilot"] = "{P:Pilot table (stocktrends and lice): tests passed, tokens and messages per condition}"
         A["abstract"] = ("{P:pilot result: tests passed and tokens of the criterion team against single-agent, random, "
                          "one-agent-per-class and Infomap teams}")
         A["conclusion"] = "{P:one-sentence pilot result, stated only as strongly as the evidence allows}"
-    A["contribution4"] = ("A pre-registered agent study with four hypotheses, controlled conditions, an equal token "
-                          "budget per run, a zero-cost verification of the agent harness and a pilot on DevBench "
-                          "(Section VI).")
+    A["contribution4"] = ("A pre-registered agent study with four hypotheses, controlled conditions and an equal token "
+                          "budget per run, a zero-cost verification of the agent harness, and a pilot reported in full, "
+                          "including its go/no-go outcome (Section VI).")
+    A["discussion_pilot"] = (
+        "{bi:What the pilot shows:} The pilot was meant to expose problems before the main study, and it did. Its "
+        "harness checks found and fixed four defects that would otherwise have biased the comparison, and its floor "
+        "effect shows that, with an open-weight model of this size, DevBench’s Python tests are too strict to "
+        "separate the conditions, because they reward identifiers that the design does not contain. Three changes "
+        "are therefore proposed for the main study and will be registered before any further run: tasks whose tests "
+        "call only names that appear in the design, or designs completed with the public interface that the tests "
+        "call, identically for every condition; a second, stronger model; and token cost and inter-agent messages "
+        "reported as outcomes alongside tests passed, since the pilot shows that they differ even when correctness "
+        "does not.") if A.get("pilot_rows") else ""
     A["threat_extra"] = ("DevBench’s tests also check identifiers that are absent from the requirements and the "
                          "design, which lowers every condition’s absolute score; TextCNN is excluded from the pilot "
                          "because its reference code passes only 5 of 13 tests in the sandbox, as the pre-registered "
@@ -258,7 +312,8 @@ Project & Condition & Agents & Tests (mean) & Runs & Tokens & Messages & Note\\\
          r"\newcommand{\AgentAbstract}{" + to_latex(A["abstract"]) + "}",
          r"\newcommand{\AgentConclusion}{" + to_latex(A["conclusion"]) + "}",
          r"\newcommand{\ContributionFour}{" + to_latex(A["contribution4"]) + "}",
-         r"\newcommand{\ThreatExtra}{" + to_latex(A["threat_extra"]) + "}"]
+         r"\newcommand{\ThreatExtra}{" + to_latex(A["threat_extra"]) + "}",
+         r"\newcommand{\PilotDiscussion}{" + to_latex(A["discussion_pilot"].replace("{bi:What the pilot shows:}", r"\paragraph{What the pilot shows.}")) + "}"]
     (GEN / "agent_macros.tex").write_text("\n".join(M) + "\n")
     print("pilot included:", bool(A["pilot_rows"]))
 

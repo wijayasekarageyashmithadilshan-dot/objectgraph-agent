@@ -1,0 +1,101 @@
+{
+  "method": "GC",
+  "k": 5,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "ArgumentParser.add_argument",
+        "ArgumentParser.parse_args"
+      ],
+      "classes": [
+        "ArgumentParser"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_3": 6.0
+      }
+    },
+    {
+      "agent_id": "agent_2",
+      "duties": [
+        "Context.<state>"
+      ],
+      "classes": [
+        "Context"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_3": 3.5
+      }
+    },
+    {
+      "agent_id": "agent_3",
+      "duties": [
+        "Global_functions.main",
+        "Global_functions.clean_path",
+        "Global_functions.get_context",
+        "Global_functions.guess_organization",
+        "Global_functions.load_file_template",
+        "Global_functions.load_template",
+        "Global_functions.extract_vars",
+        "Global_functions.generate_license",
+        "Global_functions.format_license",
+        "Global_functions.get_suffix"
+      ],
+      "classes": [
+        "Global_functions"
+      ],
+      "depends_on": [
+        "agent_1",
+        "agent_2",
+        "agent_4",
+        "agent_5"
+      ],
+      "cut_to": {
+        "agent_1": 6.0,
+        "agent_2": 3.5,
+        "agent_4": 2.5,
+        "agent_5": 25.0
+      }
+    },
+    {
+      "agent_id": "agent_4",
+      "duties": [
+        "LICENSES.<state>"
+      ],
+      "classes": [
+        "LICENSES"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_3": 2.5
+      }
+    },
+    {
+      "agent_id": "agent_5",
+      "duties": [
+        "StringIO.write",
+        "StringIO.getvalue",
+        "StringIO.close",
+        "StringIO.seek",
+        "StringIO.readlines"
+      ],
+      "classes": [
+        "StringIO"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_3": 25.0
+      }
+    }
+  ],
+  "order": [
+    "agent_1",
+    "agent_2",
+    "agent_4",
+    "agent_5",
+    "agent_3"
+  ],
+  "cut": 37.0
+}

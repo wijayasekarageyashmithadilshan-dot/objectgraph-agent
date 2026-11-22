@@ -1,0 +1,21 @@
+{
+  "messages": [],
+  "stopped_by_budget": false,
+  "traceability": 0.0,
+  "files": [
+    "lice/core.py"
+  ],
+  "usage": {
+    "input_tokens": 2301,
+    "output_tokens": 2019,
+    "calls": 1,
+    "cached_calls": 0,
+    "by_tag": {
+      "agent_1": {
+        "input_tokens": 2301,
+        "output_tokens": 2019,
+        "calls": 1
+      }
+    }
+  }
+}

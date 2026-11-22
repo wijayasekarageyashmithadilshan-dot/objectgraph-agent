@@ -1,0 +1,126 @@
+{
+  "method": "G4",
+  "k": 5,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "ArgumentParser.add_argument",
+        "ArgumentParser.parse_args",
+        "Global_functions.clean_path",
+        "Global_functions.guess_organization",
+        "Global_functions.load_file_template",
+        "Global_functions.extract_vars",
+        "StringIO.write",
+        "StringIO.getvalue",
+        "StringIO.close",
+        "StringIO.readlines"
+      ],
+      "classes": [
+        "ArgumentParser",
+        "Global_functions",
+        "StringIO"
+      ],
+      "depends_on": [
+        "agent_2",
+        "agent_5"
+      ],
+      "cut_to": {
+        "agent_2": 6.5,
+        "agent_3": 5.5,
+        "agent_4": 35.0,
+        "agent_5": 1.0
+      }
+    },
+    {
+      "agent_id": "agent_2",
+      "duties": [
+        "Context.<state>",
+        "Global_functions.get_suffix"
+      ],
+      "classes": [
+        "Context",
+        "Global_functions"
+      ],
+      "depends_on": [
+        "agent_1",
+        "agent_5"
+      ],
+      "cut_to": {
+        "agent_1": 6.5,
+        "agent_3": 1.25,
+        "agent_4": 6.25,
+        "agent_5": 0.25
+      }
+    },
+    {
+      "agent_id": "agent_3",
+      "duties": [
+        "Global_functions.main"
+      ],
+      "classes": [
+        "Global_functions"
+      ],
+      "depends_on": [
+        "agent_1",
+        "agent_2",
+        "agent_5"
+      ],
+      "cut_to": {
+        "agent_1": 5.5,
+        "agent_2": 1.25,
+        "agent_4": 4.25,
+        "agent_5": 0.25
+      }
+    },
+    {
+      "agent_id": "agent_4",
+      "duties": [
+        "Global_functions.get_context",
+        "Global_functions.load_template",
+        "Global_functions.generate_license",
+        "Global_functions.format_license",
+        "StringIO.seek"
+      ],
+      "classes": [
+        "Global_functions",
+        "StringIO"
+      ],
+      "depends_on": [
+        "agent_1",
+        "agent_2",
+        "agent_5"
+      ],
+      "cut_to": {
+        "agent_1": 35.0,
+        "agent_2": 6.25,
+        "agent_3": 4.25,
+        "agent_5": 1.0
+      }
+    },
+    {
+      "agent_id": "agent_5",
+      "duties": [
+        "LICENSES.<state>"
+      ],
+      "classes": [
+        "LICENSES"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_1": 1.0,
+        "agent_2": 0.25,
+        "agent_3": 0.25,
+        "agent_4": 1.0
+      }
+    }
+  ],
+  "order": [
+    "agent_5",
+    "agent_1",
+    "agent_2",
+    "agent_3",
+    "agent_4"
+  ],
+  "cut": 61.25
+}

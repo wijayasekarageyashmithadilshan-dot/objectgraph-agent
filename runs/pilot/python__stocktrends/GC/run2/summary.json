@@ -1,0 +1,43 @@
+{
+  "project": "python/stocktrends",
+  "condition": "GC",
+  "description": "one agent per class",
+  "run_id": 2,
+  "k": 4,
+  "k_star": 3,
+  "duties": 13,
+  "cut": 5.5,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 19463,
+  "input_tokens": 14453,
+  "output_tokens": 5010,
+  "messages": 3,
+  "message_tokens": 3070,
+  "traceability": 1.0,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 1,
+    "total": 9,
+    "unit_test": {
+      "passed": 1,
+      "failed": 6,
+      "errors": 0,
+      "skipped": 0,
+      "total": 7
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "total": 2
+    },
+    "pass_rate": 0.1111,
+    "reference_total": 9
+  },
+  "pass_rate": 0.1111
+}

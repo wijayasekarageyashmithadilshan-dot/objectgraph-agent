@@ -1,0 +1,43 @@
+{
+  "messages": [
+    {
+      "from": "agent_2",
+      "to": "agent_1",
+      "tokens": 1005
+    },
+    {
+      "from": "agent_3",
+      "to": "agent_1",
+      "tokens": 1393
+    }
+  ],
+  "stopped_by_budget": false,
+  "traceability": 0.8462,
+  "files": [
+    "stocktrends/__init__.py",
+    "stocktrends/indicators.py"
+  ],
+  "usage": {
+    "input_tokens": 10872,
+    "output_tokens": 4382,
+    "calls": 3,
+    "cached_calls": 3,
+    "by_tag": {
+      "agent_2": {
+        "input_tokens": 2886,
+        "output_tokens": 925,
+        "calls": 1
+      },
+      "agent_3": {
+        "input_tokens": 2883,
+        "output_tokens": 1266,
+        "calls": 1
+      },
+      "agent_1": {
+        "input_tokens": 5103,
+        "output_tokens": 2191,
+        "calls": 1
+      }
+    }
+  }
+}

@@ -110,7 +110,7 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
            f"- Single agent best where k* = 1: **{rule3}**",
            f"- G7 within 0.05 of G6: {decision['G7_ties_G6_on']}",
            "", f"**Verdict: {verdict}**", "",
-           "_3 runs on 5 tasks show direction and cost, not statistical proof._"]
+           "_3 runs per condition show direction and cost, not statistical proof._"]
     (results / "pilot_summary.md").write_text("\n".join(md) + "\n")
     (results / "pilot_summary.json").write_text(json.dumps({"table": table, "decision": decision}, indent=2))
 

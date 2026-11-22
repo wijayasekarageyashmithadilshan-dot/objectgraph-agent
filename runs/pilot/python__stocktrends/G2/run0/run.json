@@ -1,0 +1,21 @@
+{
+  "messages": [],
+  "stopped_by_budget": false,
+  "traceability": 0.0,
+  "files": [
+    "stocktrends/indicators.py"
+  ],
+  "usage": {
+    "input_tokens": 2937,
+    "output_tokens": 721,
+    "calls": 1,
+    "cached_calls": 0,
+    "by_tag": {
+      "agent_1": {
+        "input_tokens": 2937,
+        "output_tokens": 721,
+        "calls": 1
+      }
+    }
+  }
+}

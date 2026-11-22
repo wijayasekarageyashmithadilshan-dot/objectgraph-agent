@@ -1,0 +1,36 @@
+{
+  "method": "G2",
+  "k": 1,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "Instrument.__init__",
+        "Instrument._validate_df",
+        "LineBreak.uptrend_reversal",
+        "LineBreak.downtrend_reversal",
+        "LineBreak.get_ohlc_data",
+        "PnF.get_state",
+        "PnF.roundit",
+        "PnF.get_ohlc_data",
+        "PnF.get_bar_ohlc_data",
+        "Renko.get_ohlc_data",
+        "Renko.price_movement_bricks",
+        "Renko.period_close_bricks",
+        "Renko.shift_bricks"
+      ],
+      "classes": [
+        "Instrument",
+        "LineBreak",
+        "PnF",
+        "Renko"
+      ],
+      "depends_on": [],
+      "cut_to": {}
+    }
+  ],
+  "order": [
+    "agent_1"
+  ],
+  "cut": 0.0
+}

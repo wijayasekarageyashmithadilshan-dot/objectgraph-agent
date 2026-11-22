@@ -1,0 +1,181 @@
+{
+  "table": {
+    "python/lice": {
+      "k_star": 1,
+      "conditions": {
+        "G2": {
+          "k": 1,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.0,
+          "pass_rate_runs": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tokens": 4172.333333333333,
+          "messages": 0.0,
+          "traceability": 0.3333333333333333,
+          "budget_stops": 0
+        },
+        "G4": {
+          "k": 5,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.0,
+          "pass_rate_runs": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tokens": 41127.0,
+          "messages": 9.0,
+          "traceability": 0.15683333333333332,
+          "budget_stops": 0
+        },
+        "GC": {
+          "k": 5,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.0,
+          "pass_rate_runs": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tokens": 20986.0,
+          "messages": 4.0,
+          "traceability": 0.7647333333333334,
+          "budget_stops": 0
+        },
+        "G6": {
+          "k": 1,
+          "same_as": "G2",
+          "runs": 3,
+          "pass_rate": 0.0,
+          "pass_rate_runs": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tokens": 4172.333333333333,
+          "messages": 0.0,
+          "traceability": 0.3333333333333333,
+          "budget_stops": 0
+        },
+        "G7": {
+          "k": 1,
+          "same_as": "G2",
+          "runs": 3,
+          "pass_rate": 0.0,
+          "pass_rate_runs": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "tokens": 4172.333333333333,
+          "messages": 0.0,
+          "traceability": 0.3333333333333333,
+          "budget_stops": 0
+        }
+      }
+    },
+    "python/stocktrends": {
+      "k_star": 3,
+      "conditions": {
+        "G2": {
+          "k": 1,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.11110000000000002,
+          "pass_rate_runs": [
+            0.1111,
+            0.1111,
+            0.1111
+          ],
+          "tokens": 3681.0,
+          "messages": 0.0,
+          "traceability": 0.0,
+          "budget_stops": 0
+        },
+        "G4": {
+          "k": 3,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.11110000000000002,
+          "pass_rate_runs": [
+            0.1111,
+            0.1111,
+            0.1111
+          ],
+          "tokens": 13511.333333333334,
+          "messages": 1.0,
+          "traceability": 0.9487333333333333,
+          "budget_stops": 0
+        },
+        "GC": {
+          "k": 4,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.11110000000000002,
+          "pass_rate_runs": [
+            0.1111,
+            0.1111,
+            0.1111
+          ],
+          "tokens": 17879.0,
+          "messages": 3.0,
+          "traceability": 0.9230999999999999,
+          "budget_stops": 0
+        },
+        "G6": {
+          "k": 4,
+          "same_as": "GC",
+          "runs": 3,
+          "pass_rate": 0.11110000000000002,
+          "pass_rate_runs": [
+            0.1111,
+            0.1111,
+            0.1111
+          ],
+          "tokens": 17879.0,
+          "messages": 3.0,
+          "traceability": 0.9230999999999999,
+          "budget_stops": 0
+        },
+        "G7": {
+          "k": 3,
+          "same_as": null,
+          "runs": 3,
+          "pass_rate": 0.11110000000000002,
+          "pass_rate_runs": [
+            0.1111,
+            0.1111,
+            0.1111
+          ],
+          "tokens": 14161.666666666666,
+          "messages": 2.0,
+          "traceability": 0.8462,
+          "budget_stops": 0
+        }
+      }
+    }
+  },
+  "decision": {
+    "rule_G7_beats_G4_majority": {
+      "passed": false,
+      "wins": 1,
+      "tasks": 1
+    },
+    "rule_G7_tokens_within_10pct_of_G4": {
+      "passed": true
+    },
+    "rule_single_agent_best_when_kstar_1": {
+      "passed": false,
+      "tasks": 0
+    },
+    "G7_ties_G6_on": "1/1 tasks",
+    "uninformative_tasks": [],
+    "verdict": "NO-GO (provisional: not all pilot tasks/conditions are in yet)"
+  }
+}

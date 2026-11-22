@@ -1,0 +1,43 @@
+{
+  "method": "G6",
+  "k": 1,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "ArgumentParser.add_argument",
+        "ArgumentParser.parse_args",
+        "Context.<state>",
+        "Global_functions.main",
+        "Global_functions.clean_path",
+        "Global_functions.get_context",
+        "Global_functions.guess_organization",
+        "Global_functions.load_file_template",
+        "Global_functions.load_template",
+        "Global_functions.extract_vars",
+        "Global_functions.generate_license",
+        "Global_functions.format_license",
+        "Global_functions.get_suffix",
+        "LICENSES.<state>",
+        "StringIO.write",
+        "StringIO.getvalue",
+        "StringIO.close",
+        "StringIO.seek",
+        "StringIO.readlines"
+      ],
+      "classes": [
+        "ArgumentParser",
+        "Context",
+        "Global_functions",
+        "LICENSES",
+        "StringIO"
+      ],
+      "depends_on": [],
+      "cut_to": {}
+    }
+  ],
+  "order": [
+    "agent_1"
+  ],
+  "cut": 0.0
+}

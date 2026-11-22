@@ -1,0 +1,43 @@
+{
+  "project": "python/stocktrends",
+  "condition": "G7",
+  "description": "criterion team (ours)",
+  "run_id": 1,
+  "k": 3,
+  "k_star": 3,
+  "duties": 13,
+  "cut": 4.0,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 13968,
+  "input_tokens": 10447,
+  "output_tokens": 3521,
+  "messages": 2,
+  "message_tokens": 2015,
+  "traceability": 0.8462,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 1,
+    "total": 9,
+    "unit_test": {
+      "passed": 1,
+      "failed": 6,
+      "errors": 0,
+      "skipped": 0,
+      "total": 7
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "total": 2
+    },
+    "pass_rate": 0.1111,
+    "reference_total": 9
+  },
+  "pass_rate": 0.1111
+}

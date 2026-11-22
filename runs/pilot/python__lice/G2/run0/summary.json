@@ -1,0 +1,43 @@
+{
+  "project": "python/lice",
+  "condition": "G2",
+  "description": "single agent",
+  "run_id": 0,
+  "k": 1,
+  "k_star": 1,
+  "duties": 19,
+  "cut": 0.0,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 4050,
+  "input_tokens": 2301,
+  "output_tokens": 1749,
+  "messages": 0,
+  "message_tokens": 0,
+  "traceability": 1.0,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 0,
+    "total": 7,
+    "unit_test": {
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "total": 1
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 6,
+      "errors": 0,
+      "skipped": 0,
+      "total": 6
+    },
+    "pass_rate": 0.0,
+    "reference_total": 31
+  },
+  "pass_rate": 0.0
+}

@@ -1,0 +1,88 @@
+{
+  "messages": [
+    {
+      "from": "agent_5",
+      "to": "agent_1",
+      "tokens": 1463
+    },
+    {
+      "from": "agent_1",
+      "to": "agent_2",
+      "tokens": 1719
+    },
+    {
+      "from": "agent_5",
+      "to": "agent_2",
+      "tokens": 1463
+    },
+    {
+      "from": "agent_1",
+      "to": "agent_3",
+      "tokens": 1719
+    },
+    {
+      "from": "agent_2",
+      "to": "agent_3",
+      "tokens": 1783
+    },
+    {
+      "from": "agent_5",
+      "to": "agent_3",
+      "tokens": 1463
+    },
+    {
+      "from": "agent_1",
+      "to": "agent_4",
+      "tokens": 1719
+    },
+    {
+      "from": "agent_2",
+      "to": "agent_4",
+      "tokens": 1783
+    },
+    {
+      "from": "agent_5",
+      "to": "agent_4",
+      "tokens": 1463
+    }
+  ],
+  "stopped_by_budget": false,
+  "traceability": 0.1176,
+  "files": [
+    "lice/__init__.py",
+    "lice/core.py"
+  ],
+  "usage": {
+    "input_tokens": 24797,
+    "output_tokens": 7811,
+    "calls": 5,
+    "cached_calls": 0,
+    "by_tag": {
+      "agent_5": {
+        "input_tokens": 2247,
+        "output_tokens": 1373,
+        "calls": 1
+      },
+      "agent_1": {
+        "input_tokens": 3673,
+        "output_tokens": 1567,
+        "calls": 1
+      },
+      "agent_2": {
+        "input_tokens": 5206,
+        "output_tokens": 1615,
+        "calls": 1
+      },
+      "agent_3": {
+        "input_tokens": 6824,
+        "output_tokens": 1615,
+        "calls": 1
+      },
+      "agent_4": {
+        "input_tokens": 6847,
+        "output_tokens": 1641,
+        "calls": 1
+      }
+    }
+  }
+}

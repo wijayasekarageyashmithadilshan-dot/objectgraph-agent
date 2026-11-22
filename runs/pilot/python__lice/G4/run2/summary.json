@@ -1,0 +1,43 @@
+{
+  "project": "python/lice",
+  "condition": "G4",
+  "description": "random team, same sizes",
+  "run_id": 2,
+  "k": 5,
+  "k_star": 1,
+  "duties": 19,
+  "cut": 61.25,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 49174,
+  "input_tokens": 34586,
+  "output_tokens": 14588,
+  "messages": 9,
+  "message_tokens": 21356,
+  "traceability": 0.2941,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 0,
+    "total": 7,
+    "unit_test": {
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "total": 1
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 6,
+      "errors": 0,
+      "skipped": 0,
+      "total": 6
+    },
+    "pass_rate": 0.0,
+    "reference_total": 31
+  },
+  "pass_rate": 0.0
+}

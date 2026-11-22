@@ -1,0 +1,63 @@
+{
+  "messages": [
+    {
+      "from": "agent_1",
+      "to": "agent_3",
+      "tokens": 164
+    },
+    {
+      "from": "agent_2",
+      "to": "agent_3",
+      "tokens": 291
+    },
+    {
+      "from": "agent_4",
+      "to": "agent_3",
+      "tokens": 46
+    },
+    {
+      "from": "agent_5",
+      "to": "agent_3",
+      "tokens": 152
+    }
+  ],
+  "stopped_by_budget": false,
+  "traceability": 1.0,
+  "files": [
+    "lice/__init__.py",
+    "lice/core.py"
+  ],
+  "usage": {
+    "input_tokens": 11899,
+    "output_tokens": 3373,
+    "calls": 5,
+    "cached_calls": 0,
+    "by_tag": {
+      "agent_1": {
+        "input_tokens": 2242,
+        "output_tokens": 143,
+        "calls": 1
+      },
+      "agent_2": {
+        "input_tokens": 2235,
+        "output_tokens": 255,
+        "calls": 1
+      },
+      "agent_4": {
+        "input_tokens": 2236,
+        "output_tokens": 58,
+        "calls": 1
+      },
+      "agent_5": {
+        "input_tokens": 2250,
+        "output_tokens": 151,
+        "calls": 1
+      },
+      "agent_3": {
+        "input_tokens": 2936,
+        "output_tokens": 2766,
+        "calls": 1
+      }
+    }
+  }
+}
