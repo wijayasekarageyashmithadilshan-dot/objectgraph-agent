@@ -61,8 +61,24 @@ class RunResult:
     traceability: float = 0.0
 
 
+_BARE_DUTY = re.compile(r"^(?P<ind>[ \t]*)(?P<tag>duty:\s*[\w.<>]+)[ \t]*$", re.M)
+
+
+def fix_duty_markers(path: str, code: str) -> str:
+    """Turn bare ``duty: Class.method`` lines into comments.
+
+    The prompt asks for a *comment*; models sometimes drop the comment sign, and
+    in Python ``duty: Renko.get_ohlc_data`` is then an annotated statement that
+    raises NameError at import time. Only lines consisting of nothing but the
+    marker are touched, identically for every condition.
+    """
+    sign = "#" if path.endswith((".py", ".sh", ".rb")) else "//"
+    return _BARE_DUTY.sub(lambda m: f"{m.group('ind')}{sign} {m.group('tag')}", code)
+
+
 def parse_blocks(text: str) -> list[tuple[str, str]]:
-    return [(m.group("path").strip("`"), m.group("code")) for m in _BLOCK.finditer(text)]
+    return [(m.group("path").strip("`"), fix_duty_markers(m.group("path").strip("`"), m.group("code")))
+            for m in _BLOCK.finditer(text)]
 
 
 def _py_units(code: str):

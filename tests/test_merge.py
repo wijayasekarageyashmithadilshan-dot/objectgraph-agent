@@ -16,3 +16,12 @@ def test_base_class_first_and_owner_version_kept():
 def test_unparsable_fragment_falls_back_to_concatenation():
     m = merge_fragments("p/x.py", ["import os\nx = 1\n", "def broken(:\n"])
     assert "import os" in m and "def broken(:" in m
+
+
+def test_bare_duty_marker_becomes_comment():
+    from objectgraph.orchestrator import fix_duty_markers
+    code = "class Renko:\n    duty: Renko.get_ohlc_data\n    def get_ohlc_data(self):\n        return 1  # duty: keep\n"
+    fixed = fix_duty_markers("s/indicators.py", code)
+    assert "    # duty: Renko.get_ohlc_data" in fixed
+    exec(compile(fixed, "m", "exec"), {})
+    assert fix_duty_markers("A.java", "  duty: A.b\n") == "  // duty: A.b\n"
