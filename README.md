@@ -4,7 +4,7 @@ Code and data for the paper *"When Should a Software Task Be Split Across Large 
 
 ObjectGraph-Agent turns a software design (a UML class diagram) into a graph of duties and scores cohesion and coupling. From that it decides whether the work should be split across LLM agents, how many agents to use, and which duties each agent owns. It does all of this before any code is written.
 
-**Status (22 Nov 2026):**
+**Status (11 Nov 2026):**
 - The structural results on all 22 DevBench projects are complete and reproducible.
 - The agent pipeline (Claude API, five comparison teams, DevBench scoring, step-by-step reports) is built and tested with a fake model.
 - The pilot runs are in progress.
