@@ -4,11 +4,11 @@ title: "ObjectGraph-Agent: Sizing LLM multi-agent teams from domain models"
 authors:
   - family-names: Dilshan
     given-names: Yashmitha
-    affiliation: "Informatics Institute of Technology, Colombo, Sri Lanka"
+    affiliation: "School of Computing, University of Westminster, London, UK (with Informatics Institute of Technology, Colombo)"
     orcid: "https://orcid.org/0009-0002-2591-6018"
   - family-names: Edirisooriya
     given-names: Maninda
-    affiliation: "Informatics Institute of Technology, Colombo, Sri Lanka"
+    affiliation: "School of Computing, University of Westminster, London, UK (with Informatics Institute of Technology, Colombo)"
 license: MIT
 repository-code: "https://github.com/wijayasekarageyashmithadilshan-dot/objectgraph-agent"
 version: "0.4.0"

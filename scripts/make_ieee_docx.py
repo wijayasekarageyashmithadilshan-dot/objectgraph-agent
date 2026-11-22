@@ -436,7 +436,7 @@ def build(template: Path, out: Path) -> None:
     front.append('<w:p><w:pPr><w:pStyle w:val="AU"/><w:spacing w:after="0"/></w:pPr>' + runs(
         "Yashmitha Dilshan{sup:1} and Maninda Edirisooriya{sup:1}") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
-        "{sup:1}Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K. (e-mail: yashmitha.20211432@iit.ac.lk; maninda.e@iit.ac.lk)") + "</w:p>")
+        "{sup:1}School of Computing, University of Westminster, 309 Regent Street, London W1B 2HW, U.K., in collaboration with the Informatics Institute of Technology, Colombo, Sri Lanka (e-mail: yashmitha.20211432@iit.ac.lk; maninda.e@iit.ac.lk)") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:before="100" w:after="100"/><w:ind w:right="1598" w:firstLine="0"/></w:pPr>' + runs(
         "Corresponding author: Y. Dilshan (e-mail: yashmitha.20211432@iit.ac.lk; ORCID: 0009-0002-2591-6018).") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
@@ -470,7 +470,7 @@ def build(template: Path, out: Path) -> None:
             " is currently pursuing the B.Sc. degree in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K., with expected graduation in 2027. His research interests include large language model agents, multi-agent systems for software engineering, human–computer interaction, and the reproducible evaluation of machine learning.") + "</w:p>",
         '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>MANINDA EDIRISOORIYA</w:t></w:r>' + runs(
-            " is a Senior Lecturer (Grade II) in the School of Computing at the Informatics Institute of Technology, Colombo, Sri Lanka. {T:degrees and research interests}") + "</w:p>",
+            " received the B.Eng. (Hons.) degree in computer science and engineering from the University of Moratuwa, Sri Lanka. He is a Senior Lecturer (Grade II) in the School of Computing at the Informatics Institute of Technology, Colombo, Sri Lanka. His research interests include artificial intelligence, machine learning, and deep learning.") + "</w:p>",
     ]
     final_sect = re.sub(r"<w:(header|footer)Reference[^>]*/>", "", tail_sect.replace("</w:body>", ""))
     newxml = head + "".join(front) + "".join(body) + "".join(ref_xml) + "".join(bios) + final_sect + "</w:body></w:document>"
