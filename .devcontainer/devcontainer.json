@@ -14,6 +14,7 @@
     "AI_GATEWAY_API_KEY": {
       "description": "Your Vercel AI Gateway key (Codespaces secret, never in the repo)"
     },
+    "DEEPSEEK_API_KEY": {"description": "Optional: DeepSeek key (second model)"},
     "ANTHROPIC_API_KEY": {
       "description": "Optional: Anthropic key, only if you run Claude directly"
     }

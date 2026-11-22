@@ -11,7 +11,7 @@
 * Providers: "anthropic" (ANTHROPIC_API_KEY), "openrouter" (OPENROUTER_API_KEY;
   reaches Claude, Qwen, GPT and others through one key), "openai"
   (OPENAI_API_KEY, optional OPENAI_BASE_URL for any OpenAI-compatible server),
-  "vercel" (Vercel AI Gateway, AI_GATEWAY_API_KEY),
+  "vercel" (Vercel AI Gateway, AI_GATEWAY_API_KEY), "deepseek" (DEEPSEEK_API_KEY),
   "ollama" (local server, no key) and "fake" (tests).
 * API keys are read from environment variables only and are never written to
   the cache.
@@ -31,6 +31,7 @@ OPENAI_COMPATIBLE = {
     "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
     "openai": (None, "OPENAI_API_KEY"),
     "vercel": ("https://ai-gateway.vercel.sh/v1", "AI_GATEWAY_API_KEY"),
+    "deepseek": ("https://api.deepseek.com", "DEEPSEEK_API_KEY"),
     "ollama": ("http://localhost:11434/v1", None),
 }
 
