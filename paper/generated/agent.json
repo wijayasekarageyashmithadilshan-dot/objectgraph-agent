@@ -54,9 +54,6 @@
  "contribution4": "A pre-registered agent study with four hypotheses, controlled conditions, an equal token budget per run, a zero-cost verification of the agent harness and a pilot on DevBench (Section VI).",
  "threat_extra": "DevBench’s tests also check identifiers that are absent from the requirements and the design, which lowers every condition’s absolute score; TextCNN is excluded from the pilot because its reference code passes only 5 of 13 tests in the sandbox, as the pre-registered scorer rule requires.",
  "main_pending": [
-  "{P:Main study: H1 test statistics and effect sizes over all tasks and both models}",
-  "{P:H2: Spearman correlation between cut weight and messages per agent pair}",
-  "{P:H3: split or no-split decision against the empirically better choice}",
-  "{P:H4: k* agreement between extracted and gold designs, and H1 with extracted designs}"
+  "{bi:Main study (planned, pre-registered):} The confirmatory tests follow the pilot. H1 uses a paired Wilcoxon signed-rank test over tasks with Holm correction and reports bootstrap confidence intervals; H2 correlates cut weight with logged messages per agent pair (Spearman); H3 cross-tabulates the split or no-split decision against the empirically better choice; and H4 repeats H1 with designs extracted from the requirements. The study adds the C++ and Java DevBench projects, further multi-agent tasks to reach the roughly 36 that the power analysis requires, and a second model from a different model family."
  ]
 }

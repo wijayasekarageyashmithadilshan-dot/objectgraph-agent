@@ -182,9 +182,20 @@ def main() -> None:
         fig.savefig(ROOT / "paper" / "figures" / "pilot.pdf")
         fig.savefig(ROOT / "paper" / "figures_docx" / "fig_pilot.png", dpi=220)
         plt.close(fig)
-        A["abstract"] = ("A pre-registered pilot with an open-weight coding model on DevBench’s Python projects, "
-                         "run under an equal token budget against single-agent, random, one-agent-per-class and "
-                         "Infomap teams, is reported with its full protocol; " + A["pilot_short"].rstrip(".") + ".")
+        ab = []
+        for p, t in T.items():
+            c, tot = t["conditions"], totals.get(p) or 1
+            if (t["k_star"] or 1) > 1 and all(x in c and c[x]["pass_rate"] is not None for x in ("G7", "G4")):
+                ab.append(f"the criterion team passed {c['G7']['pass_rate'] * tot:.1f} of {tot} tests on "
+                          f"{p.split('/')[1]} against {c['G4']['pass_rate'] * tot:.1f} for equal-size random teams")
+            if t["k_star"] == 1 and "G2" in c and c["G2"]["pass_rate"] is not None:
+                oth = [c[x]["pass_rate"] for x in ("G4", "GC") if x in c and c[x]["pass_rate"] is not None]
+                if oth:
+                    better = c["G2"]["pass_rate"] >= max(oth)
+                    ab.append(f"where it recommends one agent ({p.split('/')[1]}), the single agent "
+                              f"{'matched or beat' if better else 'trailed'} every split team")
+        A["abstract"] = ("In a pre-registered pilot with an open-weight coding model, " + "; ".join(ab) +
+                         "; absolute scores are low for all teams, and the main study adds tasks and a second model.")
         A["conclusion"] = ("In a first pre-registered pilot, " + A["pilot_short"] +
                            " These pilot results show direction and cost only; the main study tests the hypotheses "
                            "on more projects and a second model.")
@@ -202,11 +213,12 @@ def main() -> None:
                          "because its reference code passes only 5 of 13 tests in the sandbox, as the pre-registered "
                          "scorer rule requires.")
     A["main_pending"] = [
-        "{P:Main study: H1 test statistics and effect sizes over all tasks and both models}",
-        "{P:H2: Spearman correlation between cut weight and messages per agent pair}",
-        "{P:H3: split or no-split decision against the empirically better choice}",
-        "{P:H4: k* agreement between extracted and gold designs, and H1 with extracted designs}",
-    ]
+        "{bi:Main study (planned, pre-registered):} The confirmatory tests follow the pilot. H1 uses a paired "
+        "Wilcoxon signed-rank test over tasks with Holm correction and reports bootstrap confidence intervals; H2 "
+        "correlates cut weight with logged messages per agent pair (Spearman); H3 cross-tabulates the split or "
+        "no-split decision against the empirically better choice; and H4 repeats H1 with designs extracted from the "
+        "requirements. The study adds the C++ and Java DevBench projects, further multi-agent tasks to reach the "
+        "roughly 36 that the power analysis requires, and a second model from a different model family."]
 
     GEN.mkdir(parents=True, exist_ok=True)
     (GEN / "agent.json").write_text(json.dumps({k: (to_docx(v) if isinstance(v, str) else v)
