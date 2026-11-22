@@ -102,7 +102,7 @@ def main() -> None:
         for r in ref:
             name = r["project"].split("/")[1].replace("_", r"\_")
             if "status" in r:
-                rr.append(f"{name} & \\multicolumn{{2}}{{l}}{{skipped (network download)}} \\\\")
+                rr.append(f"{name} & \\multicolumn{{2}}{{l}}{{skipped here; 5/13 on Colab}} \\\\")
                 continue
             cells = []
             for k in ("unit_test", "acceptance_test"):

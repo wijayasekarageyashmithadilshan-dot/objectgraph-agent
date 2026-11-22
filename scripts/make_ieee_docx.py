@@ -388,7 +388,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     for r in REFT:
         name = r["project"].split("/")[1]
         if "status" in r:
-            rr.append([name, "skipped", "network download"])
+            rr.append([name, "skipped here", "5/13 on Colab (unit + acceptance)"])
             continue
         cells = []
         for k in ("unit_test", "acceptance_test"):
@@ -397,7 +397,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         rr.append([name, *cells])
     d.table("DevBench Reference Code Tested Against Its Own Tests (Python)", ["Project", "Unit tests", "Acceptance tests"],
             rr, [2300, 1200, 1300], size=15,
-            notes="Fresh virtual environment per project; coverage flags removed. TextCNN needs a model download that the build environment blocks.")
+            notes="Fresh virtual environment per project; coverage flags removed. TextCNN needs a model download that this build environment blocks; on Google Colab its reference code passes 5 of 13 tests, so it is excluded from the pilot.")
 
     d.h1("Data and Code Availability", numbered=False)
     d.p("All code, the pre-registration file, prompts, cached model responses, generated tables and figures are available at https://github.com/wijayasekarageyashmithadilshan-dot/objectgraph-agent. Running bash reproduce.sh regenerates every structural result, and the agent tables can be rebuilt offline from the cached responses. DevBench is publicly available and is used at commit {N:DevBenchCommit}.", first=True)
@@ -406,7 +406,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     d.h1("Conflict of Interest", numbered=False)
     d.p("The authors declare no competing interests.", first=True)
     d.h1("Acknowledgment", numbered=False)
-    d.p("The authors thank Achala Aponso, Informatics Institute of Technology, for reviewing drafts of this article. The authors used Claude (Anthropic) as an assistant throughout this work (November 2026). It drafted the analysis and agent-harness code, the pre-registration files, the figure scripts and first drafts of all sections, and it assisted with literature searches and with checking references. All study design decisions, registrations and interpretations were reviewed and approved by the authors, who reviewed all code, results, references and text and take full responsibility for the content of this article.", first=True)
+    d.p("The authors thank Achala Aponso, Informatics Institute of Technology, for his feedback on drafts of this article. Claude (Anthropic) served as an AI assistant during this work in November 2026: it helped to write the experiment and analysis code, the pre-registration and figure scripts and early versions of the text, and it helped to search and check the literature. The authors designed the study, made every pre-registration and analysis decision, checked all code, results and references, revised the text, and are fully responsible for the article.", first=True)
     return {}
 
 
@@ -485,6 +485,8 @@ def build(template: Path, out: Path) -> None:
     num = num[:last] + "".join(d.new_nums) + num[last:]
     (W / "numbering.xml").write_text(num, encoding="utf-8")
 
+    for f in W.glob("footer*.xml"):
+        f.write_text(f.read_text(encoding="utf-8").replace("VOLUME XX, 2017", "VOLUME XX, 2026"), encoding="utf-8")
     # running header text and page-number field in the body footer
     hdr = (W / "header2.xml").read_text(encoding="utf-8")
     hdr = hdr.replace("<w:t>Author Name</w:t>", "<w:t>Y. Dilshan and M. Edirisooriya</w:t>")
