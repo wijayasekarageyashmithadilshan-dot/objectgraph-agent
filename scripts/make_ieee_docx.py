@@ -194,6 +194,26 @@ class Doc:
         self.body.append(f'<w:p><w:pPr><w:pStyle w:val="FigureCaption"/><w:keepNext/><w:jc w:val="center"/></w:pPr>{drawing}</w:p>')
         self.body.append(para("FigCaption", caption))
 
+    def photo(self, png: Path, n: int) -> str:
+        """Author photo, 1 in x 1.25 in, floating at the left of the biography (square wrap)."""
+        rid = f"rIdPhoto{n}"
+        self.images.append((rid, png))
+        cx, cy = 914400, int(914400 * 1.25)
+        return (f'<w:r><w:drawing><wp:anchor distT="0" distB="45720" distL="0" distR="91440" simplePos="0" '
+                f'relativeHeight="{251658240 + n}" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="0">'
+                '<wp:simplePos x="0" y="0"/><wp:positionH relativeFrom="column"><wp:posOffset>0</wp:posOffset></wp:positionH>'
+                '<wp:positionV relativeFrom="paragraph"><wp:posOffset>0</wp:posOffset></wp:positionV>'
+                f'<wp:extent cx="{cx}" cy="{cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapSquare wrapText="bothSides"/>'
+                f'<wp:docPr id="{800 + n}" name="Author photo {n}"/><wp:cNvGraphicFramePr/>'
+                '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+                '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+                '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+                f'<pic:nvPicPr><pic:cNvPr id="{800 + n}" name="photo{n}.png"/><pic:cNvPicPr/></pic:nvPicPr>'
+                f'<pic:blipFill><a:blip r:embed="{rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+                f'<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="{cx}" cy="{cy}"/></a:xfrm>'
+                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic>'
+                '</wp:anchor></w:drawing></w:r>')
+
     def table(self, title: str, header: list[str], rows: list[list[str]], widths: list[int], size: int = 14,
               notes: str | None = None):
         """widths in twips; size in half-points."""
@@ -469,13 +489,15 @@ def build(template: Path, out: Path) -> None:
     unused = [k for k in REFS if k not in ORDER]
     if unused:
         raise SystemExit(f"references never cited: {unused}")
+    photos = [ROOT / "paper/photos/dilshan.png", ROOT / "paper/photos/edirisooriya.png"]
+    ph = [d.photo(x, i + 1) if x.exists() else "" for i, x in enumerate(photos)]
     bios = [
-        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' +
+        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' + ph[0] +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>YASHMITHA DILSHAN</w:t></w:r>' + runs(
             " is currently pursuing the B.Sc. degree in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K., with expected graduation in 2027. His research interests include large language model agents, multi-agent systems for software engineering, human–computer interaction, and the reproducible evaluation of machine learning.") + "</w:p>",
-        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' +
+        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="480"/></w:pPr>' + ph[1] +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>MANINDA EDIRISOORIYA</w:t></w:r>' + runs(
-            " received the B.Eng. (Hons.) degree in computer science and engineering from the University of Moratuwa, Sri Lanka. He is a Senior Lecturer (Grade II) in the School of Computing at the Informatics Institute of Technology, Colombo, Sri Lanka. His research interests include artificial intelligence, machine learning, and deep learning.") + "</w:p>",
+            " received the B.Sc. Engineering (Hons.) degree in computer science and engineering in 2011 and the MBA degree in management of technology in 2019, both from the University of Moratuwa, Sri Lanka. He is currently a Senior Lecturer at the IIT School of Computing, Informatics Institute of Technology, Sri Lanka, where he teaches machine vision and applied artificial intelligence and supports undergraduate research projects. Previously, he held academic teaching appointments at the University of Moratuwa, covering machine learning, deep learning, big data analytics, and related disciplines. From 2011 to 2023, he served in several software engineering and technical leadership roles at WSO2 (now Choreo Labs), most recently as an Associate Technical Lead. His industry contributions include an AI-powered customer support chatbot, deep learning-based sentiment analysis of enterprise support tickets, and large-scale distributed software systems. His research interests include trustworthy and explainable artificial intelligence, machine learning, deep learning, generative and agentic AI systems, natural language processing, computer vision, and conversational agents. His recent research encompasses policy-controlled conversational AI, explainable machine learning, and graph-based learning approaches. Mr. Edirisooriya is an Associate Member of the Institution of Engineers, Sri Lanka (IESL), and a Corporate Life Member of the Radio Society of Sri Lanka (RSSL).") + "</w:p>",
     ]
     final_sect = re.sub(r"<w:(header|footer)Reference[^>]*/>", "", tail_sect.replace("</w:body>", ""))
     newxml = head + "".join(front) + "".join(body) + "".join(ref_xml) + "".join(bios) + final_sect + "</w:body></w:document>"
