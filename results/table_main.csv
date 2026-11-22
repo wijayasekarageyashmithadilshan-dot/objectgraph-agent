@@ -1,0 +1,23 @@
+project,classes,duties,k_star_duty,sizes,cut_reduction_vs_random,p_random,closed_form_vs_sampled,mq_minus_one_per_class,splits_a_class,ari_vs_one_per_class,same_k_over_81_weights,louvain_k,infomap_k,k_star_class
+cpp/area_calculation,4,7,1,7,,,,0.201531,False,0.0,54,2,1,1
+cpp/graph-cpp,7,21,4,8+5+4+4,0.702571,0.0005,40.381 / 40.346,0.297574,False,0.747346,57,4,4,3
+cpp/logistic_system,3,18,1,18,,,,0.13972,False,0.0,69,3,1,1
+cpp/people_management,2,14,2,10+4,0.796686,0.001,24.615 / 24.593,0.0,False,1.0,72,2,2,1
+cpp/xlsx2csv,4,12,3,5+4+3,0.778783,0.0005,13.530 / 13.561,0.088056,False,0.755253,54,3,3,1
+java/Actor_relationship_game,7,35,7,7+7+6+6+4+3+2,0.519559,0.0005,120.706 / 120.722,0.0,False,1.0,63,3,4,2
+java/idcenter,4,17,3,11+3+3,0.974964,0.0005,29.917 / 29.957,0.223577,False,0.849057,81,3,3,1
+java/image-similarity,3,17,2,9+8,0.79862,0.0005,29.912 / 29.794,0.006944,False,0.730159,54,3,3,1
+java/java_heap,5,36,2,26+10,0.96132,0.0005,122.984 / 122.802,0.29963,False,0.54763,81,3,3,3
+java/redis-cache,10,50,5,26+10+7+6+1,0.915835,0.0005,255.561 / 255.449,0.031829,False,0.8036,43,4,4,5
+javascript/listen-now-frontend,4,4,1,4,,,,0.875,False,0.0,81,2,1,1
+javascript/login-registration,4,8,3,3+3+2,0.753269,0.010495,5.062 / 5.066,0.152778,False,0.789474,81,3,4,1
+python/ArXiv_digest,1,7,1,7,,,,0.0,False,1.0,81,1,1,1
+python/Hybrid_Images,1,6,1,6,,,,0.0,False,1.0,81,1,1,1
+python/TextCNN,5,12,5,4+3+2+2+1,0.65122,0.0005,12.917 / 12.902,0.0,False,1.0,54,4,4,1
+python/chakin,2,4,1,4,,,,0.385417,False,0.0,81,1,1,1
+python/geotext,2,4,1,4,,,,0.041667,False,0.0,81,2,2,1
+python/hone,3,20,1,20,,,,0.148419,False,0.0,54,2,1,1
+python/lice,5,19,1,19,,,,0.215235,False,0.0,78,2,1,1
+python/particle-swarm-optimization,2,5,1,5,,,,0.105,False,0.0,81,2,2,1
+python/readtime,1,6,1,6,,,,0.0,False,1.0,81,1,1,1
+python/stocktrends,4,13,3,5+4+4,0.741663,0.0005,15.436 / 15.484,0.038333,False,0.79292,63,3,4,1

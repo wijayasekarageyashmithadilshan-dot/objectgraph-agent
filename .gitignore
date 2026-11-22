@@ -1,0 +1,9 @@
+DevBench/
+__pycache__/
+.pytest_cache/
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz

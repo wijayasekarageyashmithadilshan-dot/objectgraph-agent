@@ -1,0 +1,249 @@
+\begin{thebibliography}{33}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bertalani{\v{c}} and Fortuna(2026)]{bertalanic2026ringelmann}
+Bla{\v{z}} Bertalani{\v{c}} and Carolina Fortuna.
+\newblock The {Ringelmann} effect in multi-agent {LLM} systems: A scaling law
+  for effective team size.
+\newblock \emph{arXiv preprint arXiv:2606.02646}, 2026.
+\newblock \doi{10.48550/arXiv.2606.02646}.
+
+\bibitem[Blondel et~al.(2008)Blondel, Guillaume, Lambiotte, and
+  Lefebvre]{blondel2008louvain}
+Vincent~D. Blondel, Jean-Loup Guillaume, Renaud Lambiotte, and Etienne
+  Lefebvre.
+\newblock Fast unfolding of communities in large networks.
+\newblock \emph{J. Stat. Mech.: Theory Exp.}, 2008\penalty0 (10):\penalty0
+  P10008, 2008.
+\newblock \doi{10.1088/1742-5468/2008/10/P10008}.
+
+\bibitem[Cemri et~al.(2025)]{cemri2025why}
+Mert Cemri et~al.
+\newblock Why do multi-agent {LLM} systems fail?
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS),
+  Datasets and Benchmarks Track}, 2025.
+\newblock \doi{10.48550/arXiv.2503.13657}.
+
+\bibitem[Cheng et~al.(2026)]{cheng2026oopmas}
+Qi~Cheng et~al.
+\newblock {OOPMAS}: Object-oriented multi-agent systems for query-level
+  workflow generation.
+\newblock \emph{arXiv preprint arXiv:2610.07787}, 2026.
+\newblock \doi{10.48550/arXiv.2610.07787}.
+
+\bibitem[Chidamber and Kemerer(1994)]{chidamber1994metrics}
+Shyam~R. Chidamber and Chris~F. Kemerer.
+\newblock A metrics suite for object oriented design.
+\newblock \emph{IEEE Trans. Softw. Eng.}, 20\penalty0 (6):\penalty0 476--493,
+  1994.
+\newblock \doi{10.1109/32.295895}.
+
+\bibitem[Conway(1968)]{conway1968committees}
+Melvin~E. Conway.
+\newblock How do committees invent?
+\newblock \emph{Datamation}, 14\penalty0 (4):\penalty0 28--31, 1968.
+
+\bibitem[Giannouris and Ananiadou(2025)]{giannouris2025nomad}
+Polydoros Giannouris and Sophia Ananiadou.
+\newblock {NOMAD}: A multi-agent {LLM} system for {UML} class diagram
+  generation from natural language requirements.
+\newblock \emph{arXiv preprint arXiv:2511.22409}, 2025.
+\newblock \doi{10.48550/arXiv.2511.22409}.
+
+\bibitem[Holm(1979)]{holm1979simple}
+Sture Holm.
+\newblock A simple sequentially rejective multiple test procedure.
+\newblock \emph{Scand. J. Statist.}, 6\penalty0 (2):\penalty0 65--70, 1979.
+
+\bibitem[Hong et~al.(2024)]{hong2024metagpt}
+Sirui Hong et~al.
+\newblock {MetaGPT}: Meta programming for a multi-agent collaborative
+  framework.
+\newblock In \emph{Proc. Int. Conf. Learning Representations (ICLR)}, 2024.
+\newblock \doi{10.48550/arXiv.2308.00352}.
+
+\bibitem[Hu et~al.(2025{\natexlab{a}})Hu, Lu, and Clune]{hu2025adas}
+Shengran Hu, Cong Lu, and Jeff Clune.
+\newblock Automated design of agentic systems.
+\newblock In \emph{Proc. Int. Conf. Learning Representations (ICLR)},
+  2025{\natexlab{a}}.
+\newblock \doi{10.48550/arXiv.2408.08435}.
+
+\bibitem[Hu et~al.(2025{\natexlab{b}})]{hu2025evomac}
+Yue Hu et~al.
+\newblock Self-evolving multi-agent collaboration networks for software
+  development.
+\newblock In \emph{Proc. Int. Conf. Learning Representations (ICLR)},
+  2025{\natexlab{b}}.
+\newblock \doi{10.48550/arXiv.2410.16946}.
+
+\bibitem[Hubert and Arabie(1985)]{hubert1985ari}
+Lawrence Hubert and Phipps Arabie.
+\newblock Comparing partitions.
+\newblock \emph{J. Classification}, 2\penalty0 (1):\penalty0 193--218, 1985.
+\newblock \doi{10.1007/BF01908075}.
+
+\bibitem[Jwalapuram et~al.(2026)]{jwalapuram2026illusion}
+Prathyusha Jwalapuram et~al.
+\newblock The illusion of multi-agent advantage.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2026.
+\newblock \doi{10.48550/arXiv.2606.13003}.
+
+\bibitem[Ke et~al.(2025)]{ke2025maszero}
+Zixuan Ke et~al.
+\newblock {MAS-Zero}: Designing multi-agent systems with zero supervision.
+\newblock In \emph{NeurIPS 2025 Workshop on Scaling Environments for Agents},
+  2025.
+\newblock \doi{10.48550/arXiv.2505.14996}.
+
+\bibitem[Kim et~al.(2025)]{kim2025scaling}
+Yubin Kim et~al.
+\newblock Towards a science of scaling agent systems.
+\newblock \emph{arXiv preprint arXiv:2512.08296}, 2025.
+\newblock \doi{10.48550/arXiv.2512.08296}.
+
+\bibitem[Li et~al.(2024)]{li2024devbench}
+Bowen Li et~al.
+\newblock Prompting large language models to tackle the full software
+  development lifecycle: A case study ({DevBench}, also released as {DevEval}).
+\newblock \emph{arXiv preprint arXiv:2403.08604}, 2024.
+\newblock \doi{10.48550/arXiv.2403.08604}.
+
+\bibitem[Li et~al.(2026{\natexlab{a}})Li, Gu, Cai, and
+  Feng]{li2026scalingbehavior}
+Jialing Li, Zhouhong Gu, Yin Cai, and Hongwei Feng.
+\newblock Scaling behavior of single {LLM}-driven multi-agent systems.
+\newblock \emph{arXiv preprint arXiv:2606.00655}, 2026{\natexlab{a}}.
+\newblock \doi{10.48550/arXiv.2606.00655}.
+
+\bibitem[Li et~al.(2026{\natexlab{b}})Li, Liu, Wen, Zhang, and
+  Pan]{li2026argdesigner}
+Shiyuan Li, Yixin Liu, Qingsong Wen, Chengqi Zhang, and Shirui Pan.
+\newblock Assemble your crew: Automatic multi-agent communication topology
+  design via autoregressive graph generation.
+\newblock In \emph{Proc. AAAI Conf. Artificial Intelligence},
+  2026{\natexlab{b}}.
+\newblock \doi{10.48550/arXiv.2507.18224}.
+
+\bibitem[Mancoridis et~al.(1998)Mancoridis, Mitchell, Rorres, Chen, and
+  Gansner]{mancoridis1998bunch}
+Spiros Mancoridis, Brian~S. Mitchell, Chris Rorres, Yih-Farn Chen, and Emden~R.
+  Gansner.
+\newblock Using automatic clustering to produce high-level system organizations
+  of source code.
+\newblock In \emph{Proc. 6th Int. Workshop Program Comprehension (IWPC)}, pages
+  45--52, 1998.
+\newblock \doi{10.1109/WPC.1998.693283}.
+
+\bibitem[Mitchell and Mancoridis(2006)]{mitchell2006bunch}
+Brian~S. Mitchell and Spiros Mancoridis.
+\newblock On the automatic modularization of software systems using the {Bunch}
+  tool.
+\newblock \emph{IEEE Trans. Softw. Eng.}, 32\penalty0 (3):\penalty0 193--208,
+  2006.
+\newblock \doi{10.1109/TSE.2006.31}.
+
+\bibitem[Parnas(1972)]{parnas1972criteria}
+David~L. Parnas.
+\newblock On the criteria to be used in decomposing systems into modules.
+\newblock \emph{Commun. ACM}, 15\penalty0 (12):\penalty0 1053--1058, 1972.
+\newblock \doi{10.1145/361598.361623}.
+
+\bibitem[Qian et~al.(2024)]{qian2024chatdev}
+Chen Qian et~al.
+\newblock {ChatDev}: Communicative agents for software development.
+\newblock In \emph{Proc. 62nd Annu. Meeting Assoc. Comput. Linguistics (ACL)},
+  2024.
+\newblock \doi{10.48550/arXiv.2307.07924}.
+
+\bibitem[Rosvall and Bergstrom(2008)]{rosvall2008infomap}
+Martin Rosvall and Carl~T. Bergstrom.
+\newblock Maps of random walks on complex networks reveal community structure.
+\newblock \emph{Proc. Nat. Acad. Sci.}, 105\penalty0 (4):\penalty0 1118--1123,
+  2008.
+\newblock \doi{10.1073/pnas.0706851105}.
+
+\bibitem[Wang et~al.(2025)]{wang2025agentdropout}
+Zhexuan Wang et~al.
+\newblock {AgentDropout}: Dynamic agent elimination for token-efficient and
+  high-performance {LLM}-based multi-agent collaboration.
+\newblock In \emph{Proc. 63rd Annu. Meeting Assoc. Comput. Linguistics (ACL)},
+  pages 24013--24035, 2025.
+\newblock \doi{10.18653/v1/2025.acl-long.1170}.
+
+\bibitem[Wei et~al.(2026)]{wei2026modeldriven}
+Ran Wei et~al.
+\newblock Model-driven discipline for multi-agent {LLMs}:
+  Requirement-to-verification generation of traceable system models.
+\newblock \emph{arXiv preprint arXiv:2607.16708}, 2026.
+\newblock \doi{10.48550/arXiv.2607.16708}.
+
+\bibitem[Wirfs-Brock and Wilkerson(1989)]{wirfsbrock1989responsibility}
+Rebecca Wirfs-Brock and Brian Wilkerson.
+\newblock Object-oriented design: A responsibility-driven approach.
+\newblock In \emph{Proc. Conf. Object-Oriented Programming Systems, Languages
+  and Applications (OOPSLA)}, pages 71--75, 1989.
+\newblock \doi{10.1145/74877.74885}.
+
+\bibitem[Wu et~al.(2023)]{wu2023autogen}
+Qingyun Wu et~al.
+\newblock {AutoGen}: Enabling next-gen {LLM} applications via multi-agent
+  conversation.
+\newblock \emph{arXiv preprint arXiv:2308.08155}, 2023.
+\newblock \doi{10.48550/arXiv.2308.08155}.
+
+\bibitem[Yang et~al.(2026)Yang, Nie, Chandra, Gannutin, Lin, and
+  Chaudhuri]{yang2026cocoder}
+Xu~Yang, Lunyiu Nie, Ethan Chandra, Stanislav Gannutin, Fangru Lin, and Swarat
+  Chaudhuri.
+\newblock When parallelism pays off: Cohesion-aware task partitioning for
+  multi-agent coding.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2026.
+\newblock \doi{10.48550/arXiv.2606.00953}.
+
+\bibitem[Zhang et~al.(2025{\natexlab{a}})Zhang, Niu, Fang, Wang, Bai, and
+  Wang]{zhang2025maas}
+Guibin Zhang, Luyang Niu, Junfeng Fang, Kun Wang, Lei Bai, and Xiang Wang.
+\newblock Multi-agent architecture search via agentic supernet.
+\newblock In \emph{Proc. 42nd Int. Conf. Machine Learning (ICML)}, volume 267
+  of \emph{PMLR}, pages 75834--75852, 2025{\natexlab{a}}.
+\newblock \doi{10.48550/arXiv.2502.04180}.
+
+\bibitem[Zhang et~al.(2025{\natexlab{b}})]{zhang2025agentprune}
+Guibin Zhang et~al.
+\newblock Cut the crap: An economical communication pipeline for {LLM}-based
+  multi-agent systems.
+\newblock In \emph{Proc. Int. Conf. Learning Representations (ICLR)},
+  2025{\natexlab{b}}.
+\newblock \doi{10.48550/arXiv.2410.02506}.
+
+\bibitem[Zhang et~al.(2025{\natexlab{c}})]{zhang2025gdesigner}
+Guibin Zhang et~al.
+\newblock {G-Designer}: Architecting multi-agent communication topologies via
+  graph neural networks.
+\newblock In \emph{Proc. 42nd Int. Conf. Machine Learning (ICML)}, volume 267
+  of \emph{PMLR}, pages 76678--76692, 2025{\natexlab{c}}.
+\newblock \doi{10.48550/arXiv.2410.11782}.
+
+\bibitem[Zhang et~al.(2026)]{zhang2026rethinking}
+Jiamu Zhang et~al.
+\newblock Rethinking the evaluation of efficiency methods for multi-agent
+  systems.
+\newblock In \emph{Proc. Conf. Empirical Methods in Natural Language Processing
+  (EMNLP)}, 2026.
+\newblock \doi{10.48550/arXiv.2609.05933}.
+
+\bibitem[Zhang et~al.(2025{\natexlab{d}})]{zhang2025aflow}
+Jiayi Zhang et~al.
+\newblock {AFlow}: Automating agentic workflow generation.
+\newblock In \emph{Proc. Int. Conf. Learning Representations (ICLR)},
+  2025{\natexlab{d}}.
+\newblock \doi{10.48550/arXiv.2410.10762}.
+
+\end{thebibliography}

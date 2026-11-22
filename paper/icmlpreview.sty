@@ -1,0 +1,30 @@
+% icmlpreview.sty -- PREVIEW ONLY, NOT THE OFFICIAL ICML STYLE.
+% Used automatically when icml2026.sty is absent so the draft can compile.
+% Before submission, download the official style from https://icml.cc
+% (Author Instructions -> style files) and place icml2026.sty next to main.tex.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{icmlpreview}[2026/11/21 preview stand-in for icml2026]
+\RequirePackage{times}
+\RequirePackage[letterpaper,textwidth=6.75in,textheight=9.0in,columnsep=0.25in,top=1in]{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{natbib}
+\RequirePackage{xcolor}
+\newcommand{\icmltitlerunning}[1]{\gdef\@icmlrunning{#1}}
+\newcommand{\icmltitle}[1]{\begin{center}{\Large\bfseries #1\par}\vskip 0.15in
+  {\small Anonymous Authors\par}\vskip 0.05in
+  {\footnotesize\color{red} PREVIEW BUILD (icmlpreview.sty) -- replace with official icml2026.sty before submission\par}\end{center}}
+\newenvironment{icmlauthorlist}{}{}
+\newcommand{\icmlauthor}[2]{}
+\newcommand{\icmlaffiliation}[2]{}
+\newcommand{\icmlcorrespondingauthor}[2]{}
+\newcommand{\icmlkeywords}[1]{}
+\newcommand{\icmlsetsymbol}[2]{}
+\newcommand{\printAffiliationsAndNotice}[1]{}
+\newcommand{\icmlEqualContribution}{}
+\gdef\@icmlrunning{}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[C]{\small\bfseries\@icmlrunning}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewenvironment{abstract}{\begin{center}\bfseries Abstract\end{center}\begin{quote}\small}{\end{quote}}
+\endinput

@@ -1,0 +1,54 @@
+# Pre-registration for Experiment 1 (pilot). Freeze BEFORE the first API run:
+#   1. check/edit the model line below
+#   2. git add -A && git commit -m "pilot pre-registration" && git tag prereg-v1
+# Nothing in this file may change after the first run. Changes after that are
+# reported as deviations in the paper.
+
+experiment: pilot-v1
+date_frozen: 2026-11-22            # fill in when you tag
+question: >
+  On the same model, prompts and token cap, does the criterion team (G7) pass
+  more DevBench tests than a random team of the same group sizes (G4), and how
+  does it compare with one agent per class (GC), an Infomap team (G6) and a
+  single agent (G2)? On a project where the criterion says k*=1, is a single
+  agent at least as good as split teams?
+
+model:
+  provider: anthropic
+  name: claude-sonnet-5-5    # use the exact model ID you will report
+  temperature: 0.0
+  max_tokens_per_call: 8000
+token_cap_per_run: 200000
+runs_per_condition: 3        # run_id 0, 1, 2
+design: gold                 # pilot isolates the split; extracted designs come in the main study (H4)
+
+criterion:
+  weights: {intra: 1.0, strong: 0.5, weak: 0.25, sig: 0.5}
+  lambda: 0.0
+  random_seed: 20261121
+
+conditions: [G2, G4, GC, G6, G7]
+duplicate_teams: identical partitions send identical prompts and are answered from the cache
+
+tasks:
+  - {project: python/stocktrends, why: "k*=3; Infomap gives 4 agents (differs from G7)"}
+  - {project: python/TextCNN,     why: "k*=5 (= one per class); Infomap gives 4"}
+  - {project: python/lice,        why: "k*=1 with 5 classes: tests 'do not split'"}
+  - {project: cpp/xlsx2csv,       why: "k*=3; G7 = Infomap; vs random and single (Docker)"}
+  - {project: java/idcenter,      why: "k*=3; G7 = Infomap; vs random and single (Docker)"}
+
+scoring:
+  metric: pass_rate = tests passed / tests passed by DevBench's own answer code
+  usable_task: scripts/check_scorer.py reports usable = YES
+  sandbox: Python in a fresh venv; C++/Java in the devbench:complete Docker image
+
+go_no_go:                     # decided by scripts/analyse_pilot.py, not by hand
+  go_if_all:
+    - "On informative multi-agent tasks (k*>1 and some team passes >0 tests; at least 2 such tasks): mean pass rate G7 >= G4 on a majority, with G7 > G4 on at least one"
+    - "On those tasks: mean tokens G7 <= 1.10 x G4"
+    - "On lice (k*=1): mean pass rate G2 >= max(GC, G4), and some team passes >0 tests"
+  interpretation:
+    G7_vs_G6_tie: "if G7 and G6 are within 0.05 pass rate, the paper's claim rests on choosing k (including k=1)"
+    no_go: "revise the method using pilot tasks only; never tune on main-study test tasks"
+
+reported_metrics: [pass_rate, tokens, messages, message_tokens, traceability, stopped_by_budget]

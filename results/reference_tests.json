@@ -1,0 +1,230 @@
+[
+  {
+    "project": "python/ArXiv_digest",
+    "setup_ok": false,
+    "setup_log_tail": "ERROR: Could not find a version that satisfies the requirement os (from versions: none)\nERROR: No matching distribution found for os\n",
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 38,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "acceptance_test": {
+      "command": "pytest acceptance_tests",
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "exit_code": 2
+    }
+  },
+  {
+    "project": "python/Hybrid_Images",
+    "setup_ok": true,
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 11,
+      "failed": 8,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 1
+    },
+    "acceptance_test": {
+      "command": "pytest acceptance_tests",
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    }
+  },
+  {
+    "project": "python/TextCNN",
+    "status": "skipped: needs a Hugging Face model/dataset download (network)"
+  },
+  {
+    "project": "python/chakin",
+    "setup_ok": true,
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "exit_code": 2
+    },
+    "acceptance_test": {
+      "command": "python -m unittest acceptance_tests/acceptance_test.py",
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "exit_code": 1
+    }
+  },
+  {
+    "project": "python/geotext",
+    "setup_ok": true,
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 4,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "acceptance_test": {
+      "command": "pytest acceptance_tests",
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    }
+  },
+  {
+    "project": "python/hone",
+    "path_fixes": [
+      "test -> unit_tests",
+      "test_acceptance.py -> acceptance_tests/test_acceptance.py"
+    ],
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 7,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "acceptance_test": {
+      "command": "python -m unittest acceptance_tests/test_acceptance.py",
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    }
+  },
+  {
+    "project": "python/particle-swarm-optimization",
+    "setup_ok": true,
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "acceptance_test": {
+      "command": "pytest acceptance_tests",
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    }
+  },
+  {
+    "project": "python/readtime",
+    "setup_ok": true,
+    "unit_test": {
+      "command": "pytest unit_tests",
+      "passed": 8,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "acceptance_test": {
+      "command": "pytest acceptance_tests",
+      "passed": 4,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    }
+  },
+  {
+    "project": "python/stocktrends",
+    "scorer": "native",
+    "oracle": {
+      "status": "scored",
+      "scorer": "native",
+      "language": "python",
+      "passed": 9,
+      "total": 9,
+      "unit_test": {
+        "passed": 7,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "total": 7
+      },
+      "acceptance_test": {
+        "passed": 2,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "total": 2
+      },
+      "pass_rate": 1.0
+    },
+    "empty_code_passed": 0,
+    "usable": true,
+    "unit_test": {
+      "passed": 7,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "acceptance_test": {
+      "passed": 2,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  {
+    "project": "python/lice",
+    "scorer": "native",
+    "oracle": {
+      "status": "scored",
+      "scorer": "native",
+      "language": "python",
+      "passed": 31,
+      "total": 31,
+      "unit_test": {
+        "passed": 25,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "total": 25
+      },
+      "acceptance_test": {
+        "passed": 6,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "total": 6
+      },
+      "pass_rate": 1.0
+    },
+    "empty_code_passed": 0,
+    "usable": true,
+    "unit_test": {
+      "passed": 25,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "acceptance_test": {
+      "passed": 6,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  }
+]

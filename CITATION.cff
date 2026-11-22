@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "ObjectGraph-Agent: Sizing LLM multi-agent teams from domain models"
+authors:
+  - family-names: Dilshan
+    given-names: Yashmitha
+    affiliation: "Informatics Institute of Technology, Colombo, Sri Lanka"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"   <- add your ORCID iD
+license: MIT
+repository-code: "https://github.com/wijayasekarageyashmithadilshan-dot/objectgraph-agent"
+version: "0.3.1"
+date-released: "2026-11-22"

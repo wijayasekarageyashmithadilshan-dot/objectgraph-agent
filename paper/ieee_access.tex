@@ -1,0 +1,95 @@
+%% ObjectGraph-Agent -- IEEE Access version (named authors), draft v0.2, 22 Nov 2026
+%% Build: python scripts/make_paper_assets.py && cd paper && latexmk -pdf ieee_access.tex
+%% Uses the official ieeeaccess.cls when it is in this folder (download the LaTeX
+%% template from the IEEE Author Center); otherwise IEEEtran with the same content
+%% and a labelled preview header.
+\IfFileExists{ieeeaccess.cls}{\documentclass{ieeeaccess}\def\OFFICIALIEEEACCESS{1}}{\documentclass[journal]{IEEEtran}}
+
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\input{macros.tex}
+
+\ifdefined\OFFICIALIEEEACCESS\else
+  % Stand-ins for the IEEE Access template macros (preview only).
+  \newcommand{\history}[1]{}
+  \newcommand{\doi}[1]{}
+  \newcommand{\tfootnote}[1]{}
+  \newcommand{\corresp}[1]{}
+  \newenvironment{keywords}{\begin{IEEEkeywords}}{\end{IEEEkeywords}}
+\fi
+
+\begin{document}
+\history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
+\doi{10.1109/ACCESS.2026.0000000}
+
+\title{When Should a Software Task Be Split Across Large Language Model Agents? Sizing Multi-Agent Teams from Domain Models}
+
+\ifdefined\OFFICIALIEEEACCESS
+\author{\uppercase{Yashmitha Dilshan}\authorrefmark{1},
+\tbd{co-author names, in order}}
+\address[1]{Informatics Institute of Technology, Colombo, Sri Lanka}
+\tfootnote{\tbd{funding statement, or ``This work received no external funding.''}}
+\markboth{Dilshan \headeretal: When Should a Software Task Be Split Across LLM Agents?}{Dilshan \headeretal: When Should a Software Task Be Split Across LLM Agents?}
+\corresp{Corresponding author: Yashmitha Dilshan (e-mail: \tbd{e-mail}).}
+\else
+\author{Yashmitha~Dilshan, \tbd{co-author names, in order}%
+\thanks{Y. Dilshan is with the Informatics Institute of Technology, Colombo, Sri Lanka (e-mail: \tbd{e-mail}; ORCID: \tbd{ORCID iD}). Corresponding author: Yashmitha Dilshan.}%
+\thanks{\tbd{co-author affiliations, e-mails and ORCID iDs.}}%
+\thanks{\textcolor{red}{PREVIEW BUILD with IEEEtran: place the official ieeeaccess.cls in this folder to get the IEEE Access layout (DOI line, date lines, logo).} Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000. Digital Object Identifier 10.1109/ACCESS.2026.0000000}}
+\markboth{IEEE Access, preview}{Dilshan \MakeLowercase{\textit{et al.}}: When Should a Software Task Be Split Across LLM Agents?}
+\fi
+
+\newcommand{\AbstractAndKeywords}{%
+\begin{abstract}
+\input{content/abstract.tex}
+\end{abstract}
+\begin{keywords}
+Graph partitioning, large language models, multi-agent systems, software design, software modularization
+\end{keywords}}
+\ifdefined\OFFICIALIEEEACCESS
+  \AbstractAndKeywords
+  \titlepgskip=-15pt
+  \maketitle
+\else
+  \maketitle
+  \AbstractAndKeywords
+\fi
+
+\input{content/body.tex}
+
+\section*{Data and Code Availability}
+All code, the pre-registration file, prompts, cached model responses, generated tables and figures are available at \url{https://github.com/wijayasekarageyashmithadilshan-dot/objectgraph-agent}. Running \texttt{bash reproduce.sh} regenerates every structural result, and the agent tables can be rebuilt offline from the cached responses. DevBench is publicly available and is used at commit \texttt{\DevBenchCommit}.
+
+\section*{Ethics Statement}
+This study did not involve human participants, animals or personal data. All generated code was executed only in isolated sandboxes.
+
+\section*{Conflict of Interest}
+The authors declare no competing interests. \tbd{confirm for every author.}
+
+\section*{Acknowledgment}
+\tbd{thank the supervisors and anyone else who helped, unless they are co-authors.} Parts of the text, the analysis code and the figures were drafted with the assistance of Claude (Anthropic), an AI assistant; the authors reviewed and verified all content and take full responsibility for it.
+
+\bibliographystyle{IEEEtranN-doi}
+\bibliography{refs}
+
+\appendices
+\input{content/appendix.tex}
+
+\begin{IEEEbiography}[{\fbox{\parbox[c][1.25in][c]{1in}{\centering\footnotesize\tbd{photo}}}}]{Yashmitha Dilshan}
+is a final-year undergraduate student in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka. Research interests include large language model agents, multi-agent systems, human-computer interaction and machine learning. \tbd{confirm or edit this biography; add degree program and any memberships.}
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\fbox{\parbox[c][1.25in][c]{1in}{\centering\footnotesize\tbd{photo}}}}]{\tbd{co-author name}}
+\tbd{3--4 line biography for each co-author.}
+\end{IEEEbiography}
+
+\ifdefined\OFFICIALIEEEACCESS\EOD\fi
+\end{document}

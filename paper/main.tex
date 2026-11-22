@@ -1,0 +1,49 @@
+%% ObjectGraph-Agent -- ICML version (anonymous for review), draft v0.2, 22 Nov 2026
+%% Build: python scripts/make_paper_assets.py && cd paper && latexmk -pdf main.tex
+%% Uses the official icml2026.sty/.bst when present in this folder; otherwise a labelled preview style.
+\documentclass{article}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\IfFileExists{icml2026.sty}{\usepackage{icml2026}}{\usepackage{icmlpreview}}
+\input{macros.tex}
+
+\icmltitlerunning{When Should a Software Task Be Split Across LLM Agents?}
+
+\begin{document}
+\twocolumn[
+\icmltitle{When Should a Software Task Be Split Across LLM Agents?\\
+Sizing Multi-Agent Teams from Domain Models}
+\begin{icmlauthorlist}
+\icmlauthor{Anonymous Author(s)}{anon}
+\end{icmlauthorlist}
+\icmlaffiliation{anon}{Anonymous Institution}
+\icmlcorrespondingauthor{Anonymous}{anon@example.com}
+\icmlkeywords{graph partitioning, large language models, multi-agent systems, software design, software modularization}
+\vskip 0.3in
+]
+\printAffiliationsAndNotice{}
+
+\begin{abstract}
+\input{content/abstract.tex}
+\end{abstract}
+
+\input{content/body.tex}
+
+\section*{Impact Statement}
+This work aims to make LLM-based multi-agent software development cheaper and more predictable by avoiding unnecessary agents, which reduces compute and energy use. Generated code may be incorrect or insecure; in our study all generated code runs only in a sandbox, and the method is intended to support, not replace, human design review.
+
+\bibliography{refs}
+\IfFileExists{icml2026.bst}{\bibliographystyle{icml2026}}{\bibliographystyle{plainnat}}
+
+\newpage
+\appendix
+\onecolumn
+\input{content/appendix.tex}
+\end{document}

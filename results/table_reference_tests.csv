@@ -1,0 +1,11 @@
+project,status,unit_test,acceptance_test
+python/ArXiv_digest,ran,38/38,0/1
+python/Hybrid_Images,ran,11/19,1/1
+python/TextCNN,skipped: needs a Hugging Face model/dataset download (network),,
+python/chakin,ran,0/1,0/1
+python/geotext,ran,4/4,5/5
+python/hone,ran,7/7,5/5
+python/lice,ran,25/25,6/6
+python/particle-swarm-optimization,ran,5/5,1/1
+python/readtime,ran,8/8,4/4
+python/stocktrends,ran,7/7,2/2
