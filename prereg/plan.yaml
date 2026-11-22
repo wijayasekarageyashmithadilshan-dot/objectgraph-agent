@@ -5,6 +5,11 @@
 # reported as deviations in the paper.
 
 experiment: pilot-v1
+amendments:
+  - date: 2026-11-22
+    tag: prereg-v1.1
+    before_any_model_run: true
+    change: "model anthropic/claude-sonnet-5-5 -> vercel/alibaba/qwen3-coder (no Anthropic key available; open-weight model aids reproducibility). Nothing else changed."
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -14,8 +19,9 @@ question: >
   agent at least as good as split teams?
 
 model:
-  provider: anthropic
-  name: claude-sonnet-5-5    # use the exact model ID you will report
+  provider: vercel            # Vercel AI Gateway, key in AI_GATEWAY_API_KEY (never in files)
+  name: alibaba/qwen3-coder   # Qwen3-Coder-480B-A35B-Instruct, open weights, fixed release
+                              # (not "qwen3-coder-next", which is a rolling alias)
   temperature: 0.0
   max_tokens_per_call: 8000
 token_cap_per_run: 200000

@@ -4,9 +4,18 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
   "postCreateCommand": "pip install -r requirements.txt && bash scripts/fetch_devbench.sh",
   "secrets": {
-    "ANTHROPIC_API_KEY": { "description": "Your Anthropic API key (stored as a Codespaces secret, never in the repo)" }
+    "AI_GATEWAY_API_KEY": {
+      "description": "Your Vercel AI Gateway key (Codespaces secret, never in the repo)"
+    },
+    "ANTHROPIC_API_KEY": {
+      "description": "Optional: Anthropic key, only if you run Claude directly"
+    }
   }
 }

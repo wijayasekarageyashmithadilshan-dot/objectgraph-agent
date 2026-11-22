@@ -1,12 +1,12 @@
 # Experiment 1 (pilot): step by step on your laptop
 
-You need Python 3.10+, git, an Anthropic API key and, for the C++/Java projects, Docker Desktop.
+You need Python 3.10+, git, an API key for the provider in prereg/plan.yaml (currently Vercel AI Gateway, `AI_GATEWAY_API_KEY`) and, for the C++/Java projects, Docker Desktop.
 
 ## 0. Set up (once)
 ```bash
 pip install -r requirements.txt anthropic pyyaml
 bash scripts/fetch_devbench.sh
-export ANTHROPIC_API_KEY=...            # terminal only; never in code, files or chat
+export AI_GATEWAY_API_KEY=...           # terminal only; never in code, files or chat
 ```
 
 ## 1. Check the scorer (Phase 0, free)
@@ -24,7 +24,7 @@ Every project you run must show `usable YES`. If one shows NO, send me the outpu
 ## 2. Freeze the rules (Phase 0)
 Open `prereg/plan.yaml`, set the exact model ID and today's date, then:
 ```bash
-git add -A && git commit -m "pilot pre-registration" && git tag prereg-v1
+git add -A && git commit -m "pilot pre-registration" && git tag prereg-v1   # later amendments: prereg-v1.1, prereg-v1.2, ...
 ```
 Do not edit `prereg/plan.yaml` after this. If you must, say so in the paper.
 
@@ -63,7 +63,7 @@ Upload `pilot_results.zip` here. I'll check it, analyse it, and put the results 
 - **Google Colab** (`pilot_colab.ipynb`) runs the Python projects: stocktrends, lice and TextCNN. Upload the zip, then run the cells in order. Colab has no Docker, so it can't score C++ or Java.
 - **GitHub Codespaces** runs everything, including C++/Java with Docker:
   1. Open the repo on GitHub (it is already public).
-  2. Add `ANTHROPIC_API_KEY` as a Codespaces secret.
+  2. Add `AI_GATEWAY_API_KEY` as a Codespaces secret.
   3. Click Code → Codespaces → Create.
 
   The `.devcontainer/` folder installs Python, Docker and DevBench automatically. Then follow steps 1–5 above in its terminal (including the `docker build`). Delete the codespace when you finish, so it stops using your free hours.
