@@ -1,0 +1,40 @@
+{
+  "method": "G4",
+  "k": 2,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "GeoText.__init__",
+        "Global_functions.get_data_path",
+        "Global_functions.read_table"
+      ],
+      "classes": [
+        "GeoText",
+        "Global_functions"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_2": 2.0
+      }
+    },
+    {
+      "agent_id": "agent_2",
+      "duties": [
+        "Global_functions.build_index"
+      ],
+      "classes": [
+        "Global_functions"
+      ],
+      "depends_on": [],
+      "cut_to": {
+        "agent_1": 2.0
+      }
+    }
+  ],
+  "order": [
+    "agent_1",
+    "agent_2"
+  ],
+  "cut": 2.0
+}

@@ -1,0 +1,25 @@
+{
+  "method": "G2",
+  "k": 1,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "GeoText.__init__",
+        "Global_functions.get_data_path",
+        "Global_functions.read_table",
+        "Global_functions.build_index"
+      ],
+      "classes": [
+        "GeoText",
+        "Global_functions"
+      ],
+      "depends_on": [],
+      "cut_to": {}
+    }
+  ],
+  "order": [
+    "agent_1"
+  ],
+  "cut": 0.0
+}

@@ -1,0 +1,43 @@
+{
+  "project": "python/particle-swarm-optimization",
+  "condition": "G7",
+  "description": "criterion team (ours)",
+  "run_id": 1,
+  "k": 1,
+  "k_star": 1,
+  "duties": 5,
+  "cut": 0.0,
+  "same_as": "G2",
+  "design_vs_gold": null,
+  "tokens": 1640,
+  "input_tokens": 912,
+  "output_tokens": 728,
+  "messages": 0,
+  "message_tokens": 0,
+  "traceability": 0.8,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 4,
+    "total": 6,
+    "unit_test": {
+      "passed": 4,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "total": 5
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "total": 1
+    },
+    "pass_rate": 0.6667,
+    "reference_total": 6
+  },
+  "pass_rate": 0.6667
+}

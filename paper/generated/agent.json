@@ -47,8 +47,58 @@
   ]
  ],
  "probe": "{bi:Model selection:} The model was chosen before the pilot by a probe that runs only the single-agent condition (G2), so the choice cannot favor any way of splitting. The decision rule was written down before the probe: switch to a larger reasoning model only if it passes at least three more tests in total, and add DevBench’s sequence diagram to every agent’s input only if it does not lower the score. Neither condition was met (Table IV): the larger model passed the same number of tests at about five times the tokens, and the sequence diagram did not help, so the pilot keeps the cheaper model and the original inputs.",
- "pilot": "{bi:Pilot (Python projects):} Table V reports three runs per condition. Correctness showed a floor effect: on lice every condition passed the same 0 of 31 tests in every run; on stocktrends every condition passed the same 1 of 9 tests in every run. The pilot therefore cannot separate the conditions on correctness. Costs did differ (Fig. 4). On lice, where the criterion recommends a single agent, the single agent used 4,172 tokens per run against 41,127 for random teams and 20,986 for one agent per class (80–90% fewer; exact one-sided permutation test over runs, p = 0.05 for each comparison, the smallest value attainable with three runs per condition) and exchanged no messages against 9 and 4, at equal correctness. On stocktrends (k* = 3) the criterion team used 14,162 tokens per run against 13,511 for random teams of equal sizes (+5%, within the pre-registered 10% margin) and 17,879 for one agent per class and Infomap, which formed the same team (21% fewer), and exchanged 2 messages against 1 for random teams and 3 for one agent per class. Fig. 5 shows run 0 of the criterion team and of a random team on stocktrends: the criterion team keeps every class with one agent, so cohesion inside agents is high (0.44–0.75) and coupling between them low (0.00–0.10), whereas the random team spreads classes over agents (cohesion 0.12–0.28, coupling 0.20–0.38); both nevertheless passed the same test, which illustrates that structural quality alone did not translate into correctness on this task. Under the pre-registered rules the pilot is a provisional NO-GO: the criterion team did not pass more tests than random teams, and where k* = 1 the single agent did not pass more tests than the split teams, because all of them scored zero; the decision becomes final once the C++ and Java pilot projects are scored. Inspection of the failing tests shows two causes that affect every condition alike: tests that require identifiers appearing in neither the requirements nor the design (for example, a class constant or a default argument named only in a test), and errors in the model’s own code, such as wrong numeric logic or a module that fails at import. The harness itself is not a cause, since the reference code passes every test after the same split and merge. The main study therefore needs tasks on which the model passes a meaningful share of tests; Section VII discusses this. The whole Python pilot used 346,555 tokens, which cost less than one US dollar with this model.",
+ "pilot": "{bi:Pilot (Python projects):} Table V reports three runs per condition. Correctness did not differ between conditions on any project: on geotext every condition passed the same 0 of 9 tests in every run; on lice every condition passed the same 0 of 31 tests in every run; on particle-swarm-optimization every condition passed the same 4 of 6 tests in every run; on stocktrends every condition passed the same 1 of 9 tests in every run. Scores sit at or near zero on three projects (a floor effect), so the pilot cannot separate the conditions on correctness. Costs did differ (Fig. 4). On every project for which the criterion recommends a single agent (geotext, lice, particle-swarm-optimization), the single agent used fewer tokens than random and one-agent-per-class teams (34–90% fewer; exact one-sided permutation tests over runs, p = 0.05 for each comparison, the smallest value attainable with three runs per condition) and exchanged no messages; per-project values are in Table V. On stocktrends (k* = 3) the criterion team used 14,162 tokens per run against 13,511 for random teams of equal sizes (+5%, within the pre-registered 10% margin) and 17,879 for one agent per class and Infomap, which formed the same team (21% fewer), and exchanged 2 messages against 1 for random teams and 3 for one agent per class. Fig. 5 shows run 0 of the criterion team and of a random team on stocktrends: the criterion team keeps every class with one agent, so cohesion inside agents is high (0.44–0.75) and coupling between them low (0.00–0.10), whereas the random team spreads classes over agents (cohesion 0.12–0.28, coupling 0.20–0.38); both nevertheless passed the same test, which illustrates that structural quality alone did not translate into correctness on this task. Under the pre-registered rules the pilot is a provisional NO-GO: the criterion team did not pass more tests than random teams on the only scored multi-agent project (a tie, with no strict win); the other rules hold: the criterion team stays within the 10% token margin of random teams and the single agent is at least as correct as split teams where k* = 1; the decision becomes final once the C++ and Java pilot projects are scored. Experiment 1b, registered before its runs, adds fresh projects for which the criterion recommends one agent: the single agent used fewer tokens than both split teams on every one of the 3 such projects (H3a), and it was at least as correct as the split teams on 1 of the 1 projects on which any condition passed a test (H3b). Inspection of the failing tests shows two causes that affect every condition alike: tests that require identifiers appearing in neither the requirements nor the design (for example, a class constant or a default argument named only in a test), and errors in the model’s own code, such as wrong numeric logic or a module that fails at import. The harness itself is not a cause, since the reference code passes every test after the same split and merge. The main study therefore needs tasks on which the model passes a meaningful share of tests; Section VII discusses this. The whole Python pilot used 408,518 tokens, which cost less than one US dollar with this model.",
  "pilot_rows": [
+  [
+   "geotext",
+   "G2 Single agent",
+   "1",
+   "0.0 ± 0.0 / 9",
+   "0, 0, 0",
+   "2,775 ± 84",
+   "0.0",
+   "–"
+  ],
+  [
+   "geotext",
+   "G4 Random team",
+   "2",
+   "0.0 ± 0.0 / 9",
+   "0, 0, 0",
+   "4,768 ± 122",
+   "0.0",
+   "–"
+  ],
+  [
+   "geotext",
+   "GC One agent per class",
+   "2",
+   "0.0 ± 0.0 / 9",
+   "0, 0, 0",
+   "5,237 ± 203",
+   "0.0",
+   "–"
+  ],
+  [
+   "geotext",
+   "G6 Infomap team",
+   "2",
+   "0.0 ± 0.0 / 9",
+   "0, 0, 0",
+   "5,237 ± 203",
+   "0.0",
+   "same team as GC"
+  ],
+  [
+   "geotext",
+   "G7 Criterion team",
+   "1",
+   "0.0 ± 0.0 / 9",
+   "0, 0, 0",
+   "2,775 ± 84",
+   "0.0",
+   "same team as G2"
+  ],
   [
    "lice",
    "G2 Single agent",
@@ -96,6 +146,56 @@
    "0.0 ± 0.0 / 31",
    "0, 0, 0",
    "4,172 ± 137",
+   "0.0",
+   "same team as G2"
+  ],
+  [
+   "particle-swarm-optimization",
+   "G2 Single agent",
+   "1",
+   "4.0 ± 0.0 / 6",
+   "4, 4, 4",
+   "1,839 ± 347",
+   "0.0",
+   "–"
+  ],
+  [
+   "particle-swarm-optimization",
+   "G4 Random team",
+   "2",
+   "4.0 ± 0.0 / 6",
+   "4, 4, 4",
+   "3,242 ± 235",
+   "0.0",
+   "–"
+  ],
+  [
+   "particle-swarm-optimization",
+   "GC One agent per class",
+   "2",
+   "4.0 ± 0.0 / 6",
+   "4, 4, 4",
+   "2,794 ± 243",
+   "0.0",
+   "–"
+  ],
+  [
+   "particle-swarm-optimization",
+   "G6 Infomap team",
+   "2",
+   "4.0 ± 0.0 / 6",
+   "4, 4, 4",
+   "2,794 ± 243",
+   "0.0",
+   "same team as GC"
+  ],
+  [
+   "particle-swarm-optimization",
+   "G7 Criterion team",
+   "1",
+   "4.0 ± 0.0 / 6",
+   "4, 4, 4",
+   "1,839 ± 347",
    "0.0",
    "same team as G2"
   ],
@@ -151,12 +251,12 @@
   ]
  ],
  "verdict": "NO-GO (provisional: not all pilot tasks/conditions are in yet)",
- "pilot_short": "all conditions passed almost no tests (a floor effect), but following the criterion’s single-agent recommendation used 80–90% fewer tokens than split teams at equal correctness",
- "abstract": "A pre-registered pilot was inconclusive on correctness, as all conditions passed almost no tests, but where the criterion recommends one agent, a single agent used 80–90% fewer tokens than split teams.",
- "conclusion": "A first pre-registered pilot could not separate the conditions on correctness, because every team passed almost no tests, and its go/no-go rules therefore return a provisional NO-GO; it did show that following the criterion’s single-agent recommendation cut token use by 80–90% at equal correctness. The main study will use tasks on which models pass a meaningful share of tests, add a second model, and test H1–H4.",
- "k1_compare": "This is where the criterion differs most from graph partitioners: of the 8 projects with more than one class for which it recommends a single agent, one agent per class splits all 8, Louvain splits 7 and Infomap, the partitioner used by Co-Coder, splits 2 (geotext and particle-swarm-optimization). Experiment 1b runs exactly these 2 projects, so it compares the criterion’s single agent directly with an Infomap team as well as with random and one-agent-per-class teams.",
+ "pilot_short": "team designs did not differ in correctness on any of 4 projects, but where the criterion recommends one agent (3 projects), a single agent was as correct as every split team and used 34–90% fewer tokens",
+ "abstract": "In a pre-registered pilot on 4 Python projects, team designs did not differ in correctness, but where the criterion recommends one agent (3 projects), a single agent was as correct as every split team and used 34–90% fewer tokens.",
+ "conclusion": "A pre-registered pilot on 4 Python projects found no correctness difference between team designs, so its go/no-go rules return a provisional NO-GO; but on all 3 projects for which the criterion recommends one agent, following that recommendation was as correct as every split team and cut token use by 34–90%. The main study will use tasks on which models pass a meaningful share of tests, add a second model, and test H1–H4.",
+ "k1_compare": "This is where the criterion differs most from graph partitioners: of the 8 projects with more than one class for which it recommends a single agent, one agent per class splits all 8, Louvain splits 7 and Infomap, the partitioner used by Co-Coder, splits 2 (geotext and particle-swarm-optimization), in both cases into the same teams as one agent per class. Experiment 1b runs exactly these 2 projects, so the single agent is compared with the teams that Infomap, one-agent-per-class and random splitting would use.",
  "contribution4": "A pre-registered agent study with four hypotheses, controlled conditions and an equal token budget per run, a zero-cost verification of the agent harness, and a pilot reported in full, including its go/no-go outcome (Section VI).",
- "discussion_pilot": "{bi:What the pilot shows:} Projects for which the criterion recommends a single agent are where it differs most from graph partitioners. Of the 8 projects with more than one class for which it recommends a single agent, one agent per class splits all 8, Louvain splits 7 and Infomap, the partitioner used by Co-Coder, splits 2 (geotext and particle-swarm-optimization). Experiment 1b runs exactly these 2 projects, so it compares the criterion’s single agent directly with an Infomap team as well as with random and one-agent-per-class teams. The pilot was meant to expose problems before the main study, and it did. Its harness checks found and fixed four defects that would otherwise have biased the comparison, and its floor effect shows that, with an open-weight model of this size, DevBench’s Python tests are too strict to separate the conditions, because they reward identifiers that the design does not contain. Three changes are therefore proposed for the main study and will be registered before any further run: tasks whose tests call only names that appear in the design, or designs completed with the public interface that the tests call, identically for every condition; a second, stronger model; and token cost and inter-agent messages reported as outcomes alongside tests passed, since the pilot shows that they differ even when correctness does not.",
+ "discussion_pilot": "{bi:What the pilot shows:} Projects for which the criterion recommends a single agent are where it differs most from graph partitioners. Of the 8 projects with more than one class for which it recommends a single agent, one agent per class splits all 8, Louvain splits 7 and Infomap, the partitioner used by Co-Coder, splits 2 (geotext and particle-swarm-optimization), in both cases into the same teams as one agent per class. Experiment 1b runs exactly these 2 projects, so the single agent is compared with the teams that Infomap, one-agent-per-class and random splitting would use. The pilot was meant to expose problems before the main study, and it did. Its harness checks found and fixed four defects that would otherwise have biased the comparison, and its floor effect shows that, with an open-weight model of this size, DevBench’s Python tests are too strict to separate the conditions, because they reward identifiers that the design does not contain. Three changes are therefore proposed for the main study and will be registered before any further run: tasks whose tests call only names that appear in the design, or designs completed with the public interface that the tests call, identically for every condition; a second, stronger model; and token cost and inter-agent messages reported as outcomes alongside tests passed, since the pilot shows that they differ even when correctness does not.",
  "threat_extra": "DevBench’s tests also check identifiers that are absent from the requirements and the design, which lowers every condition’s absolute score; TextCNN is excluded from the pilot because its reference code passes only 5 of 13 tests in the sandbox, as the pre-registered scorer rule requires.",
  "main_pending": [
   "{bi:Main study (planned, pre-registered):} The confirmatory tests follow the pilot. H1 uses a paired Wilcoxon signed-rank test over tasks with Holm correction and reports bootstrap confidence intervals; H2 correlates cut weight with logged messages per agent pair (Spearman); H3 cross-tabulates the split or no-split decision against the empirically better choice; and H4 repeats H1 with designs extracted from the requirements. The study adds the C++ and Java DevBench projects, further multi-agent tasks to reach the roughly 36 that the power analysis requires, and a second model from a different model family."

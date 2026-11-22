@@ -228,8 +228,10 @@ def main() -> None:
         A["pilot_rows"] = rows
         A["verdict"] = verdict
         if all_same:
-            corr = ("Correctness showed a floor effect: " + "; ".join(floor_bits) +
-                    ". The pilot therefore cannot separate the conditions on correctness. ")
+            corr = ("Correctness did not differ between conditions on any project: " + "; ".join(floor_bits) +
+                    ". Scores sit at or near zero on three projects (a floor effect), so the pilot cannot separate "
+                    "the conditions on correctness. " if sum(1 for b in floor_bits if " the same 0 of" in b or " the same 1 of" in b) >= 2
+                    else "Correctness did not differ between conditions on any project: " + "; ".join(floor_bits) + ". ")
         else:
             parts = []
             for p in T:
@@ -254,8 +256,14 @@ def main() -> None:
              "quality alone did not translate into correctness on this task."
              if (ROOT / "paper/figures_docx/fig_teams.png").exists() else "") + " " +
             (f"Under the pre-registered rules the pilot is a {'provisional ' if prov else ''}{vword}"
-             + (": the criterion team did not pass more tests than random teams, and where k* = 1 the single "
-                "agent did not pass more tests than the split teams, because all of them scored zero"
+             + ((": the criterion team did not pass more tests than random teams on the only scored multi-agent "
+                 "project (a tie, with no strict win)"
+                 + ("" if D.get("rule_single_agent_best_when_kstar_1", {}).get("passed") else
+                    ", and where k* = 1 the single agent did not pass more tests than the split teams")
+                 + ("; the other rules hold: the criterion team stays within the 10% token margin of random teams"
+                    if D.get("rule_G7_tokens_within_10pct_of_G4", {}).get("passed") else "")
+                 + (" and the single agent is at least as correct as split teams where k* = 1"
+                    if D.get("rule_single_agent_best_when_kstar_1", {}).get("passed") else ""))
                 if vword == "NO-GO" else "")
              + ("; the decision becomes final once the C++ and Java pilot projects are scored. " if prov else ". ")) +
             ((lambda e: (f"Experiment 1b, registered before its runs, adds fresh projects for which the criterion "
@@ -280,18 +288,19 @@ def main() -> None:
         lo_all = min(x[1] for x in single_proj) if single_proj else None
         hi_all = max(x[2] for x in single_proj) if single_proj else None
         if all_same and single_proj:
-            A["pilot_short"] = (f"all conditions passed almost no tests (a floor effect), but following the "
-                                f"criterion’s single-agent recommendation used {lo_all:.0f}–{hi_all:.0f}% fewer tokens "
-                                f"than split teams at equal correctness")
-            A["abstract"] = ("A pre-registered pilot was inconclusive on correctness, as all conditions passed almost "
-                             "no tests, but where the criterion recommends one agent, a single agent used "
-                             f"{lo_all:.0f}–{hi_all:.0f}% fewer tokens than split teams.")
-            A["conclusion"] = ("A first pre-registered pilot could not separate the conditions on correctness, because "
-                               "every team passed almost no tests, and its go/no-go rules therefore return "
-                               f"{'a provisional ' if prov else ''}{vword}; it did show that following the "
-                               f"criterion’s single-agent recommendation cut token use by {lo_all:.0f}–{hi_all:.0f}% "
-                               "at equal correctness. The main study will use tasks on which models pass a meaningful "
-                               "share of tests, add a second model, and test H1–H4.")
+            nP, n1 = len(T), len(single_proj)
+            A["pilot_short"] = (f"team designs did not differ in correctness on any of {nP} projects, but where the "
+                                f"criterion recommends one agent ({n1} projects), a single agent was as correct as "
+                                f"every split team and used {lo_all:.0f}–{hi_all:.0f}% fewer tokens")
+            A["abstract"] = (f"In a pre-registered pilot on {nP} Python projects, team designs did not differ in "
+                             f"correctness, but where the criterion recommends one agent ({n1} projects), a single "
+                             f"agent was as correct as every split team and used {lo_all:.0f}–{hi_all:.0f}% fewer tokens.")
+            A["conclusion"] = (f"A pre-registered pilot on {nP} Python projects found no correctness difference between "
+                               f"team designs, so its go/no-go rules return {'a provisional ' if prov else ''}{vword}; "
+                               f"but on all {n1} projects for which the criterion recommends one agent, following that "
+                               f"recommendation was as correct as every split team and cut token use by "
+                               f"{lo_all:.0f}–{hi_all:.0f}%. The main study will use tasks on which models pass a "
+                               "meaningful share of tests, add a second model, and test H1–H4.")
         else:
             e = D.get("experiment_1b") or {}
             w, ninf = e.get("H3b_wins", 0), e.get("H3b_informative_tasks", 0)
@@ -351,9 +360,9 @@ def main() -> None:
         f"This is where the criterion differs most from graph partitioners: of the {len(k1m)} projects with more "
         f"than one class for which it recommends a single agent, one agent per class splits all {len(k1m)}, "
         f"Louvain splits {len(lou)} and Infomap, the partitioner used by Co-Coder, splits {len(inf)} "
-        f"({' and '.join(inf)}). Experiment 1b runs exactly these {len(inf)} projects, so it compares the "
-        "criterion’s single agent directly with an Infomap team as well as with random and one-agent-per-class "
-        "teams.")
+        f"({' and '.join(inf)}), in both cases into the same teams as one agent per class. Experiment 1b runs "
+        f"exactly these {len(inf)} projects, so the single agent is compared with the teams that Infomap, "
+        "one-agent-per-class and random splitting would use.")
     A["contribution4"] = ("A pre-registered agent study with four hypotheses, controlled conditions and an equal token "
                           "budget per run, a zero-cost verification of the agent harness, and a pilot reported in full, "
                           "including its go/no-go outcome (Section VI).")

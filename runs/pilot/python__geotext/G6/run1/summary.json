@@ -1,0 +1,43 @@
+{
+  "project": "python/geotext",
+  "condition": "G6",
+  "description": "Infomap team (Co-Coder-style)",
+  "run_id": 1,
+  "k": 2,
+  "k_star": 1,
+  "duties": 4,
+  "cut": 0.0,
+  "same_as": "GC",
+  "design_vs_gold": null,
+  "tokens": 5006,
+  "input_tokens": 3529,
+  "output_tokens": 1477,
+  "messages": 0,
+  "message_tokens": 0,
+  "traceability": 0.5,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 0,
+    "total": 2,
+    "unit_test": {
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "total": 1
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 0,
+      "errors": 1,
+      "skipped": 0,
+      "total": 1
+    },
+    "pass_rate": 0.0,
+    "reference_total": 9
+  },
+  "pass_rate": 0.0
+}

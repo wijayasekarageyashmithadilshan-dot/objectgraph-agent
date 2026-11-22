@@ -1,0 +1,23 @@
+{
+  "messages": [],
+  "stopped_by_budget": false,
+  "traceability": 0.8,
+  "files": [
+    "pso/__init__.py",
+    "pso/cost_functions.py",
+    "pso/pso_simple.py"
+  ],
+  "usage": {
+    "input_tokens": 912,
+    "output_tokens": 728,
+    "calls": 1,
+    "cached_calls": 1,
+    "by_tag": {
+      "agent_1": {
+        "input_tokens": 912,
+        "output_tokens": 728,
+        "calls": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "messages": [],
+  "stopped_by_budget": false,
+  "traceability": 0.0,
+  "files": [
+    "geotext/geotext.py"
+  ],
+  "usage": {
+    "input_tokens": 3535,
+    "output_tokens": 1367,
+    "calls": 2,
+    "cached_calls": 0,
+    "by_tag": {
+      "agent_1": {
+        "input_tokens": 1774,
+        "output_tokens": 644,
+        "calls": 1
+      },
+      "agent_2": {
+        "input_tokens": 1761,
+        "output_tokens": 723,
+        "calls": 1
+      }
+    }
+  }
+}

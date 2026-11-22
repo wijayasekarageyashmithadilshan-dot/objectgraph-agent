@@ -1,0 +1,26 @@
+{
+  "method": "G7",
+  "k": 1,
+  "agents": [
+    {
+      "agent_id": "agent_1",
+      "duties": [
+        "Global_functions.sphere",
+        "Particle.__init__",
+        "Particle.evaluate",
+        "Particle.update_velocity",
+        "Particle.update_position"
+      ],
+      "classes": [
+        "Global_functions",
+        "Particle"
+      ],
+      "depends_on": [],
+      "cut_to": {}
+    }
+  ],
+  "order": [
+    "agent_1"
+  ],
+  "cut": 0.0
+}

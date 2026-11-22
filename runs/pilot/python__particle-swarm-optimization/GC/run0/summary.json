@@ -1,0 +1,43 @@
+{
+  "project": "python/particle-swarm-optimization",
+  "condition": "GC",
+  "description": "one agent per class",
+  "run_id": 0,
+  "k": 2,
+  "k_star": 1,
+  "duties": 5,
+  "cut": 0.0,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 2929,
+  "input_tokens": 1829,
+  "output_tokens": 1100,
+  "messages": 0,
+  "message_tokens": 0,
+  "traceability": 0.8,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 4,
+    "total": 6,
+    "unit_test": {
+      "passed": 4,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "total": 5
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "total": 1
+    },
+    "pass_rate": 0.6667,
+    "reference_total": 6
+  },
+  "pass_rate": 0.6667
+}

@@ -1,0 +1,43 @@
+{
+  "project": "python/geotext",
+  "condition": "GC",
+  "description": "one agent per class",
+  "run_id": 0,
+  "k": 2,
+  "k_star": 1,
+  "duties": 4,
+  "cut": 0.0,
+  "same_as": null,
+  "design_vs_gold": null,
+  "tokens": 5320,
+  "input_tokens": 3529,
+  "output_tokens": 1791,
+  "messages": 0,
+  "message_tokens": 0,
+  "traceability": 0.5,
+  "stopped_by_budget": false,
+  "score": {
+    "status": "scored",
+    "scorer": "native",
+    "language": "python",
+    "passed": 0,
+    "total": 9,
+    "unit_test": {
+      "passed": 0,
+      "failed": 4,
+      "errors": 0,
+      "skipped": 0,
+      "total": 4
+    },
+    "acceptance_test": {
+      "passed": 0,
+      "failed": 5,
+      "errors": 0,
+      "skipped": 0,
+      "total": 5
+    },
+    "pass_rate": 0.0,
+    "reference_total": 9
+  },
+  "pass_rate": 0.0
+}
