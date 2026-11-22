@@ -149,7 +149,33 @@ class LLM:
                     raise RuntimeError(f"Set {key_var} in your environment (never in code).")
                 base = os.environ.get("OPENAI_BASE_URL") if self.provider == "openai" else None
                 self._client = OpenAI(api_key=key, base_url=base or base_default, max_retries=5)
-            resp = self._client.chat.completions.create(
+            import time
+            import openai as _oa
+            last = None
+            for wait in (0, 20, 45, 90, 180):
+                if wait:
+                    print(f"   provider error ({type(last).__name__}: {str(last)[:160]}); retrying in {wait}s")
+                    time.sleep(wait)
+                try:
+                    resp = self._create(system, user)
+                    break
+                except _oa.APIStatusError as e:
+                    last = e
+                    if e.status_code in (401, 402, 403, 404):   # key, credit, access or model problem: stop
+                        raise RuntimeError(f"{self.provider} refused the call ({e.status_code}): {str(e)[:300]}") from e
+                except (_oa.APIConnectionError, _oa.APITimeoutError) as e:
+                    last = e
+            else:
+                raise RuntimeError(f"{self.provider} kept failing after 5 tries: {str(last)[:300]}")
+            text = resp.choices[0].message.content or ""
+            u = resp.usage
+            inp = getattr(u, "prompt_tokens", 0) or 0 if u else 0
+            out = getattr(u, "completion_tokens", 0) or 0 if u else 0
+            return text, inp, out, getattr(resp, "model", self.model) or self.model
+        raise ValueError(f"unknown provider {self.provider}")
+
+    def _create(self, system: str, user: str):
+        return self._client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "system", "content": system},
                           {"role": "user", "content": user}],
@@ -157,9 +183,3 @@ class LLM:
                 **({"reasoning_effort": self.params["reasoning_effort"]} if "reasoning_effort" in self.params else {}),
                 **({"extra_body": {"reasoning": {"enabled": self.params["reasoning_enabled"]}}}
                    if "reasoning_enabled" in self.params else {}))
-            text = resp.choices[0].message.content or ""
-            u = resp.usage
-            inp = getattr(u, "prompt_tokens", 0) or 0 if u else 0
-            out = getattr(u, "completion_tokens", 0) or 0 if u else 0
-            return text, inp, out, getattr(resp, "model", self.model) or self.model
-        raise ValueError(f"unknown provider {self.provider}")

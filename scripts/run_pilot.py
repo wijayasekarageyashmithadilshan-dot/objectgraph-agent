@@ -108,15 +108,23 @@ def main() -> None:
     conds = a.conditions or plan["conditions"]
     runs = a.runs if a.runs is not None else list(range(plan["runs_per_condition"]))
     ref = Path(a.results) / "reference_tests.json"
-    rows = []
+    rows, failed = [], []
     for rid in runs:
         design = get_design(proj, plan["design"], llm, rid)
         for c in conds:
             out = Path(a.out) / a.project.replace("/", "__") / c / f"run{rid}"
-            s = run_condition(proj, a.project, design, c, llm, rid, out, ref, agents=True,
-                              score=not a.no_score, scorer=a.scorer, docker_image=a.docker_image,
-                              lam=plan["criterion"]["lambda"], budget=plan["token_cap_per_run"],
-                              use_seq="sequence_diagram" in plan.get("agent_inputs", []))
+            try:
+                s = run_condition(proj, a.project, design, c, llm, rid, out, ref, agents=True,
+                                  score=not a.no_score, scorer=a.scorer, docker_image=a.docker_image,
+                                  lam=plan["criterion"]["lambda"], budget=plan["token_cap_per_run"],
+                                  use_seq="sequence_diagram" in plan.get("agent_inputs", []))
+            except Exception as e:          # a provider failure skips this run, it is not scored as 0
+                print(f"{c:3} run{rid}: FAILED, not counted ({type(e).__name__}: {str(e)[:300]})")
+                failed.append({"condition": c, "run_id": rid, "error": f"{type(e).__name__}: {str(e)[:500]}"})
+                if "refused the call" in str(e):
+                    print("Stopping: the provider refused the call (key, credit, access or model).")
+                    break
+                continue
             rows.append(s)
             print(f"{c:3} run{rid}: k={s['k']} pass={s.get('pass_rate')} tokens={s.get('tokens')} "
                   f"msgs={s.get('messages')}" + (f" (same team as {s['same_as']})" if s["same_as"] else ""))
@@ -126,7 +134,9 @@ def main() -> None:
     old = json.loads(path.read_text())["rows"] if path.exists() else []
     keep = [r for r in old if (r["condition"], r["run_id"]) not in {(x["condition"], x["run_id"]) for x in rows}]
     path.write_text(json.dumps({"project": a.project, "model": m["name"], "provider": provider, "plan_tag": frozen,
-                                "git": gs, "rows": keep + rows}, indent=2))
+                                "git": gs, "rows": keep + rows, "failed_runs": failed}, indent=2))
+    if failed:
+        print(f"{len(failed)} run(s) failed and were skipped; re-run this command to retry them (cached calls are free).")
     print(f"\nWrote {path}. Next: python scripts/analyse_pilot.py")
 
 
