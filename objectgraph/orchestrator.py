@@ -81,43 +81,101 @@ def parse_blocks(text: str) -> list[tuple[str, str]]:
             for m in _BLOCK.finditer(text)]
 
 
+def _seg(lines, node):
+    """Source of a node, including decorators and comment lines directly above."""
+    start = min([d.lineno for d in getattr(node, "decorator_list", [])] + [node.lineno]) - 1
+    while start > 0 and lines[start - 1].lstrip().startswith("#"):
+        start -= 1
+    return "\n".join(lines[start:node.end_lineno]), start
+
+
 def _py_units(code: str):
-    """Split Python source into (kind, name, bases, text) top-level units."""
+    """Split Python source into top-level units: (kind, name, payload, text)."""
     import ast
     tree = ast.parse(code)
     lines = code.splitlines()
     units = []
     for node in tree.body:
-        start = min([d.lineno for d in getattr(node, "decorator_list", [])] + [node.lineno]) - 1
-        while start > 0 and lines[start - 1].lstrip().startswith("#"):
-            start -= 1          # keep comment lines directly above the unit
-        text = "\n".join(lines[start:node.end_lineno])
+        text, start = _seg(lines, node)
         if isinstance(node, (ast.Import, ast.ImportFrom)):
-            units.append(("import", None, [], text))
+            units.append(("import", None, None, text))
         elif isinstance(node, ast.ClassDef):
             bases = [b.id if isinstance(b, ast.Name) else getattr(b, "attr", "") for b in node.bases]
-            units.append(("class", node.name, bases, text))
+            _, body_start = _seg(lines, node.body[0])
+            header = "\n".join(lines[start:max(body_start, node.lineno)])
+            members, methods = [], []
+            for el in node.body:
+                t, _ = _seg(lines, el)
+                if isinstance(el, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    methods.append((el.name, t))
+                else:
+                    members.append(t)
+            units.append(("class", node.name, {"bases": bases, "header": header,
+                                                "members": members, "methods": methods}, text))
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            units.append(("def", node.name, [], text))
+            units.append(("def", node.name, None, text))
         elif (isinstance(node, ast.If) and isinstance(node.test, ast.Compare)
               and getattr(node.test.left, "id", "") == "__name__"):
-            units.append(("main", None, [], text))
+            units.append(("main", None, None, text))
         else:
-            units.append(("stmt", None, [], text))
+            units.append(("stmt", None, None, text))
     return units
+
+
+def _indent(text: str) -> str:
+    import textwrap
+    return textwrap.indent(textwrap.dedent(text), "    ")
+
+
+def _is_docstring(t: str) -> bool:
+    s = t.lstrip()
+    return s.startswith(('"', "'", 'r"', "r'"))
+
+
+def _merge_class(name: str, versions: list) -> str:
+    """versions: list of (duties_of_author, info, text, index). Rebuild one class
+    whose every method comes from the agent assigned that duty."""
+    def owned(v, m):
+        return f"{name}.{m}" in v[0]
+
+    def n_owned(v):
+        return sum(owned(v, m) for m, _ in v[1]["methods"])
+    skel = max(versions, key=lambda v: (n_owned(v), any(d.startswith(name + ".") for d in v[0]),
+                                        len(v[2]), -v[3]))
+    chosen, order = {}, []
+    for m, t in skel[1]["methods"]:
+        chosen[m] = (owned(skel, m), t)
+        order.append(m)
+    for v in versions:
+        if v is skel:
+            continue
+        for m, t in v[1]["methods"]:
+            if m not in chosen:
+                chosen[m] = (owned(v, m), t)
+                order.append(m)
+            elif owned(v, m) and not chosen[m][0]:
+                chosen[m] = (True, t)
+    members = list(skel[1]["members"])
+    for v in versions:
+        for t in v[1]["members"]:
+            if t not in members and not _is_docstring(t):
+                members.append(t)
+    body = [_indent(t) for t in members] + [_indent(chosen[m][1]) for m in order]
+    return skel[1]["header"].rstrip() + "\n" + ("\n\n".join(body) if body else "    pass")
 
 
 def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | None = None) -> str:
     """Merge several agents' fragments of one file.
 
     Python files are merged by syntax: imports first (de-duplicated), then other
-    module-level code, then classes ordered so that a base class comes before
-    the classes that inherit from it, then any ``if __name__ == "__main__"``
-    block. If two fragments define the same class, the version written by the
-    agent that owns the class is kept (``owners[i]`` = classes owned by the
-    author of ``fragments[i]``); otherwise the longer version is kept. The same
-    rule applies to every condition. If a fragment does not parse, fall back to
-    simple concatenation.
+    module-level code, then classes with base classes before the classes that
+    inherit from them, then any ``if __name__ == "__main__"`` block. When several
+    fragments define the same class (a class split across agents, or a stub of
+    another agent's class), the class is rebuilt method by method: each method is
+    taken from the agent assigned that duty (``owners[i]`` = duty IDs
+    "Class.method" assigned to the author of ``fragments[i]``); methods nobody was
+    assigned come from the most complete version. The same rule applies to every
+    condition. If a fragment does not parse, fall back to concatenation.
     """
     if len(fragments) == 1:
         return fragments[0]
@@ -127,20 +185,19 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
         except SyntaxError:
             per = None
         if per is not None:
-            imports, seen_imp, stmts, defs, classes, mains = [], set(), [], {}, {}, []
+            imports, seen_imp, stmts, defs, mains = [], set(), [], {}, []
+            classes, first_seen = {}, {}
             for i, units in enumerate(per):
                 own = owners[i] if owners and i < len(owners) else set()
-                for kind, name, bases, text in units:
+                for kind, name, info, text in units:
                     if kind == "import":
                         for line in text.splitlines():
                             if line.strip() and line.strip() not in seen_imp:
                                 seen_imp.add(line.strip())
                                 imports.append(line)
                     elif kind == "class":
-                        prev = classes.get(name)
-                        cand = (name in own, len(text), i)
-                        if prev is None or cand[:2] > prev[0][:2]:
-                            classes[name] = (cand, bases, text, prev[3] if prev else len(classes))
+                        classes.setdefault(name, []).append((own, info, text, i))
+                        first_seen.setdefault(name, len(first_seen))
                     elif kind == "def":
                         if name not in defs or len(text) > len(defs[name]):
                             defs[name] = text
@@ -149,19 +206,19 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
                             mains.append(text)
                     elif text not in stmts:
                         stmts.append(text)
-            # base classes first; otherwise keep first-seen order
-            order = sorted(classes, key=lambda n: classes[n][3])
+            built = {n: (vs[0][2] if len(vs) == 1 else _merge_class(n, vs), vs[0][1]["bases"])
+                     for n, vs in classes.items()}
             placed, out_cls = set(), []
 
             def place(n, stack=()):
                 if n in placed or n in stack:
                     return
-                for b in classes[n][1]:
-                    if b in classes:
-                        place(b, stack + (n,))
+                for bse in built[n][1]:
+                    if bse in built:
+                        place(bse, stack + (n,))
                 placed.add(n)
-                out_cls.append(classes[n][2])
-            for n in order:
+                out_cls.append(built[n][0])
+            for n in sorted(built, key=first_seen.get):
                 place(n)
             parts = ["\n".join(imports)] + stmts + list(defs.values()) + out_cls + mains
             return "\n\n\n".join(p for p in parts if p.strip()) + "\n"
@@ -210,7 +267,7 @@ def run_team(team: TeamSpec, llm: LLM, prd: str, design_text: str, arch: str,
             break
         outputs[aid] = out
         for path, code in parse_blocks(out):
-            fragments.setdefault(path, []).append((set(a.classes), code))
+            fragments.setdefault(path, []).append((set(a.duties), code))
     files = {p: merge_fragments(p, [c for _, c in frs], [o for o, _ in frs])
              for p, frs in fragments.items()}
     all_duties = [d for a in team.agents for d in a.duties if not d.endswith(".<state>")]

@@ -5,7 +5,7 @@ def test_base_class_first_and_owner_version_kept():
     sub = "class PnF(Instrument):\n    def a(self):\n        return 1\n"
     stub = "class Instrument:\n    pass\n"
     owner = "import os\nclass Instrument:\n    def __init__(self, df):\n        self.df = df\n"
-    m = merge_fragments("p/x.py", [sub, stub, owner], [{"PnF"}, {"Renko"}, {"Instrument"}])
+    m = merge_fragments("p/x.py", [sub, stub, owner], [{"PnF.a"}, {"Renko.x"}, {"Instrument.__init__"}])
     assert m.index("class Instrument") < m.index("class PnF")
     assert m.count("class Instrument") == 1 and "self.df = df" in m
     ns = {}
@@ -25,3 +25,13 @@ def test_bare_duty_marker_becomes_comment():
     assert "    # duty: Renko.get_ohlc_data" in fixed
     exec(compile(fixed, "m", "exec"), {})
     assert fix_duty_markers("A.java", "  duty: A.b\n") == "  // duty: A.b\n"
+
+
+def test_class_split_across_agents_keeps_every_method():
+    a = "class C:\n    X = 1\n    # duty: C.f\n    def f(self):\n        return 'f'\n    def g(self):\n        raise NotImplementedError\n"
+    b = "class C:\n    def g(self):\n        return 'g'\n"
+    m = merge_fragments("p/x.py", [a, b], [{"C.f"}, {"C.g"}])
+    ns = {}
+    exec(compile(m, "m", "exec"), ns)
+    c = ns["C"]()
+    assert c.f() == "f" and c.g() == "g" and ns["C"].X == 1 and "# duty: C.f" in m
