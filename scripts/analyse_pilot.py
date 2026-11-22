@@ -168,4 +168,7 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--results", default=str(ROOT / "results"), help="e.g. results/second_model")
+    main(Path(ap.parse_args().results))

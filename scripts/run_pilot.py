@@ -66,10 +66,23 @@ def main() -> None:
     ap.add_argument("--cache", default=str(ROOT / "cache"))
     ap.add_argument("--out", default=str(ROOT / "runs" / "pilot"))
     ap.add_argument("--results", default=str(ROOT / "results"))
+    ap.add_argument("--model-key", default="model",
+                    help="plan block naming the model, e.g. second_model (writes to results/second_model/, runs/second_model/)")
     a = ap.parse_args()
 
     plan = yaml.safe_load(Path(a.plan).read_text())
-    m = plan["model"]
+    if a.model_key not in plan:
+        raise SystemExit(f"prereg/plan.yaml has no '{a.model_key}' block; register the model before running it.")
+    m = {**plan["model"], **plan[a.model_key]}
+    if a.model_key != "model":
+        if a.out == str(ROOT / "runs" / "pilot"):
+            a.out = str(ROOT / "runs" / a.model_key)
+        if a.results == str(ROOT / "results"):
+            a.results = str(ROOT / "results" / a.model_key)
+            Path(a.results).mkdir(parents=True, exist_ok=True)
+            src = ROOT / "results" / "reference_tests.json"
+            if src.exists() and not (Path(a.results) / "reference_tests.json").exists():
+                (Path(a.results) / "reference_tests.json").write_text(src.read_text())
     provider = a.provider or m["provider"]
     gs = git_state()
     frozen = plan_frozen_tag(Path(a.plan))
