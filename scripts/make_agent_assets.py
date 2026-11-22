@@ -214,13 +214,36 @@ def main() -> None:
                     f"{toks['G4']:,.0f} for random teams of equal sizes ({d4:+.0f}%, within the pre-registered 10% "
                     f"margin){extra}, and exchanged {msgs['G7']:.0f} messages against {msgs['G4']:.0f} for random "
                     f"teams and {msgs.get('GC', float('nan')):.0f} for one agent per class.")
+        single_bits = [b for b in cost_bits if "where the criterion recommends a single agent" in b]
+        if len(single_bits) > 1:
+            names = [x[0] for x in single_proj]
+            lo_s = min(x[1] for x in single_proj)
+            hi_s = max(x[2] for x in single_proj)
+            cost_bits = [b for b in cost_bits if b not in single_bits]
+            cost_bits.insert(0, f"On every project for which the criterion recommends a single agent ({', '.join(names)}), "
+                             f"the single agent used fewer tokens than random and one-agent-per-class teams "
+                             f"({lo_s:.0f}–{hi_s:.0f}% fewer; exact one-sided permutation tests over runs, p = 0.05 "
+                             "for each comparison, the smallest value attainable with three runs per condition) and "
+                             "exchanged no messages; per-project values are in Table V.")
         A["pilot_rows"] = rows
         A["verdict"] = verdict
         if all_same:
             corr = ("Correctness showed a floor effect: " + "; ".join(floor_bits) +
                     ". The pilot therefore cannot separate the conditions on correctness. ")
         else:
-            corr = ""
+            parts = []
+            for p in T:
+                ks, tot, tests, toks, msgs, same, rf = stats(p)
+                name = p.split("/")[1]
+                if same:
+                    parts.append(f"on {name} every condition passed the same {rf[0] * tot:.0f} of {tot} tests")
+                else:
+                    shown = [c for c in COND if c in tests and not T[p]["conditions"][c].get("same_as")]
+                    LBL = {"G2": "the single agent", "G4": "random teams", "GC": "one agent per class",
+                           "G6": "the Infomap team", "G7": "the criterion team"}
+                    parts.append(f"on {name} (k* = {ks}) mean tests passed out of {tot} were " +
+                                 ", ".join(f"{tests[c]:.1f} for {LBL[c]}" for c in shown))
+            corr = "Correctness: " + "; ".join(parts) + ". "
         A["pilot"] = (
             "{bi:Pilot (Python projects):} Table V reports three runs per condition. " + corr +
             "Costs did differ (Fig. 4). " + " ".join(cost_bits) +
@@ -240,7 +263,12 @@ def main() -> None:
                          f"{'every one' if e['H3a_G2_fewer_tokens_on_every_k1_task'] else 'not every one'} of the "
                          f"{e['k1_tasks']} such projects (H3a), and it was at least as correct as the split teams on "
                          f"{e['H3b_wins']} of the {e['H3b_informative_tasks']} projects on which any condition passed "
-                         f"a test (H3b). ") if e and e.get("k1_tasks", 0) > 1 else "")(D.get("experiment_1b"))) +
+                         f"a test (H3b). " + "".join(
+                             f"Against the Infomap team of {r['G6_k']} agents on {r['project'].split('/')[1]} "
+                             f"(exploratory), the single agent passed {(r['G2_pass'] or 0) * (totals.get(r['project']) or 0):.1f} "
+                             f"against {(r['G6_pass'] or 0) * (totals.get(r['project']) or 0):.1f} tests and used "
+                             f"{r['G2_tokens']:,.0f} against {r['G6_tokens']:,.0f} tokens. "
+                             for r in e.get("exploratory_G2_vs_infomap", []))) if e and e.get("k1_tasks", 0) > 1 else "")(D.get("experiment_1b"))) +
             "Inspection of the failing tests shows two causes that affect every condition alike: tests that "
             "require identifiers appearing in neither the requirements nor the design (for example, a class "
             "constant or a default argument named only in a test), and errors in the model’s own code, such as "
@@ -265,9 +293,19 @@ def main() -> None:
                                "at equal correctness. The main study will use tasks on which models pass a meaningful "
                                "share of tests, add a second model, and test H1–H4.")
         else:
-            A["pilot_short"] = " ".join(cost_bits)
-            A["abstract"] = "{P:pilot sentence}"
-            A["conclusion"] = "{P:pilot conclusion}"
+            e = D.get("experiment_1b") or {}
+            w, ninf = e.get("H3b_wins", 0), e.get("H3b_informative_tasks", 0)
+            n1 = len(single_proj)
+            corr_txt = (f"was at least as correct as every split team on {w} of the {ninf} such projects on which "
+                        f"any team passed a test" if ninf else "matched the split teams, which all scored zero")
+            A["pilot_short"] = (f"where the criterion recommends one agent ({n1} projects), a single agent {corr_txt} "
+                                f"and used {lo_all:.0f}–{hi_all:.0f}% fewer tokens than split teams")
+            A["abstract"] = (f"In a pre-registered pilot, " + A["pilot_short"] + ".")
+            A["conclusion"] = ("A pre-registered pilot found that, " + A["pilot_short"] +
+                               f"; under its go/no-go rules the pilot is {'a provisional ' if prov else ''}{vword}, "
+                               "because the multi-agent project could not separate the conditions. The main study "
+                               "will use tasks on which models pass a meaningful share of tests, add a second model, "
+                               "and test H1–H4.")
         # figure
         import matplotlib
         matplotlib.use("Agg")
@@ -304,11 +342,23 @@ def main() -> None:
         A["abstract"] = ("{P:pilot result: tests passed and tokens of the criterion team against single-agent, random, "
                          "one-agent-per-class and Infomap teams}")
         A["conclusion"] = "{P:one-sentence pilot result, stated only as strongly as the evidence allows}"
+    # where the criterion keeps a multi-class design whole, how often do the partitioners split it?
+    Sx = json.loads((ROOT / "results" / "structural.json").read_text())["projects"]
+    k1m = [p for p in Sx if p["duty"]["k_star"] == 1 and p["duty"]["n_classes"] > 1]
+    inf = [p["project"].split("/")[-1] for p in k1m if p["duty"]["infomap_k"] > 1]
+    lou = [p for p in k1m if p["duty"]["louvain_k"] > 1]
+    A["k1_compare"] = (
+        f"This is where the criterion differs most from graph partitioners: of the {len(k1m)} projects with more "
+        f"than one class for which it recommends a single agent, one agent per class splits all {len(k1m)}, "
+        f"Louvain splits {len(lou)} and Infomap, the partitioner used by Co-Coder, splits {len(inf)} "
+        f"({' and '.join(inf)}). Experiment 1b runs exactly these {len(inf)} projects, so it compares the "
+        "criterion’s single agent directly with an Infomap team as well as with random and one-agent-per-class "
+        "teams.")
     A["contribution4"] = ("A pre-registered agent study with four hypotheses, controlled conditions and an equal token "
                           "budget per run, a zero-cost verification of the agent harness, and a pilot reported in full, "
                           "including its go/no-go outcome (Section VI).")
     A["discussion_pilot"] = (
-        "{bi:What the pilot shows:} The pilot was meant to expose problems before the main study, and it did. Its "
+        "{bi:What the pilot shows:} " + A["k1_compare"].replace("This is where the criterion differs most", "Projects for which the criterion recommends a single agent are where it differs most", 1).replace(": of the", ". Of the", 1) + " The pilot was meant to expose problems before the main study, and it did. Its "
         "harness checks found and fixed four defects that would otherwise have biased the comparison, and its floor "
         "effect shows that, with an open-weight model of this size, DevBench’s Python tests are too strict to "
         "separate the conditions, because they reward identifiers that the design does not contain. Three changes "

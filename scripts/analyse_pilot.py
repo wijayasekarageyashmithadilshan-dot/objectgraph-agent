@@ -91,7 +91,13 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
         if rates and max(rates) > 0:
             h3b_tasks += 1
             h3b_wins += c["G2"]["pass_rate"] >= max(c[x]["pass_rate"] for x in ("G4", "GC") if x in c)
-    exp1b = {"H3a_G2_fewer_tokens_on_every_k1_task": bool(h3a) and all(h3a), "k1_tasks": len(h3a),
+    g6_cmp = []
+    for p, t in single.items():
+        c = t["conditions"]
+        if "G2" in c and "G6" in c and not c["G6"].get("same_as"):
+            g6_cmp.append({"project": p, "G2_pass": c["G2"]["pass_rate"], "G6_pass": c["G6"]["pass_rate"],
+                           "G2_tokens": c["G2"]["tokens"], "G6_tokens": c["G6"]["tokens"], "G6_k": c["G6"]["k"]})
+    exp1b = {"exploratory_G2_vs_infomap": g6_cmp, "H3a_G2_fewer_tokens_on_every_k1_task": bool(h3a) and all(h3a), "k1_tasks": len(h3a),
              "H3b_G2_at_least_as_correct_majority": h3b_tasks > 0 and h3b_wins > h3b_tasks / 2,
              "H3b_informative_tasks": h3b_tasks, "H3b_wins": int(h3b_wins)}
     decision = {"experiment_1b": exp1b, "rule_G7_beats_G4_majority": {"passed": rule1, "wins": sum(wins), "tasks": len(wins)},
@@ -128,6 +134,7 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
            "", "## Experiment 1b (k* = 1 tasks)", "",
            f"- H3a single agent uses fewer tokens than split teams on every k*=1 task: **{exp1b['H3a_G2_fewer_tokens_on_every_k1_task']}** ({exp1b['k1_tasks']} tasks)",
            f"- H3b single agent at least as correct on a majority of informative k*=1 tasks: **{exp1b['H3b_G2_at_least_as_correct_majority']}** ({exp1b['H3b_wins']}/{exp1b['H3b_informative_tasks']})",
+           *[f"- Exploratory, single agent vs Infomap team (k={r['G6_k']}) on {r['project']}: tests {r['G2_pass']} vs {r['G6_pass']}, tokens {r['G2_tokens']:,.0f} vs {r['G6_tokens']:,.0f}" for r in exp1b["exploratory_G2_vs_infomap"]],
            "", f"**Verdict: {verdict}**", "",
            "_3 runs per condition show direction and cost, not statistical proof._"]
     (results / "pilot_summary.md").write_text("\n".join(md) + "\n")

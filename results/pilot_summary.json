@@ -163,6 +163,7 @@
   },
   "decision": {
     "experiment_1b": {
+      "exploratory_G2_vs_infomap": [],
       "H3a_G2_fewer_tokens_on_every_k1_task": true,
       "k1_tasks": 1,
       "H3b_G2_at_least_as_correct_majority": false,
