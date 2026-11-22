@@ -26,6 +26,8 @@ def load_project(devbench: Path, project: str) -> dict:
     arch = find(pdir, "architecture_design.md")
     return {"dir": pdir, "prd": find(pdir, "PRD.md").read_text(encoding="utf-8"),
             "arch": arch.read_text(encoding="utf-8") if arch else "",
+            "seq": (find(pdir, "UML_sequence.md").read_text(encoding="utf-8")
+                    if find(pdir, "UML_sequence.md") else ""),
             "gold_text": find(pdir, "UML_class.md").read_text(encoding="utf-8")}
 
 
@@ -40,7 +42,7 @@ def get_design(proj: dict, design: str, llm, run_id: int) -> dict:
 def run_condition(proj: dict, project: str, design: dict, condition: str, llm, run_id: int,
                   out: Path, ref_tests: Path | None, agents: bool = True, score: bool = True,
                   scorer: str = "auto", docker_image: str = "devbench:complete", lam: float = 0.0,
-                  budget: int | None = None) -> dict:
+                  budget: int | None = None, use_seq: bool = False) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     diagram = design["diagram"]
     g = build_duty_graph(diagram)
@@ -81,7 +83,8 @@ def run_condition(proj: dict, project: str, design: dict, condition: str, llm, r
         llm.usage = Usage()
         if budget is not None:
             llm.token_budget = budget
-        res = run_team(team, llm, proj["prd"], design["text"], proj["arch"], run_id=run_id)
+        res = run_team(team, llm, proj["prd"], design["text"], proj["arch"], run_id=run_id,
+                       seq=proj["seq"] if use_seq else "")
         usage = {"input_tokens": llm.usage.input_tokens, "output_tokens": llm.usage.output_tokens,
                  "calls": llm.usage.calls, "cached_calls": llm.usage.cached_calls, "by_tag": llm.usage.by_tag}
         save_run(res, team, out, usage)

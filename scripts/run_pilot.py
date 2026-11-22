@@ -94,7 +94,8 @@ def main() -> None:
             out = Path(a.out) / a.project.replace("/", "__") / c / f"run{rid}"
             s = run_condition(proj, a.project, design, c, llm, rid, out, ref, agents=True,
                               score=not a.no_score, scorer=a.scorer, docker_image=a.docker_image,
-                              lam=plan["criterion"]["lambda"], budget=plan["token_cap_per_run"])
+                              lam=plan["criterion"]["lambda"], budget=plan["token_cap_per_run"],
+                              use_seq="sequence_diagram" in plan.get("agent_inputs", []))
             rows.append(s)
             print(f"{c:3} run{rid}: k={s['k']} pass={s.get('pass_rate')} tokens={s.get('tokens')} "
                   f"msgs={s.get('messages')}" + (f" (same team as {s['same_as']})" if s["same_as"] else ""))

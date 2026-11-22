@@ -40,7 +40,7 @@ USER_TMPL = """# Product requirements
 
 # Architecture design (file layout)
 {arch}
-
+{seq}
 # Your assignment ({agent_id} of {k})
 Classes you own: {classes}
 Duties you must implement (ID = Class.method):
@@ -76,7 +76,11 @@ def fix_duty_markers(path: str, code: str) -> str:
     return _BARE_DUTY.sub(lambda m: f"{m.group('ind')}{sign} {m.group('tag')}", code)
 
 
+_THINK = re.compile(r"<think>.*?</think>", re.S)
+
+
 def parse_blocks(text: str) -> list[tuple[str, str]]:
+    text = _THINK.sub("", text)      # reasoning models may echo their thinking
     return [(m.group("path").strip("`"), fix_duty_markers(m.group("path").strip("`"), m.group("code")))
             for m in _BLOCK.finditer(text)]
 
@@ -238,7 +242,7 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
 
 
 def run_team(team: TeamSpec, llm: LLM, prd: str, design_text: str, arch: str,
-             run_id: int = 0) -> RunResult:
+             run_id: int = 0, seq: str = "") -> RunResult:
     by_id = {a.agent_id: a for a in team.agents}
     outputs: dict[str, str] = {}
     fragments: dict[str, list[str]] = {}
@@ -256,7 +260,9 @@ def run_team(team: TeamSpec, llm: LLM, prd: str, design_text: str, arch: str,
                 code = "\n\n".join(f"### FILE: {p}\n{c}" for p, c in parse_blocks(outputs[dep]))
                 received += f"\n# Code already written by {dep} (you depend on it)\n{code}\n"
                 messages.append({"from": dep, "to": aid, "tokens": len(code) // 4})
-        user = USER_TMPL.format(prd=prd, design=design_text, arch=arch, agent_id=aid, k=team.k,
+        seq_block = f"\n# Sequence diagram (how the classes interact)\n{seq}\n" if seq else ""
+        user = USER_TMPL.format(prd=prd, design=design_text, arch=arch, seq=seq_block,
+                                agent_id=aid, k=team.k,
                                 classes=", ".join(a.classes),
                                 duties="\n".join(f"- {d}" for d in a.duties),
                                 others=others, received=received)
