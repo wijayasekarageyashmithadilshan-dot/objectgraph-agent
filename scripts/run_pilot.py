@@ -96,7 +96,8 @@ def main() -> None:
         from tests.fake_model import fake_reply
         fake_fn = lambda s, u: fake_reply(s, u, proj["gold_text"])
     llm = LLM(provider, m["name"], a.cache, offline=a.offline, temperature=m["temperature"],
-              max_tokens=m["max_tokens_per_call"], fake_fn=fake_fn)
+              max_tokens=m["max_tokens_per_call"], fake_fn=fake_fn,
+              reasoning_effort=m.get("reasoning_effort"))
     conds = a.conditions or plan["conditions"]
     runs = a.runs if a.runs is not None else list(range(plan["runs_per_condition"]))
     ref = Path(a.results) / "reference_tests.json"

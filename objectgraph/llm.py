@@ -11,7 +11,7 @@
 * Providers: "anthropic" (ANTHROPIC_API_KEY), "openrouter" (OPENROUTER_API_KEY;
   reaches Claude, Qwen, GPT and others through one key), "openai"
   (OPENAI_API_KEY, optional OPENAI_BASE_URL for any OpenAI-compatible server),
-  "vercel" (Vercel AI Gateway, AI_GATEWAY_API_KEY), "deepseek" (DEEPSEEK_API_KEY),
+  "vercel" (Vercel AI Gateway, AI_GATEWAY_API_KEY), "deepseek" (DEEPSEEK_API_KEY), "gemini" (GEMINI_API_KEY),
   "ollama" (local server, no key) and "fake" (tests).
 * API keys are read from environment variables only and are never written to
   the cache.
@@ -32,6 +32,7 @@ OPENAI_COMPATIBLE = {
     "openai": (None, "OPENAI_API_KEY"),
     "vercel": ("https://ai-gateway.vercel.sh/v1", "AI_GATEWAY_API_KEY"),
     "deepseek": ("https://api.deepseek.com", "DEEPSEEK_API_KEY"),
+    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY"),
     "ollama": ("http://localhost:11434/v1", None),
 }
 
@@ -71,9 +72,11 @@ class LLM:
     def __init__(self, provider: str = "anthropic", model: str = "claude-sonnet-5-5",
                  cache_dir: str | Path = "cache", offline: bool = False,
                  temperature: float = 0.0, max_tokens: int = 8000,
-                 token_budget: int | None = None, fake_fn=None):
+                 token_budget: int | None = None, fake_fn=None, reasoning_effort: str | None = None):
         self.provider, self.model = provider, model
         self.params = {"temperature": temperature, "max_tokens": max_tokens}
+        if reasoning_effort:            # only added when set, so existing cache keys are unchanged
+            self.params["reasoning_effort"] = reasoning_effort
         self.offline = offline
         self.token_budget = token_budget
         self.usage = Usage()
@@ -147,7 +150,8 @@ class LLM:
                 model=self.model,
                 messages=[{"role": "system", "content": system},
                           {"role": "user", "content": user}],
-                temperature=self.params["temperature"], max_tokens=self.params["max_tokens"])
+                temperature=self.params["temperature"], max_tokens=self.params["max_tokens"],
+                **({"reasoning_effort": self.params["reasoning_effort"]} if "reasoning_effort" in self.params else {}))
             text = resp.choices[0].message.content or ""
             u = resp.usage
             inp = getattr(u, "prompt_tokens", 0) or 0 if u else 0
