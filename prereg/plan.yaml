@@ -22,6 +22,13 @@ amendments:
       (geotext 9/9, particle-swarm-optimization 6/6, empty code 0) are added with the same model, prompts,
       settings and conditions. hone is excluded because empty code passes 12/12 (scorer rule). The
       hypotheses below were written before any model call on these tasks.
+  - date: 2026-11-23
+    tag: prereg-v1.4
+    before_any_model_run: true   # for second_model; all earlier runs are unchanged
+    change: >
+      Second model registered after Experiment 1b, before any call to it: deepseek/deepseek-v4.1-flash-1017
+      through OpenRouter (open weights, dated snapshot, a different model family from Qwen). It replicates the
+      same four Python projects, five conditions, three runs, prompts, settings and analysis rules.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -79,3 +86,10 @@ go_no_go:                     # decided by scripts/analyse_pilot.py, not by hand
     no_go: "revise the method using pilot tasks only; never tune on main-study test tasks"
 
 reported_metrics: [pass_rate, tokens, messages, message_tokens, traceability, stopped_by_budget]
+
+second_model:
+  provider: openrouter          # key in OPENROUTER_API_KEY (Colab Secrets only, never in files)
+  name: deepseek/deepseek-v4.1-flash-1017   # open weights, dated snapshot (not a "latest" alias)
+  why: "Replication with a second model family; answers 'does it hold beyond one model?'"
+  tasks: [python/stocktrends, python/lice, python/geotext, python/particle-swarm-optimization]
+  analysis: "Same go/no-go rules and H3a/H3b as the primary model, reported separately (results/second_model/)."
