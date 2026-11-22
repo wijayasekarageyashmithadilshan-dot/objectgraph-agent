@@ -66,6 +66,8 @@ def main() -> None:
     ap.add_argument("--cache", default=str(ROOT / "cache"))
     ap.add_argument("--out", default=str(ROOT / "runs" / "pilot"))
     ap.add_argument("--results", default=str(ROOT / "results"))
+    ap.add_argument("--use-fallback", action="store_true",
+                    help="use the fallback model registered in the plan block (only under its stated condition)")
     ap.add_argument("--model-key", default="model",
                     help="plan block naming the model, e.g. second_model (writes to results/second_model/, runs/second_model/)")
     a = ap.parse_args()
@@ -74,6 +76,11 @@ def main() -> None:
     if a.model_key not in plan:
         raise SystemExit(f"prereg/plan.yaml has no '{a.model_key}' block; register the model before running it.")
     m = {**plan["model"], **plan[a.model_key]}
+    if a.use_fallback:
+        if "fallback" not in plan[a.model_key]:
+            raise SystemExit(f"no fallback registered for {a.model_key}")
+        m = {**m, **plan[a.model_key]["fallback"]}
+        print(f"Using the pre-registered fallback model {m['name']}.")
     if a.model_key != "model":
         if a.out == str(ROOT / "runs" / "pilot"):
             a.out = str(ROOT / "runs" / a.model_key)
