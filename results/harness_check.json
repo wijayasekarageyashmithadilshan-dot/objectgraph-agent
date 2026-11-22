@@ -82,6 +82,126 @@
    "passed": 31,
    "unsplit": 31,
    "ok": true
+  },
+  {
+   "project": "python/geotext",
+   "condition": "G2",
+   "k": 1,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/geotext",
+   "condition": "G4",
+   "k": 2,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/geotext",
+   "condition": "GC",
+   "k": 2,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/geotext",
+   "condition": "G6",
+   "k": 2,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/geotext",
+   "condition": "G7",
+   "k": 1,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/hone",
+   "condition": "G2",
+   "k": 1,
+   "passed": 12,
+   "unsplit": 12,
+   "ok": true
+  },
+  {
+   "project": "python/hone",
+   "condition": "G4",
+   "k": 3,
+   "passed": 12,
+   "unsplit": 12,
+   "ok": true
+  },
+  {
+   "project": "python/hone",
+   "condition": "GC",
+   "k": 3,
+   "passed": 12,
+   "unsplit": 12,
+   "ok": true
+  },
+  {
+   "project": "python/hone",
+   "condition": "G6",
+   "k": 1,
+   "passed": 12,
+   "unsplit": 12,
+   "ok": true
+  },
+  {
+   "project": "python/hone",
+   "condition": "G7",
+   "k": 1,
+   "passed": 12,
+   "unsplit": 12,
+   "ok": true
+  },
+  {
+   "project": "python/particle-swarm-optimization",
+   "condition": "G2",
+   "k": 1,
+   "passed": 6,
+   "unsplit": 6,
+   "ok": true
+  },
+  {
+   "project": "python/particle-swarm-optimization",
+   "condition": "G4",
+   "k": 2,
+   "passed": 6,
+   "unsplit": 6,
+   "ok": true
+  },
+  {
+   "project": "python/particle-swarm-optimization",
+   "condition": "GC",
+   "k": 2,
+   "passed": 6,
+   "unsplit": 6,
+   "ok": true
+  },
+  {
+   "project": "python/particle-swarm-optimization",
+   "condition": "G6",
+   "k": 2,
+   "passed": 6,
+   "unsplit": 6,
+   "ok": true
+  },
+  {
+   "project": "python/particle-swarm-optimization",
+   "condition": "G7",
+   "k": 1,
+   "passed": 6,
+   "unsplit": 6,
+   "ok": true
   }
  ]
 }

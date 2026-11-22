@@ -78,7 +78,23 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
     verdict = "GO" if (rule1 and rule2 and rule3) else "NO-GO"
     if not complete:
         verdict += " (provisional: not all pilot tasks/conditions are in yet)"
-    decision = {"rule_G7_beats_G4_majority": {"passed": rule1, "wins": sum(wins), "tasks": len(wins)},
+    # Experiment 1b (k*=1 tasks): H3a cost, H3b correctness
+    h3a, h3b_wins, h3b_tasks = [], 0, 0
+    for p, t in single.items():
+        c = t["conditions"]
+        if "G2" not in c:
+            continue
+        split = [c[x] for x in ("G4", "GC") if x in c and c[x]["tokens"] is not None]
+        if split:
+            h3a.append(all(c["G2"]["tokens"] < v["tokens"] for v in split))
+        rates = [v["pass_rate"] for v in c.values() if v["pass_rate"] is not None]
+        if rates and max(rates) > 0:
+            h3b_tasks += 1
+            h3b_wins += c["G2"]["pass_rate"] >= max(c[x]["pass_rate"] for x in ("G4", "GC") if x in c)
+    exp1b = {"H3a_G2_fewer_tokens_on_every_k1_task": bool(h3a) and all(h3a), "k1_tasks": len(h3a),
+             "H3b_G2_at_least_as_correct_majority": h3b_tasks > 0 and h3b_wins > h3b_tasks / 2,
+             "H3b_informative_tasks": h3b_tasks, "H3b_wins": int(h3b_wins)}
+    decision = {"experiment_1b": exp1b, "rule_G7_beats_G4_majority": {"passed": rule1, "wins": sum(wins), "tasks": len(wins)},
                 "rule_G7_tokens_within_10pct_of_G4": {"passed": rule2},
                 "rule_single_agent_best_when_kstar_1": {"passed": rule3, "tasks": len(lice_ok)},
                 "G7_ties_G6_on": f"{sum(ties_g6)}/{len(ties_g6)} tasks",
@@ -109,6 +125,9 @@ def main(results: Path = ROOT / "results", plan_path: Path = ROOT / "prereg" / "
            f"- G7 tokens <= 1.10 x G4 on every multi-agent task: **{rule2}**",
            f"- Single agent best where k* = 1: **{rule3}**",
            f"- G7 within 0.05 of G6: {decision['G7_ties_G6_on']}",
+           "", "## Experiment 1b (k* = 1 tasks)", "",
+           f"- H3a single agent uses fewer tokens than split teams on every k*=1 task: **{exp1b['H3a_G2_fewer_tokens_on_every_k1_task']}** ({exp1b['k1_tasks']} tasks)",
+           f"- H3b single agent at least as correct on a majority of informative k*=1 tasks: **{exp1b['H3b_G2_at_least_as_correct_majority']}** ({exp1b['H3b_wins']}/{exp1b['H3b_informative_tasks']})",
            "", f"**Verdict: {verdict}**", "",
            "_3 runs per condition show direction and cost, not statistical proof._"]
     (results / "pilot_summary.md").write_text("\n".join(md) + "\n")

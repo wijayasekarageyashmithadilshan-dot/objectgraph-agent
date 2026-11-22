@@ -1,0 +1,122 @@
+[
+ {
+  "project": "python/geotext",
+  "scorer": "native",
+  "oracle": {
+   "status": "scored",
+   "scorer": "native",
+   "language": "python",
+   "passed": 9,
+   "total": 9,
+   "unit_test": {
+    "passed": 4,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 4
+   },
+   "acceptance_test": {
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 5
+   },
+   "pass_rate": 1.0
+  },
+  "empty_code_passed": 0,
+  "usable": true,
+  "unit_test": {
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  },
+  "acceptance_test": {
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ {
+  "project": "python/hone",
+  "scorer": "native",
+  "oracle": {
+   "status": "scored",
+   "scorer": "native",
+   "language": "python",
+   "passed": 12,
+   "total": 12,
+   "unit_test": {
+    "passed": 7,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 7
+   },
+   "acceptance_test": {
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 5
+   },
+   "pass_rate": 1.0
+  },
+  "empty_code_passed": 12,
+  "usable": false,
+  "unit_test": {
+   "passed": 7,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  },
+  "acceptance_test": {
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  }
+ },
+ {
+  "project": "python/particle-swarm-optimization",
+  "scorer": "native",
+  "oracle": {
+   "status": "scored",
+   "scorer": "native",
+   "language": "python",
+   "passed": 6,
+   "total": 6,
+   "unit_test": {
+    "passed": 5,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 5
+   },
+   "acceptance_test": {
+    "passed": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "total": 1
+   },
+   "pass_rate": 1.0
+  },
+  "empty_code_passed": 0,
+  "usable": true,
+  "unit_test": {
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  },
+  "acceptance_test": {
+   "passed": 1,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0
+  }
+ }
+]

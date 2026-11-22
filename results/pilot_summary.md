@@ -30,6 +30,11 @@ Model: `alibaba/qwen3-coder-30b-a3b` · design: gold · runs per condition: 3
 - Single agent best where k* = 1: **False**
 - G7 within 0.05 of G6: 1/1 tasks
 
+## Experiment 1b (k* = 1 tasks)
+
+- H3a single agent uses fewer tokens than split teams on every k*=1 task: **True** (1 tasks)
+- H3b single agent at least as correct on a majority of informative k*=1 tasks: **False** (0/0)
+
 **Verdict: NO-GO (provisional: not all pilot tasks/conditions are in yet)**
 
-_3 runs on 5 tasks show direction and cost, not statistical proof._
+_3 runs per condition show direction and cost, not statistical proof._

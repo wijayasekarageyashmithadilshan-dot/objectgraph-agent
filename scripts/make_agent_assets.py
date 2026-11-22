@@ -38,7 +38,7 @@ def ref_totals() -> dict:
 
 
 def to_latex(s: str) -> str:
-    s = s.replace("%", r"\%").replace("&", r"\&").replace("≈", r"$\approx$").replace("≥", r"$\ge$")
+    s = s.replace("±", r"$\pm$").replace("%", r"\%").replace("&", r"\&").replace("≈", r"$\approx$").replace("≥", r"$\ge$")
     s = s.replace("(Fig. 4)", r"(Figure~\ref{fig:pilot})").replace("Section VII", r"Section~\ref{sec:discussion}").replace("(Section VI)", r"(Section~\ref{sec:agents})")
     s = s.replace("k* =", r"$k^\ast$ =").replace("×", r"$\times$").replace("–", "--").replace("—", "---").replace("’", "'")
     s = re.sub(r"\{bi:([^{}]*)\}", r"\\textbf{\\emph{\1}}", s)
@@ -52,6 +52,40 @@ def to_latex(s: str) -> str:
 
 def to_docx(s: str) -> str:
     return re.sub(r"\{c:([^{}]*)\}", r"\1", s)
+
+
+def per_run(project: str) -> dict:
+    """condition -> list of per-run dicts from results/pilot/<project>.json"""
+    f = ROOT / "results" / "pilot" / (project.replace("/", "__") + ".json")
+    out = {}
+    if f.exists():
+        for r in json.loads(f.read_text())["rows"]:
+            out.setdefault(r["condition"], []).append(r)
+    return out
+
+
+def msd(xs) -> tuple[float, float]:
+    import statistics
+    xs = [x for x in xs if x is not None]
+    if not xs:
+        return float("nan"), float("nan")
+    return statistics.mean(xs), (statistics.stdev(xs) if len(xs) > 1 else 0.0)
+
+
+def perm_p_less(a, b) -> float:
+    """Exact one-sided permutation p-value that mean(a) < mean(b)."""
+    from itertools import combinations
+    pool = list(a) + list(b)
+    na = len(a)
+    obs = sum(a) / na - sum(b) / len(b)
+    cnt = tot = 0
+    for idx in combinations(range(len(pool)), na):
+        sa = [pool[i] for i in idx]
+        sb = [pool[i] for i in range(len(pool)) if i not in idx]
+        d = sum(sa) / na - sum(sb) / len(sb)
+        tot += 1
+        cnt += d <= obs + 1e-12
+    return cnt / tot
 
 
 def main() -> None:
@@ -111,15 +145,18 @@ def main() -> None:
         rows = []
         for p, t in T.items():
             tot = totals.get(p)
+            pr_runs = per_run(p)
             for c in COND:
                 v = t["conditions"].get(c)
                 if not v:
                     continue
-                pr = v["pass_rate"]
-                tests = "–" if pr is None or tot is None else f"{pr * tot:.1f}/{tot}"
-                runs = ", ".join("–" if x is None else f"{x * tot:.0f}" for x in v["pass_rate_runs"]) if tot else ""
-                rows.append([p.split("/")[1], f"{c} {NAME[c]}", str(v["k"]), tests, runs,
-                             "–" if v["tokens"] is None else f"{v['tokens']:,.0f}",
+                rr = pr_runs.get(c, [])
+                tm, tsd = msd([(r.get("pass_rate") or 0) * tot for r in rr]) if tot else (float("nan"), 0)
+                km, ksd = msd([r.get("tokens") for r in rr])
+                runs = ", ".join("–" if r.get("pass_rate") is None else f"{r['pass_rate'] * tot:.0f}" for r in rr) if tot else ""
+                rows.append([p.split("/")[1], f"{c} {NAME[c]}", str(v["k"]),
+                             f"{tm:.1f} ± {tsd:.1f} / {tot}", runs,
+                             f"{km:,.0f} ± {ksd:,.0f}",
                              "–" if v["messages"] is None else f"{v['messages']:.1f}",
                              (f"same team as {v['same_as']}" if v["same_as"] else "–")])
         A["pilot_rows"] = rows
@@ -151,12 +188,18 @@ def main() -> None:
                     lo = min(1 - toks["G2"] / v for v in split.values()) * 100
                     hi = max(1 - toks["G2"] / v for v in split.values()) * 100
                     single_proj.append((name, lo, hi))
+                    runs_p = per_run(p)
+                    g2t = [r["tokens"] for r in runs_p.get("G2", [])]
+                    pvals = {k: perm_p_less(g2t, [r["tokens"] for r in runs_p.get(k, [])]) for k in split}
+                    pmax = max(pvals.values()) if pvals else float("nan")
                     cost_bits.append(
                         f"On {name}, where the criterion recommends a single agent, the single agent used "
                         f"{toks['G2']:,.0f} tokens per run against "
                         + " and ".join(f"{v:,.0f} for " + ("random teams" if k == "G4" else NAME[k].lower())
                                        for k, v in split.items())
-                        + f" ({lo:.0f}–{hi:.0f}% fewer) and exchanged no messages against "
+                        + f" ({lo:.0f}–{hi:.0f}% fewer; exact one-sided permutation test over runs, p = {pmax:.2f} "
+                        "for each comparison, the smallest value attainable with three runs per condition) and "
+                        "exchanged no messages against "
                         + " and ".join(f"{msgs[k]:.0f}" for k in split) + ", at equal correctness.")
             if ks and ks > 1 and "G7" in toks and "G4" in toks:
                 d4 = (toks["G7"] / toks["G4"] - 1) * 100
@@ -186,6 +229,12 @@ def main() -> None:
                 "agent did not pass more tests than the split teams, because all of them scored zero"
                 if vword == "NO-GO" else "")
              + ("; the decision becomes final once the C++ and Java pilot projects are scored. " if prov else ". ")) +
+            ((lambda e: (f"Experiment 1b, registered before its runs, adds fresh projects for which the criterion "
+                         f"recommends one agent: the single agent used fewer tokens than both split teams on "
+                         f"{'every one' if e['H3a_G2_fewer_tokens_on_every_k1_task'] else 'not every one'} of the "
+                         f"{e['k1_tasks']} such projects (H3a), and it was at least as correct as the split teams on "
+                         f"{e['H3b_wins']} of the {e['H3b_informative_tasks']} projects on which any condition passed "
+                         f"a test (H3b). ") if e and e.get("k1_tasks", 0) > 1 else "")(D.get("experiment_1b"))) +
             "Inspection of the failing tests shows two causes that affect every condition alike: tests that "
             "require identifiers appearing in neither the requirements nor the design (for example, a class "
             "constant or a default argument named only in a test), and errors in the model’s own code, such as "
@@ -294,9 +343,9 @@ Model & Seq. diagram & Project & Tests & Tokens\\\midrule
         L.append(to_latex(A["pilot"].replace("{bi:Pilot (Python projects):}", r"\paragraph{Pilot (Python projects).}")
                           .replace("Table V", r"Table~\ref{tab:pilot}")) + "\n")
         L.append(r"""\begin{table*}[t]\centering\small
-\caption{Pilot on DevBench's Python projects: mean tests passed over three runs (per-run counts in brackets), mean tokens and messages per run. Identical teams receive identical prompts and cached responses.}\label{tab:pilot}
+\caption{Pilot on DevBench's Python projects: tests passed and tokens per run (mean $\pm$ standard deviation over three runs; Runs lists tests passed per run) and messages per run. Identical teams receive identical prompts and cached responses.}\label{tab:pilot}
 \begin{tabular}{lllllrrl}\toprule
-Project & Condition & Agents & Tests (mean) & Runs & Tokens & Messages & Note\\\midrule
+Project & Condition & Agents & Tests (mean $\pm$ SD) & Runs & Tokens (mean $\pm$ SD) & Messages & Note\\\midrule
 """ + "\n".join(" & ".join(to_latex(x) for x in r) + r"\\" for r in A["pilot_rows"]) +
                  "\n\\bottomrule\\end{tabular}\\end{table*}\n")
         L.append(r"""\begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/pilot.pdf}

@@ -162,6 +162,13 @@
     }
   },
   "decision": {
+    "experiment_1b": {
+      "H3a_G2_fewer_tokens_on_every_k1_task": true,
+      "k1_tasks": 1,
+      "H3b_G2_at_least_as_correct_majority": false,
+      "H3b_informative_tasks": 0,
+      "H3b_wins": 0
+    },
     "rule_G7_beats_G4_majority": {
       "passed": false,
       "wins": 1,

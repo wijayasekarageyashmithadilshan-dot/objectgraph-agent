@@ -1,7 +1,7 @@
 {
  "model_sentence": "alibaba/qwen3-coder-30b-a3b (Qwen3-Coder-30B-A3B-Instruct, an open-weight coding model with a fixed release, accessed through the Vercel AI Gateway)",
  "hardware": "Agent runs for Python projects were executed on Google Colab (Python 3.13); every scoring run builds a fresh virtual environment. C++ and Java projects are scored in DevBench’s container image in GitHub Codespaces.",
- "verification": "{bi:Pipeline verification without model calls:} To check that splitting, merging and scoring do not themselves change the outcome, DevBench’s reference implementation is cut into the fragments that each agent of each condition would own, merged by the same deterministic merge step as agent output, and scored. Every condition must reach the score of the unsplit reference code, and every condition does (lice 31/31; stocktrends 9/9, for G2, G4, GC, G6 and G7). A smoke run before the pilot exposed four defects in the harness, all fixed before any comparison and applied identically to every condition: a missing package installer on the host, subclasses merged before their base class, traceability markers written by the model without a comment sign, and classes split across agents losing methods in the merge. These changes are listed as deviations in the released pre-registration folder.",
+ "verification": "{bi:Pipeline verification without model calls:} To check that splitting, merging and scoring do not themselves change the outcome, DevBench’s reference implementation is cut into the fragments that each agent of each condition would own, merged by the same deterministic merge step as agent output, and scored. Every condition must reach the score of the unsplit reference code, and every condition does (geotext 9/9; hone 12/12; lice 31/31; particle-swarm-optimization 6/6; stocktrends 9/9, for G2, G4, GC, G6 and G7). A smoke run before the pilot exposed four defects in the harness, all fixed before any comparison and applied identically to every condition: a missing package installer on the host, subclasses merged before their base class, traceability markers written by the model without a comment sign, and classes split across agents losing methods in the merge. These changes are listed as deviations in the released pre-registration folder.",
  "probe_rows": [
   [
    "qwen3-coder-30b-a3b",
@@ -47,15 +47,15 @@
   ]
  ],
  "probe": "{bi:Model selection:} The model was chosen before the pilot by a probe that runs only the single-agent condition (G2), so the choice cannot favor any way of splitting. The decision rule was written down before the probe: switch to a larger reasoning model only if it passes at least three more tests in total, and add DevBench’s sequence diagram to every agent’s input only if it does not lower the score. Neither condition was met (Table IV): the larger model passed the same number of tests at about five times the tokens, and the sequence diagram did not help, so the pilot keeps the cheaper model and the original inputs.",
- "pilot": "{bi:Pilot (Python projects):} Table V reports three runs per condition. Correctness showed a floor effect: on lice every condition passed the same 0 of 31 tests in every run; on stocktrends every condition passed the same 1 of 9 tests in every run. The pilot therefore cannot separate the conditions on correctness. Costs did differ (Fig. 4). On lice, where the criterion recommends a single agent, the single agent used 4,172 tokens per run against 41,127 for random teams and 20,986 for one agent per class (80–90% fewer) and exchanged no messages against 9 and 4, at equal correctness. On stocktrends (k* = 3) the criterion team used 14,162 tokens per run against 13,511 for random teams of equal sizes (+5%, within the pre-registered 10% margin) and 17,879 for one agent per class and Infomap, which formed the same team (21% fewer), and exchanged 2 messages against 1 for random teams and 3 for one agent per class. Under the pre-registered rules the pilot is a provisional NO-GO: the criterion team did not pass more tests than random teams, and where k* = 1 the single agent did not pass more tests than the split teams, because all of them scored zero; the decision becomes final once the C++ and Java pilot projects are scored. Inspection of the failing tests shows two causes that affect every condition alike: tests that require identifiers appearing in neither the requirements nor the design (for example, a class constant or a default argument named only in a test), and errors in the model’s own code, such as wrong numeric logic or a module that fails at import. The harness itself is not a cause, since the reference code passes every test after the same split and merge. The main study therefore needs tasks on which the model passes a meaningful share of tests; Section VII discusses this. The whole Python pilot used 346,555 tokens, which cost less than one US dollar with this model.",
+ "pilot": "{bi:Pilot (Python projects):} Table V reports three runs per condition. Correctness showed a floor effect: on lice every condition passed the same 0 of 31 tests in every run; on stocktrends every condition passed the same 1 of 9 tests in every run. The pilot therefore cannot separate the conditions on correctness. Costs did differ (Fig. 4). On lice, where the criterion recommends a single agent, the single agent used 4,172 tokens per run against 41,127 for random teams and 20,986 for one agent per class (80–90% fewer; exact one-sided permutation test over runs, p = 0.05 for each comparison, the smallest value attainable with three runs per condition) and exchanged no messages against 9 and 4, at equal correctness. On stocktrends (k* = 3) the criterion team used 14,162 tokens per run against 13,511 for random teams of equal sizes (+5%, within the pre-registered 10% margin) and 17,879 for one agent per class and Infomap, which formed the same team (21% fewer), and exchanged 2 messages against 1 for random teams and 3 for one agent per class. Under the pre-registered rules the pilot is a provisional NO-GO: the criterion team did not pass more tests than random teams, and where k* = 1 the single agent did not pass more tests than the split teams, because all of them scored zero; the decision becomes final once the C++ and Java pilot projects are scored. Inspection of the failing tests shows two causes that affect every condition alike: tests that require identifiers appearing in neither the requirements nor the design (for example, a class constant or a default argument named only in a test), and errors in the model’s own code, such as wrong numeric logic or a module that fails at import. The harness itself is not a cause, since the reference code passes every test after the same split and merge. The main study therefore needs tasks on which the model passes a meaningful share of tests; Section VII discusses this. The whole Python pilot used 346,555 tokens, which cost less than one US dollar with this model.",
  "pilot_rows": [
   [
    "lice",
    "G2 Single agent",
    "1",
-   "0.0/31",
+   "0.0 ± 0.0 / 31",
    "0, 0, 0",
-   "4,172",
+   "4,172 ± 137",
    "0.0",
    "–"
   ],
@@ -63,9 +63,9 @@
    "lice",
    "G4 Random team",
    "5",
-   "0.0/31",
+   "0.0 ± 0.0 / 31",
    "0, 0, 0",
-   "41,127",
+   "41,127 ± 8,293",
    "9.0",
    "–"
   ],
@@ -73,9 +73,9 @@
    "lice",
    "GC One agent per class",
    "5",
-   "0.0/31",
+   "0.0 ± 0.0 / 31",
    "0, 0, 0",
-   "20,986",
+   "20,986 ± 7,045",
    "4.0",
    "–"
   ],
@@ -83,9 +83,9 @@
    "lice",
    "G6 Infomap team",
    "1",
-   "0.0/31",
+   "0.0 ± 0.0 / 31",
    "0, 0, 0",
-   "4,172",
+   "4,172 ± 137",
    "0.0",
    "same team as G2"
   ],
@@ -93,9 +93,9 @@
    "lice",
    "G7 Criterion team",
    "1",
-   "0.0/31",
+   "0.0 ± 0.0 / 31",
    "0, 0, 0",
-   "4,172",
+   "4,172 ± 137",
    "0.0",
    "same team as G2"
   ],
@@ -103,9 +103,9 @@
    "stocktrends",
    "G2 Single agent",
    "1",
-   "1.0/9",
+   "1.0 ± 0.0 / 9",
    "1, 1, 1",
-   "3,681",
+   "3,681 ± 23",
    "0.0",
    "–"
   ],
@@ -113,9 +113,9 @@
    "stocktrends",
    "G4 Random team",
    "3",
-   "1.0/9",
+   "1.0 ± 0.0 / 9",
    "1, 1, 1",
-   "13,511",
+   "13,511 ± 402",
    "1.0",
    "–"
   ],
@@ -123,9 +123,9 @@
    "stocktrends",
    "GC One agent per class",
    "4",
-   "1.0/9",
+   "1.0 ± 0.0 / 9",
    "1, 1, 1",
-   "17,879",
+   "17,879 ± 1,413",
    "3.0",
    "–"
   ],
@@ -133,9 +133,9 @@
    "stocktrends",
    "G6 Infomap team",
    "4",
-   "1.0/9",
+   "1.0 ± 0.0 / 9",
    "1, 1, 1",
-   "17,879",
+   "17,879 ± 1,413",
    "3.0",
    "same team as GC"
   ],
@@ -143,9 +143,9 @@
    "stocktrends",
    "G7 Criterion team",
    "3",
-   "1.0/9",
+   "1.0 ± 0.0 / 9",
    "1, 1, 1",
-   "14,162",
+   "14,162 ± 1,010",
    "2.0",
    "–"
   ]

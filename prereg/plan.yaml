@@ -14,6 +14,14 @@ amendments:
     tag: prereg-v1.2
     before_any_model_run: true
     change: "model alibaba/qwen3-coder -> alibaba/qwen3-coder-30b-a3b (the first ID was not offered by the gateway; the only call returned 404, so no model output existed). Nothing else changed."
+  - date: 2026-11-22
+    tag: prereg-v1.3
+    before_any_model_run: true   # for the two added tasks; existing pilot runs are unchanged
+    change: >
+      Experiment 1b added after the Python pilot. Two fresh k*=1 projects whose scorer check is usable
+      (geotext 9/9, particle-swarm-optimization 6/6, empty code 0) are added with the same model, prompts,
+      settings and conditions. hone is excluded because empty code passes 12/12 (scorer rule). The
+      hypotheses below were written before any model call on these tasks.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -46,6 +54,15 @@ tasks:
   - {project: python/lice,        why: "k*=1 with 5 classes: tests 'do not split'"}
   - {project: cpp/xlsx2csv,       why: "k*=3; G7 = Infomap; vs random and single (Docker)"}
   - {project: java/idcenter,      why: "k*=3; G7 = Infomap; vs random and single (Docker)"}
+  - {project: python/geotext,     why: "Experiment 1b: k*=1 with 2 classes (fresh task)"}
+  - {project: python/particle-swarm-optimization, why: "Experiment 1b: k*=1 with 2 classes (fresh task)"}
+
+experiment_1b:
+  question: "Where the criterion recommends one agent, is a single agent as correct as split teams at lower cost?"
+  hypotheses:
+    H3a_cost: "On every k*=1 task, mean tokens of G2 < mean tokens of G4 and of GC (exact permutation test over runs)."
+    H3b_correctness: "On a majority of k*=1 tasks where some condition passes > 0 tests, mean tests passed of G2 >= max(G4, GC)."
+  tasks_k1: [python/lice, python/geotext, python/particle-swarm-optimization]
 
 scoring:
   metric: pass_rate = tests passed / tests passed by DevBench's own answer code

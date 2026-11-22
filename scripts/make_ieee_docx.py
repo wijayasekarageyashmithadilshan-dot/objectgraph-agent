@@ -357,9 +357,9 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     if has_pilot:
         d.p(AG["pilot"].replace("Table V", "Table IV"))
         d.section_break(2)
-        d.table("Pilot on DevBench’s Python Projects", ["Project", "Condition", "Agents", "Tests (mean)", "Runs", "Tokens", "Messages", "Note"],
+        d.table("Pilot on DevBench’s Python Projects", ["Project", "Condition", "Agents", "Tests (mean ± SD)", "Runs", "Tokens (mean ± SD)", "Messages", "Note"],
                 AG["pilot_rows"], [1200, 2000, 700, 1100, 900, 900, 900, 1600], size=14,
-                notes="Mean over three runs (run identifiers 0, 1, 2); Runs lists tests passed per run. Identical teams receive identical prompts and cached responses.")
+                notes="Mean ± standard deviation over three runs (run identifiers 0, 1, 2); Runs lists tests passed per run. Identical teams receive identical prompts and cached responses.")
         d.section_break(1)
         d.figure(ROOT / "paper/figures_docx/fig_pilot.png", "Pilot: tests passed (left) and tokens per run (right) for each condition.")
     else:
