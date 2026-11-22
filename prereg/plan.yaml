@@ -10,6 +10,10 @@ amendments:
     tag: prereg-v1.1
     before_any_model_run: true
     change: "model anthropic/claude-sonnet-5-5 -> vercel/alibaba/qwen3-coder (no Anthropic key available; open-weight model aids reproducibility). Nothing else changed."
+  - date: 2026-11-22
+    tag: prereg-v1.2
+    before_any_model_run: true
+    change: "model alibaba/qwen3-coder -> alibaba/qwen3-coder-30b-a3b (the first ID was not offered by the gateway; the only call returned 404, so no model output existed). Nothing else changed."
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -20,8 +24,8 @@ question: >
 
 model:
   provider: vercel            # Vercel AI Gateway, key in AI_GATEWAY_API_KEY (never in files)
-  name: alibaba/qwen3-coder   # Qwen3-Coder-480B-A35B-Instruct, open weights, fixed release
-                              # (not "qwen3-coder-next", which is a rolling alias)
+  name: alibaba/qwen3-coder-30b-a3b   # Qwen3-Coder-30B-A3B-Instruct: open weights, fixed release,
+                                      # coding model without a "thinking" mode (low token use)
   temperature: 0.0
   max_tokens_per_call: 8000
 token_cap_per_run: 200000
