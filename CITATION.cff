@@ -5,8 +5,11 @@ authors:
   - family-names: Dilshan
     given-names: Yashmitha
     affiliation: "Informatics Institute of Technology, Colombo, Sri Lanka"
-    # orcid: "https://orcid.org/0000-0000-0000-0000"   <- add your ORCID iD
+    orcid: "https://orcid.org/0009-0002-2591-6018"
+  - family-names: Edirisooriya
+    given-names: Maninda
+    affiliation: "Informatics Institute of Technology, Colombo, Sri Lanka"
 license: MIT
 repository-code: "https://github.com/wijayasekarageyashmithadilshan-dot/objectgraph-agent"
-version: "0.3.1"
+version: "0.4.0"
 date-released: "2026-11-22"

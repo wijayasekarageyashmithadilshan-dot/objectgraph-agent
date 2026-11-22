@@ -401,9 +401,9 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     d.h1("Ethics Statement", numbered=False)
     d.p("This study did not involve human participants, animals or personal data. All generated code was executed only in isolated sandboxes.", first=True)
     d.h1("Conflict of Interest", numbered=False)
-    d.p("The authors declare no competing interests. {T:confirm for every author}", first=True)
+    d.p("The authors declare no competing interests.", first=True)
     d.h1("Acknowledgment", numbered=False)
-    d.p("{T:thank the supervisors and anyone else who helped but does not meet IEEE authorship criteria} Parts of the text, the analysis code and the figures were drafted with the assistance of Claude (Anthropic), an AI assistant; the authors reviewed and verified all content and take full responsibility for it.", first=True)
+    d.p("The authors thank Achala Aponso, Informatics Institute of Technology, for reviewing drafts of this article. The authors used Claude (Anthropic) as an assistant throughout this work (November 2026). It drafted the analysis and agent-harness code, the pre-registration files, the figure scripts and first drafts of all sections, and it assisted with literature searches and with checking references. All study design decisions, registrations and interpretations were reviewed and approved by the authors, who reviewed all code, results, references and text and take full responsibility for the content of this article.", first=True)
     return {}
 
 
@@ -434,13 +434,13 @@ def build(template: Path, out: Path) -> None:
     front.append('<w:p><w:pPr><w:pStyle w:val="PaperTitle"/></w:pPr>' + runs(
         "When Should a Software Task Be Split Across Large Language Model Agents? Sizing Multi-Agent Teams from Domain Models") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="AU"/><w:spacing w:after="0"/></w:pPr>' + runs(
-        "Yashmitha Dilshan{sup:1}, {T:co-author names in order, with affiliation numbers and IEEE membership grades}") + "</w:p>")
+        "Yashmitha Dilshan{sup:1} and Maninda Edirisooriya{sup:1}") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
-        "{sup:1}Informatics Institute of Technology, Colombo, Sri Lanka {T:department and postal code; other affiliations}") + "</w:p>")
+        "{sup:1}Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K. (e-mail: yashmitha.20211432@iit.ac.lk; maninda.e@iit.ac.lk)") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:before="100" w:after="100"/><w:ind w:right="1598" w:firstLine="0"/></w:pPr>' + runs(
-        "Corresponding author: Yashmitha Dilshan (e-mail: {T:e-mail}).") + "</w:p>")
+        "Corresponding author: Y. Dilshan (e-mail: yashmitha.20211432@iit.ac.lk; ORCID: 0009-0002-2591-6018).") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
-        "{T:funding statement with grant numbers, or “This work received no external funding.”}") + "</w:p>")
+        "This work did not receive any specific funding.") + "</w:p>")
     abstract = ("Multi-agent systems built on large language models (LLMs) are increasingly used to develop software, yet their team size and the division of work among agents are usually fixed by hand, proposed by a model, or found by costly search, and recent controlled studies show that adding agents can lower accuracy. This article studies a question that comes before these methods: given the design of the software to be built, should the work be split at all, and if so, into how many agents? A Unified Modeling Language (UML) class diagram is converted into a weighted graph of duties, every candidate team is built with average-linkage clustering, and the team size that maximizes modularization quality minus a per-agent cost is selected. The decision is made before any code exists, is deterministic, and may recommend a single agent. The expected dependency of equal-size random teams is derived in closed form. On all {N:NProjects} projects of the four-language DevBench benchmark, the criterion recommends one agent for {N:NSingle} projects and teams of {N:KMin} to {N:KMax} agents for the other {N:NMulti}. For those teams, cross-agent dependency is {N:CutRedMin} to {N:CutRedMax} percent lower than in {N:Draws} random teams of equal sizes, and the recommended size is unchanged in {N:WeightStableAll} percent of 81 edge-weight settings. " + json.loads((ROOT / "paper/generated/agent.json").read_text())["abstract"] + " Code, prompts, cached model responses and every table are publicly released.")
     front.append('<w:p><w:pPr><w:pStyle w:val="Abstract"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>ABSTRACT</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(abstract) + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="IT"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>INDEX TERMS</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(
@@ -465,11 +465,12 @@ def build(template: Path, out: Path) -> None:
     if unused:
         raise SystemExit(f"references never cited: {unused}")
     bios = [
-        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' + runs("{T:author photo, 1 in wide × 1.25 in tall}  ") +
+        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>YASHMITHA DILSHAN</w:t></w:r>' + runs(
-            " is a final-year undergraduate student in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka. Research interests include large language model agents, multi-agent systems, human–computer interaction and machine learning. {T:confirm or edit; add degree program and any IEEE membership}") + "</w:p>",
-        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' + runs("{T:photo}  ") +
-        '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>[CO-AUTHOR NAME]</w:t></w:r>' + runs(" {T:biography of each co-author: degrees, current position, research interests}") + "</w:p>",
+            " is currently pursuing the B.Sc. degree in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K., with expected graduation in 2027. His research interests include large language model agents, multi-agent systems for software engineering, human–computer interaction, and the reproducible evaluation of machine learning.") + "</w:p>",
+        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' +
+        '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>MANINDA EDIRISOORIYA</w:t></w:r>' + runs(
+            " is a Senior Lecturer (Grade II) in the School of Computing at the Informatics Institute of Technology, Colombo, Sri Lanka. {T:degrees and research interests}") + "</w:p>",
     ]
     final_sect = re.sub(r"<w:(header|footer)Reference[^>]*/>", "", tail_sect.replace("</w:body>", ""))
     newxml = head + "".join(front) + "".join(body) + "".join(ref_xml) + "".join(bios) + final_sect + "</w:body></w:document>"
@@ -483,7 +484,7 @@ def build(template: Path, out: Path) -> None:
 
     # running header text and page-number field in the body footer
     hdr = (W / "header2.xml").read_text(encoding="utf-8")
-    hdr = hdr.replace("<w:t>Author Name</w:t>", "<w:t>Y. Dilshan et al.</w:t>")
+    hdr = hdr.replace("<w:t>Author Name</w:t>", "<w:t>Y. Dilshan, M. Edirisooriya</w:t>")
     hdr = hdr.replace("<w:t>Preparation of Papers for IEEE Access (February 2017)</w:t>",
                       "<w:t>Sizing LLM Agent Teams from Domain Models</w:t>")
     (W / "header2.xml").write_text(hdr, encoding="utf-8")
