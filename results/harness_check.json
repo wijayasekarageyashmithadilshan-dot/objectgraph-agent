@@ -1,0 +1,87 @@
+{
+ "date": "2026-11-22",
+ "script": "scripts/check_harness.py",
+ "model_calls": 0,
+ "rows": [
+  {
+   "project": "python/stocktrends",
+   "condition": "G2",
+   "k": 1,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/stocktrends",
+   "condition": "G4",
+   "k": 3,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/stocktrends",
+   "condition": "GC",
+   "k": 4,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/stocktrends",
+   "condition": "G6",
+   "k": 4,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/stocktrends",
+   "condition": "G7",
+   "k": 3,
+   "passed": 9,
+   "unsplit": 9,
+   "ok": true
+  },
+  {
+   "project": "python/lice",
+   "condition": "G2",
+   "k": 1,
+   "passed": 31,
+   "unsplit": 31,
+   "ok": true
+  },
+  {
+   "project": "python/lice",
+   "condition": "G4",
+   "k": 5,
+   "passed": 31,
+   "unsplit": 31,
+   "ok": true
+  },
+  {
+   "project": "python/lice",
+   "condition": "GC",
+   "k": 5,
+   "passed": 31,
+   "unsplit": 31,
+   "ok": true
+  },
+  {
+   "project": "python/lice",
+   "condition": "G6",
+   "k": 1,
+   "passed": 31,
+   "unsplit": 31,
+   "ok": true
+  },
+  {
+   "project": "python/lice",
+   "condition": "G7",
+   "k": 1,
+   "passed": 31,
+   "unsplit": 31,
+   "ok": true
+  }
+ ]
+}

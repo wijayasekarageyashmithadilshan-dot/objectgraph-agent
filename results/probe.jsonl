@@ -1,0 +1,6 @@
+{"project": "python/stocktrends", "model": "alibaba/qwen3-coder-30b-a3b", "seq": false, "passed": 1, "of": 9, "tokens": 3664, "output_tokens": 727}
+{"project": "python/lice", "model": "alibaba/qwen3-coder-30b-a3b", "seq": false, "passed": 3, "of": 31, "tokens": 5113, "output_tokens": 2812}
+{"project": "python/stocktrends", "model": "alibaba/qwen3-coder-30b-a3b", "seq": true, "passed": 1, "of": 9, "tokens": 4109, "output_tokens": 723}
+{"project": "python/lice", "model": "alibaba/qwen3-coder-30b-a3b", "seq": true, "passed": 0, "of": 31, "tokens": 4311, "output_tokens": 1786}
+{"project": "python/stocktrends", "model": "alibaba/qwen3.6-35b-a3b", "seq": true, "passed": 1, "of": 9, "tokens": 13480, "output_tokens": 9995}
+{"project": "python/lice", "model": "alibaba/qwen3.6-35b-a3b", "seq": true, "passed": 0, "of": 31, "tokens": 27266, "output_tokens": 24648}

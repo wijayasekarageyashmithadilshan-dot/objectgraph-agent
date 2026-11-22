@@ -73,6 +73,9 @@ def main() -> None:
             print(f"  {c:3} k={team.k}: {sc['passed']}/{sc['total']}  {'OK' if ok else 'MISMATCH'}")
             rows.append({"project": project, "condition": c, "k": team.k, "passed": sc["passed"],
                          "unsplit": full["passed"], "ok": ok})
+    (ROOT / "results").mkdir(exist_ok=True)
+    (ROOT / "results" / "harness_check.json").write_text(json.dumps(
+        {"script": "scripts/check_harness.py", "model_calls": 0, "rows": rows}, indent=1))
     bad = [r for r in rows if not r["ok"]]
     print("\nHARNESS OK" if not bad else f"\nHARNESS PROBLEMS: {len(bad)}")
     sys.exit(1 if bad else 0)

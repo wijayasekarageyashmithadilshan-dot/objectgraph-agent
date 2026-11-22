@@ -1,0 +1,62 @@
+{
+ "model_sentence": "alibaba/qwen3-coder-30b-a3b (Qwen3-Coder-30B-A3B-Instruct, an open-weight coding model with a fixed release, accessed through the Vercel AI Gateway)",
+ "hardware": "Agent runs for Python projects were executed on Google Colab (Python 3.13); every scoring run builds a fresh virtual environment. C++ and Java projects are scored in DevBench’s container image in GitHub Codespaces.",
+ "verification": "{bi:Pipeline verification without model calls:} To check that splitting, merging and scoring do not themselves change the outcome, DevBench’s reference implementation is cut into the fragments that each agent of each condition would own, merged by the same deterministic merge step as agent output, and scored. Every condition must reach the score of the unsplit reference code, and every condition does (lice 31/31; stocktrends 9/9, for G2, G4, GC, G6 and G7). A smoke run before the pilot exposed four defects in the harness, all fixed before any comparison and applied identically to every condition: a missing package installer on the host, subclasses merged before their base class, traceability markers written by the model without a comment sign, and classes split across agents losing methods in the merge. These changes are listed as deviations in the released pre-registration folder.",
+ "probe_rows": [
+  [
+   "qwen3-coder-30b-a3b",
+   "no",
+   "stocktrends",
+   "1/9",
+   "3,664"
+  ],
+  [
+   "qwen3-coder-30b-a3b",
+   "no",
+   "lice",
+   "3/31",
+   "5,113"
+  ],
+  [
+   "qwen3-coder-30b-a3b",
+   "yes",
+   "stocktrends",
+   "1/9",
+   "4,109"
+  ],
+  [
+   "qwen3-coder-30b-a3b",
+   "yes",
+   "lice",
+   "0/31",
+   "4,311"
+  ],
+  [
+   "qwen3.6-35b-a3b",
+   "yes",
+   "stocktrends",
+   "1/9",
+   "13,480"
+  ],
+  [
+   "qwen3.6-35b-a3b",
+   "yes",
+   "lice",
+   "0/31",
+   "27,266"
+  ]
+ ],
+ "probe": "{bi:Model selection:} The model was chosen before the pilot by a probe that runs only the single-agent condition (G2), so the choice cannot favor any way of splitting. The decision rule was written down before the probe: switch to a larger reasoning model only if it passes at least three more tests in total, and add DevBench’s sequence diagram to every agent’s input only if it does not lower the score. Neither condition was met (Table IV): the larger model passed the same number of tests at about five times the tokens, and the sequence diagram did not help, so the pilot keeps the cheaper model and the original inputs.",
+ "pilot": "{P:Pilot table (stocktrends and lice): tests passed, tokens and messages per condition}",
+ "pilot_rows": null,
+ "abstract": "{P:pilot result: tests passed and tokens of the criterion team against single-agent, random, one-agent-per-class and Infomap teams}",
+ "conclusion": "{P:one-sentence pilot result, stated only as strongly as the evidence allows}",
+ "contribution4": "A pre-registered agent study with four hypotheses, controlled conditions, an equal token budget per run, a zero-cost verification of the agent harness and a pilot on DevBench (Section VI).",
+ "threat_extra": "DevBench’s tests also check identifiers that are absent from the requirements and the design, which lowers every condition’s absolute score; TextCNN is excluded from the pilot because its reference code passes only 5 of 13 tests in the sandbox, as the pre-registered scorer rule requires.",
+ "main_pending": [
+  "{P:Main study: H1 test statistics and effect sizes over all tasks and both models}",
+  "{P:H2: Spearman correlation between cut weight and messages per agent pair}",
+  "{P:H3: split or no-split decision against the empirically better choice}",
+  "{P:H4: k* agreement between extracted and gold designs, and H1 with extracted designs}"
+ ]
+}

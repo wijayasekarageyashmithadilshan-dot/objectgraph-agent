@@ -232,6 +232,9 @@ class Doc:
 
 # --------------------------------------------------------------------------- content
 def build_content(d: Doc, S: dict, REFT: list) -> dict:
+    AG = json.loads((ROOT / "paper/generated/agent.json").read_text())
+    has_pilot = bool(AG.get("pilot_rows"))
+    ref_tab = "Table V" if has_pilot else "Table IV"
     multi = [p for p in S["projects"] if p["duty"]["k_star"] > 1]
     single = sorted([p for p in S["projects"] if p["duty"]["k_star"] == 1], key=lambda p: p["project"].lower())
     single_list = ", ".join(f'{p["project"]} ({p["duty"]["n"]})' for p in single)
@@ -245,7 +248,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         "1) A formulation of team sizing as choosing a partition of a design-derived {i:duty graph}, in which a single agent is a legitimate answer (Section III).",
         "2) A deterministic criterion based on average-linkage clustering and modularization quality (MQ) with a per-agent cost, together with a closed-form expected cross-agent dependency for random teams of equal sizes and a locality assumption that links that dependency to messages (Section IV).",
         "3) A structural study on all {N:NProjects} DevBench projects in four programming languages, with random, one-agent-per-class, Louvain and Infomap controls and two sensitivity analyses (Section V).",
-        "4) A pre-registered agent study with four hypotheses, controlled conditions and an equal token budget per run (Section VI). {P:headline agent result}",
+        "4) " + AG["contribution4"],
         "5) A fully deterministic artifact: one command regenerates every number in this article, and cached model responses allow the agent tables to be rebuilt without calling any model.",
     ]:
         d.p(t)
@@ -343,26 +346,37 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
              ["G6", "Infomap partition of the same duty graph"], ["G7", "Criterion team (k*, π_k*)"]],
             [1000, 3800], size=15,
             notes="All conditions use the same model, prompts, orchestrator and token cap per run. The pilot runs G2, G4, GC, G6 and G7; the main study adds G1, G3 and G5. When k* = 1, G4 uses the group sizes of GC so that splitting can be compared with not splitting.")
-    d.p("{bi:Settings:} The pilot uses {P:exact model identifier} at temperature 0, at most 8,000 output tokens per call, a cap of 200,000 tokens per run, three runs per condition with different run identifiers, and the gold design. The main study adds designs extracted from the requirements (H4) and a second model. Every prompt and response is stored with a content hash, so all agent tables can be rebuilt offline. {P:hardware, operating system and container versions used for the agent runs}")
-    d.p("{bi:Scorer validity:} Before scoring any agent, DevBench’s tests are run against DevBench’s own reference code in the sandbox and against empty code. Of the {N:NRefRan} Python projects that could be run, {N:NRefFull} pass every unit and acceptance test (Table III); a project is scored only if its reference code passes in full and empty code passes nothing. DevBench’s C++ and Java reference code does not build with current compilers (g++ 13, JDK 21), so these projects are scored inside DevBench’s own container image. {P:scorer-check results for the C++, Java and JavaScript projects}")
+    d.p("{bi:Settings:} The pilot uses " + AG["model_sentence"] + " at temperature 0, at most 8,000 output tokens per call, a cap of 200,000 tokens per run, three runs per condition with different run identifiers, and the gold design. The main study adds designs extracted from the requirements (H4) and a second model. Every prompt and response is stored with a content hash, so all agent tables can be rebuilt offline. " + AG["hardware"])
+    d.p("{bi:Scorer validity:} Before scoring any agent, DevBench’s tests are run against DevBench’s own reference code in the sandbox and against empty code. Of the {N:NRefRan} Python projects that could be run, {N:NRefFull} pass every unit and acceptance test (" + ref_tab + "); a project is scored only if its reference code passes in full and empty code passes nothing. DevBench’s C++ and Java reference code does not build with current compilers (g++ 13, JDK 21), so these projects are scored inside DevBench’s own container image, where their scorer checks are run and reported with their results.")
     d.h2("Results")
-    for t in ["{P:Table: tests passed and tokens per condition (mean with 95% bootstrap confidence intervals), H1 test statistics and effect sizes.}",
-              "{P:Figure: tests passed against tokens (Pareto plot) per condition.}",
-              "{P:H2: Spearman correlation between cut weight and messages per agent pair, with confidence interval.}",
-              "{P:H3: confusion table of the split or no-split decision against the empirically better choice.}",
-              "{P:H4: agreement of k* between extracted and gold designs, and H1 with extracted designs.}"]:
-        d.p(t, first=t.startswith("{P:Table"))
+    d.p(AG["verification"], first=True)
+    d.p(AG["probe"].replace("(Table IV)", "(Table III)"))
+    d.table("Single-Agent Model Probe Used to Choose the Pilot Model", ["Model", "Seq. diagram", "Project", "Tests", "Tokens"],
+            AG["probe_rows"], [1500, 800, 1000, 700, 800], size=14,
+            notes="Condition G2 only, run 0, gold design. The probe was run before any team comparison, with a decision rule fixed in advance.")
+    if has_pilot:
+        d.p(AG["pilot"].replace("Table V", "Table IV"))
+        d.section_break(2)
+        d.table("Pilot on DevBench’s Python Projects", ["Project", "Condition", "Agents", "Tests (mean)", "Runs", "Tokens", "Messages", "Note"],
+                AG["pilot_rows"], [1200, 2000, 700, 1100, 900, 900, 900, 1600], size=14,
+                notes="Mean over three runs (run identifiers 0, 1, 2); Runs lists tests passed per run. Identical teams receive identical prompts and cached responses.")
+        d.section_break(1)
+        d.figure(ROOT / "paper/figures_docx/fig_pilot.png", "Pilot: tests passed (left) and tokens per run (right) for each condition.")
+    else:
+        d.p(AG["pilot"])
+    for t in AG["main_pending"]:
+        d.p(t)
 
     d.h1("Discussion")
     d.h2("What the structural results do and do not show")
     d.p("They show that design graphs from a public benchmark have strong cohesive structure, that the criterion finds this structure deterministically and stably, and that it recommends a single agent for half of the projects. They do not show that the recommended teams build better software; only the agent study can show that.", first=True)
     d.h2("Threats to validity")
-    d.p("{i:Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. {i:Construct validity:} correctness is measured with DevBench’s own tests and traceability with duty comments, which may undercount duties implemented without a comment. {i:External validity:} DevBench projects are small (at most {N:DutyMax} duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. {i:Conclusion validity:} DevBench yields only {N:NMulti} multi-agent tasks, below the roughly 36 that the power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work {cite:yang2026cocoder} and from requirement sets of the kind used by NOMAD {cite:giannouris2025nomad}. {P:final task count}", first=True)
+    d.p("{i:Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. {i:Construct validity:} correctness is measured with DevBench’s own tests and traceability with duty comments, which may undercount duties implemented without a comment. {i:External validity:} DevBench projects are small (at most {N:DutyMax} duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. {i:Conclusion validity:} DevBench yields only {N:NMulti} multi-agent tasks, below the roughly 36 that the power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work {cite:yang2026cocoder} and from requirement sets of the kind used by NOMAD {cite:giannouris2025nomad}. " + AG["threat_extra"], first=True)
     d.h2("Weights and contamination")
     d.p("Edge weights are set by hand. The 81-setting grid shows that {i:k}* is stable in most settings but not all, so both the default and the full grid are reported and nothing is tuned on test projects. DevBench is public and may appear in model training data; conditions are compared only with each other, which controls for memorization that affects all conditions equally.", first=True)
 
     d.h1("Conclusion and Future Work")
-    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. {P:one-sentence agent result, stated only as strongly as the evidence allows} Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
+    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. " + AG["conclusion"] + " Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
 
     d.h1("Appendix A", numbered=False)
     d.h1("Reproducibility", numbered=False)
@@ -427,7 +441,7 @@ def build(template: Path, out: Path) -> None:
         "Corresponding author: Yashmitha Dilshan (e-mail: {T:e-mail}).") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
         "{T:funding statement with grant numbers, or “This work received no external funding.”}") + "</w:p>")
-    abstract = ("Multi-agent systems built on large language models (LLMs) are increasingly used to develop software, yet their team size and the division of work among agents are usually fixed by hand, proposed by a model, or found by costly search, and recent controlled studies show that adding agents can lower accuracy. This article studies a question that comes before these methods: given the design of the software to be built, should the work be split at all, and if so, into how many agents? A Unified Modeling Language (UML) class diagram is converted into a weighted graph of duties, every candidate team is built with average-linkage clustering, and the team size that maximizes modularization quality minus a per-agent cost is selected. The decision is made before any code exists, is deterministic, and may recommend a single agent. The expected cross-agent dependency of random teams with the same group sizes is derived in closed form. On all {N:NProjects} projects of the DevBench benchmark, written in four programming languages, the criterion recommends one agent for {N:NSingle} projects and teams of {N:KMin} to {N:KMax} agents for the other {N:NMulti}. For those teams, cross-agent dependency is {N:CutRedMin} to {N:CutRedMax} percent lower than in {N:Draws} random teams of equal sizes, and the recommended size is unchanged in {N:WeightStableAll} percent of 81 edge-weight settings. {P:agent-run results: tests passed and tokens used against single-agent, random, one-agent-per-class and Infomap teams under an equal token budget} Code, prompts, cached model responses and every table are publicly released.")
+    abstract = ("Multi-agent systems built on large language models (LLMs) are increasingly used to develop software, yet their team size and the division of work among agents are usually fixed by hand, proposed by a model, or found by costly search, and recent controlled studies show that adding agents can lower accuracy. This article studies a question that comes before these methods: given the design of the software to be built, should the work be split at all, and if so, into how many agents? A Unified Modeling Language (UML) class diagram is converted into a weighted graph of duties, every candidate team is built with average-linkage clustering, and the team size that maximizes modularization quality minus a per-agent cost is selected. The decision is made before any code exists, is deterministic, and may recommend a single agent. The expected cross-agent dependency of random teams with the same group sizes is derived in closed form. On all {N:NProjects} projects of the DevBench benchmark, written in four programming languages, the criterion recommends one agent for {N:NSingle} projects and teams of {N:KMin} to {N:KMax} agents for the other {N:NMulti}. For those teams, cross-agent dependency is {N:CutRedMin} to {N:CutRedMax} percent lower than in {N:Draws} random teams of equal sizes, and the recommended size is unchanged in {N:WeightStableAll} percent of 81 edge-weight settings. " + json.loads((ROOT / "paper/generated/agent.json").read_text())["abstract"] + " Code, prompts, cached model responses and every table are publicly released.")
     front.append('<w:p><w:pPr><w:pStyle w:val="Abstract"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>ABSTRACT</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(abstract) + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="IT"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>INDEX TERMS</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(
         "Graph partitioning, large language models, multi-agent systems, software design, software modularization") + "</w:p>")

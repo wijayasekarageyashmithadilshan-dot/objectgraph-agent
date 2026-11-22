@@ -1,0 +1,25 @@
+\paragraph{Pipeline verification without model calls.} To check that splitting, merging and scoring do not themselves change the outcome, DevBench's reference implementation is cut into the fragments that each agent of each condition would own, merged by the same deterministic merge step as agent output, and scored. Every condition must reach the score of the unsplit reference code, and every condition does (lice 31/31; stocktrends 9/9, for G2, G4, GC, G6 and G7). A smoke run before the pilot exposed four defects in the harness, all fixed before any comparison and applied identically to every condition: a missing package installer on the host, subclasses merged before their base class, traceability markers written by the model without a comment sign, and classes split across agents losing methods in the merge. These changes are listed as deviations in the released pre-registration folder.
+
+\paragraph{Model selection.} The model was chosen before the pilot by a probe that runs only the single-agent condition (G2), so the choice cannot favor any way of splitting. The decision rule was written down before the probe: switch to a larger reasoning model only if it passes at least three more tests in total, and add DevBench's sequence diagram to every agent's input only if it does not lower the score. Neither condition was met (Table~\ref{tab:probe}): the larger model passed the same number of tests at about five times the tokens, and the sequence diagram did not help, so the pilot keeps the cheaper model and the original inputs.
+
+\begin{table}[t]\centering\small
+\caption{Single-agent model probe (G2) used to choose the pilot model before any team comparison.}\label{tab:probe}
+\begin{tabular}{llllr}\toprule
+Model & Seq. diagram & Project & Tests & Tokens\\\midrule
+qwen3-coder-30b-a3b & no & stocktrends & 1/9 & 3,664\\
+qwen3-coder-30b-a3b & no & lice & 3/31 & 5,113\\
+qwen3-coder-30b-a3b & yes & stocktrends & 1/9 & 4,109\\
+qwen3-coder-30b-a3b & yes & lice & 0/31 & 4,311\\
+qwen3.6-35b-a3b & yes & stocktrends & 1/9 & 13,480\\
+qwen3.6-35b-a3b & yes & lice & 0/31 & 27,266\\
+\bottomrule\end{tabular}\end{table}
+
+\pending{Pilot table (stocktrends and lice): tests passed, tokens and messages per condition}
+
+\pending{Main study: H1 test statistics and effect sizes over all tasks and both models}
+
+\pending{H2: Spearman correlation between cut weight and messages per agent pair}
+
+\pending{H3: split or no-split decision against the empirically better choice}
+
+\pending{H4: k* agreement between extracted and gold designs, and H1 with extracted designs}
