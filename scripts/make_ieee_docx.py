@@ -362,6 +362,8 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
                 notes="Mean ± standard deviation over three runs (run identifiers 0, 1, 2); Runs lists tests passed per run. Identical teams receive identical prompts and cached responses.")
         d.section_break(1)
         d.figure(ROOT / "paper/figures_docx/fig_pilot.png", "Pilot: tests passed (left) and tokens per run (right) for each condition.")
+        if (ROOT / "paper/figures_docx/fig_teams.png").exists():
+            d.figure(ROOT / "paper/figures_docx/fig_teams.png", caption="Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.")
     else:
         d.p(AG["pilot"])
     for t in AG["main_pending"]:

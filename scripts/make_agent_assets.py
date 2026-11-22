@@ -39,7 +39,7 @@ def ref_totals() -> dict:
 
 def to_latex(s: str) -> str:
     s = s.replace("±", r"$\pm$").replace("%", r"\%").replace("&", r"\&").replace("≈", r"$\approx$").replace("≥", r"$\ge$")
-    s = s.replace("(Fig. 4)", r"(Figure~\ref{fig:pilot})").replace("Section VII", r"Section~\ref{sec:discussion}").replace("(Section VI)", r"(Section~\ref{sec:agents})")
+    s = s.replace("(Fig. 4)", r"(Figure~\ref{fig:pilot})").replace("Fig. 5 shows", r"Figure~\ref{fig:teams} shows").replace("Section VII", r"Section~\ref{sec:discussion}").replace("(Section VI)", r"(Section~\ref{sec:agents})")
     s = s.replace("k* =", r"$k^\ast$ =").replace("×", r"$\times$").replace("–", "--").replace("—", "---").replace("’", "'")
     s = re.sub(r"\{bi:([^{}]*)\}", r"\\textbf{\\emph{\1}}", s)
     s = re.sub(r"\{b:([^{}]*)\}", r"\\textbf{\1}", s)
@@ -223,7 +223,13 @@ def main() -> None:
             corr = ""
         A["pilot"] = (
             "{bi:Pilot (Python projects):} Table V reports three runs per condition. " + corr +
-            "Costs did differ (Fig. 4). " + " ".join(cost_bits) + " " +
+            "Costs did differ (Fig. 4). " + " ".join(cost_bits) +
+            (" Fig. 5 shows run 0 of the criterion team and of a random team on stocktrends: the criterion team "
+             "keeps every class with one agent, so cohesion inside agents is high (0.44–0.75) and coupling between "
+             "them low (0.00–0.10), whereas the random team spreads classes over agents (cohesion 0.12–0.28, "
+             "coupling 0.20–0.38); both nevertheless passed the same test, which illustrates that structural "
+             "quality alone did not translate into correctness on this task."
+             if (ROOT / "paper/figures_docx/fig_teams.png").exists() else "") + " " +
             (f"Under the pre-registered rules the pilot is a {'provisional ' if prov else ''}{vword}"
              + (": the criterion team did not pass more tests than random teams, and where k* = 1 the single "
                 "agent did not pass more tests than the split teams, because all of them scored zero"
@@ -350,6 +356,10 @@ Project & Condition & Agents & Tests (mean $\pm$ SD) & Runs & Tokens (mean $\pm$
                  "\n\\bottomrule\\end{tabular}\\end{table*}\n")
         L.append(r"""\begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/pilot.pdf}
 \caption{Pilot: tests passed (left) and tokens per run (right) for each condition.}\label{fig:pilot}\end{figure}
+""")
+        if (ROOT / "paper/figures/teams.pdf").exists():
+            L.append(r"""\begin{figure}[t]\centering\includegraphics[width=\linewidth]{figures/teams.pdf}
+\caption{Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.}\label{fig:teams}\end{figure}
 """)
     else:
         L.append(to_latex(A["pilot"]) + "\n")
