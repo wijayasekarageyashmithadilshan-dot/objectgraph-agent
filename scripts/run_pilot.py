@@ -34,6 +34,23 @@ def git_state() -> dict:
         return {"commit": None, "tag": None}
 
 
+def plan_frozen_tag(plan: Path):
+    """Newest prereg-* tag whose plan.yaml is identical to the one used now, else None."""
+    import subprocess
+    try:
+        tags = subprocess.run(["git", "-C", str(ROOT), "tag", "--list", "prereg-*", "--sort=-creatordate"],
+                              capture_output=True, text=True).stdout.split()
+        rel = plan.resolve().relative_to(ROOT.resolve()).as_posix()
+    except Exception:
+        return None
+    now = plan.read_bytes()
+    for t in tags:
+        r = subprocess.run(["git", "-C", str(ROOT), "show", f"{t}:{rel}"], capture_output=True)
+        if r.returncode == 0 and r.stdout == now:
+            return t
+    return None
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--project", required=True)
@@ -55,8 +72,11 @@ def main() -> None:
     m = plan["model"]
     provider = a.provider or m["provider"]
     gs = git_state()
-    if provider != "fake" and not a.offline and gs.get("tag") != "prereg-v1":
-        print("WARNING: the commit is not tagged prereg-v1. Freeze the plan first (see prereg/plan.yaml).")
+    frozen = plan_frozen_tag(Path(a.plan))
+    if provider != "fake" and not a.offline and not frozen:
+        print("WARNING: prereg/plan.yaml does not match any prereg-* tag. Freeze the plan first.")
+    elif frozen:
+        print(f"Plan matches frozen tag {frozen}.")
     proj = load_project(Path(a.devbench), a.project)
     fake_fn = None
     if provider == "fake":
@@ -83,7 +103,7 @@ def main() -> None:
     path = res_dir / f"{a.project.replace('/', '__')}.json"
     old = json.loads(path.read_text())["rows"] if path.exists() else []
     keep = [r for r in old if (r["condition"], r["run_id"]) not in {(x["condition"], x["run_id"]) for x in rows}]
-    path.write_text(json.dumps({"project": a.project, "model": m["name"], "provider": provider,
+    path.write_text(json.dumps({"project": a.project, "model": m["name"], "provider": provider, "plan_tag": frozen,
                                 "git": gs, "rows": keep + rows}, indent=2))
     print(f"\nWrote {path}. Next: python scripts/analyse_pilot.py")
 

@@ -8,4 +8,5 @@ infomap==2.16.0
 pytest
 pyyaml
 anthropic
+openai
 virtualenv>=20.26

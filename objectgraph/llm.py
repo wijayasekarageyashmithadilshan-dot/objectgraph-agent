@@ -8,8 +8,12 @@
   JSON line (request, reply, usage, returned model id, timestamp).
 * offline=True raises CacheMiss instead of calling the API. Examiners use
   this mode to rebuild every table without a key.
-* The API key is read from the ANTHROPIC_API_KEY environment variable and is
-  never written to the cache.
+* Providers: "anthropic" (ANTHROPIC_API_KEY), "openrouter" (OPENROUTER_API_KEY;
+  reaches Claude, Qwen, GPT and others through one key), "openai"
+  (OPENAI_API_KEY, optional OPENAI_BASE_URL for any OpenAI-compatible server),
+  "ollama" (local server, no key) and "fake" (tests).
+* API keys are read from environment variables only and are never written to
+  the cache.
 """
 from __future__ import annotations
 
@@ -19,6 +23,14 @@ import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
+
+
+# provider -> (default base URL, environment variable holding the key)
+OPENAI_COMPATIBLE = {
+    "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
+    "openai": (None, "OPENAI_API_KEY"),
+    "ollama": ("http://localhost:11434/v1", None),
+}
 
 
 class CacheMiss(RuntimeError):
@@ -64,7 +76,7 @@ class LLM:
         self.usage = Usage()
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.cache_file = self.cache_dir / f"{provider}__{model}.jsonl"
+        self.cache_file = self.cache_dir / f"{provider}__{model.replace('/', '--').replace(':', '-')}.jsonl"
         self._cache = {}
         if self.cache_file.exists():
             for line in self.cache_file.read_text(encoding="utf-8").splitlines():
@@ -119,4 +131,23 @@ class LLM:
                 messages=[{"role": "user", "content": user}], **self.params)
             text = "".join(getattr(b, "text", "") for b in resp.content)
             return text, resp.usage.input_tokens, resp.usage.output_tokens, resp.model
+        if self.provider in OPENAI_COMPATIBLE:
+            base_default, key_var = OPENAI_COMPATIBLE[self.provider]
+            if self._client is None:
+                from openai import OpenAI
+                key = os.environ.get(key_var) if key_var else "ollama"
+                if not key:
+                    raise RuntimeError(f"Set {key_var} in your environment (never in code).")
+                base = os.environ.get("OPENAI_BASE_URL") if self.provider == "openai" else None
+                self._client = OpenAI(api_key=key, base_url=base or base_default, max_retries=5)
+            resp = self._client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "system", "content": system},
+                          {"role": "user", "content": user}],
+                temperature=self.params["temperature"], max_tokens=self.params["max_tokens"])
+            text = resp.choices[0].message.content or ""
+            u = resp.usage
+            inp = getattr(u, "prompt_tokens", 0) or 0 if u else 0
+            out = getattr(u, "completion_tokens", 0) or 0 if u else 0
+            return text, inp, out, getattr(resp, "model", self.model) or self.model
         raise ValueError(f"unknown provider {self.provider}")
