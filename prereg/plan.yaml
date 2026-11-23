@@ -87,6 +87,16 @@ amendments:
       of the weaker model. To fit the free endpoint's daily request limit, only G2, G4 and G7 run, once each
       (run 0); at temperature 0 the three Experiment 2 runs were mostly identical. Registered after Experiment 2
       results were seen; it is a replication with a stronger model, not a new selection of tasks.
+  - date: 2026-11-23
+    tag: prereg-v1.11
+    before_any_model_run: true   # only two one-line connectivity checks (add(a, b)) with this model; no task call
+    change: >
+      Experiment 2b provider switch, same model: NVIDIA Nemotron 3 Ultra is served directly by NVIDIA's API
+      catalog (nvidia/nemotron-3-ultra-550b-a55b), without the OpenRouter free endpoint's limit of about
+      50 requests a day. With that limit gone, Experiment 2b runs all five Experiment 2 conditions
+      (G2, G4, GC, G6, G7), still once each (run 0). No reasoning parameter is sent; a check call returned
+      plain code without hidden reasoning. Hypotheses: primary unchanged (G7 > G4); secondary G7 vs G2, GC
+      and G6, Holm-corrected.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -196,10 +206,9 @@ exp2_model:
   why: "Experiment 2 provider after the OpenRouter credit ran out (amendment v1.9)."
 
 exp2b_model:
-  provider: openrouter          # key in OPENROUTER_API_KEY (Colab Secrets only, never in files)
-  name: nvidia/nemotron-3-ultra-550b-a55b:free   # open weights; free endpoint (prompts may be logged by the provider; only public data is sent)
-  reasoning_enabled: false
-  why: "Stronger open-weight model for Experiment 2b (amendment v1.10)."
+  provider: nvidia              # key in NVIDIA_API_KEY (Colab Secrets only, never in files)
+  name: nvidia/nemotron-3-ultra-550b-a55b   # open weights; NVIDIA API catalog (amendment v1.11; v1.10 used the OpenRouter free endpoint)
+  why: "Stronger open-weight model for Experiment 2b (amendments v1.10, v1.11)."
 
 experiment_2b:
   benchmark: "RealBench; the 9 tasks that were usable in Experiment 2 (results/experiment_2/reference.json)"
@@ -211,13 +220,13 @@ experiment_2b:
   agent_input: same as experiment_2
   duty_graph: same as experiment_2
   model: exp2b_model
-  conditions: [G2, G4, G7]
+  conditions: [G2, G4, GC, G6, G7]
   runs_per_condition: 1
   scoring: same as experiment_2
   hypotheses:
     H1_primary: "Per-task pass rate of G7 > G4 (one-sided Wilcoxon signed-rank over usable tasks, alpha 0.05; ties dropped)."
-    H1_secondary: "G7 vs G2, two-sided Wilcoxon signed-rank; reported whatever the outcome."
+    H1_secondary: "G7 vs G2, GC and G6, two-sided Wilcoxon signed-rank, Holm-corrected; reported whatever the outcome."
     H2_cost: "Median over tasks of tokens(G7) / tokens(G4) <= 1.10."
   floor_rule: "If fewer than 4 tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength."
-  analysis: "python scripts/analyse_exp2.py --results results/experiment_2b --conditions G2 G4 G7"
-  provider_limits: "Free endpoint: about 50 requests a day; the run stops at the daily limit and continues the next day from the cache."
+  analysis: "python scripts/analyse_exp2.py --results results/experiment_2b"
+  provider_limits: "If the provider refuses calls (credit or limit), the run stops and continues later from the cache."

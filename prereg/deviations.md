@@ -67,3 +67,8 @@ call with this model. Code changes for the free endpoint: no automatic SDK retri
 models (each attempt counts against the daily quota) and a clean stop at the daily limit;
 `run_realbench.py --block` selects the plan block; `analyse_exp2.py --conditions` analyses a
 subset of conditions with the same registered tests.
+
+## 2026-11-23 — Experiment 2b moved to NVIDIA's API (plan amendment v1.11)
+Same model (Nemotron 3 Ultra) served directly by NVIDIA, which removes the free OpenRouter
+endpoint's daily limit; Experiment 2b therefore runs all five conditions once. Only two
+one-line connectivity checks were made with this model before registration.
