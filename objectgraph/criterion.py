@@ -15,19 +15,18 @@ from scipy.spatial.distance import squareform
 
 
 def mq(W: np.ndarray, labels: np.ndarray) -> float:
-    groups = [np.flatnonzero(labels == g) for g in np.unique(labels)]
-    k = len(groups)
-    A = []
-    for g in groups:
-        sub = W[np.ix_(g, g)]
-        A.append(sub.sum() / (len(g) ** 2))           # sub.sum() = 2 * W_in
+    _, lab = np.unique(labels, return_inverse=True)
+    k = int(lab.max()) + 1
+    B = np.zeros((len(lab), k))
+    B[np.arange(len(lab)), lab] = 1.0
+    S = B.T @ W @ B                                   # S[a, b] = weight between groups a and b
+    N = B.sum(axis=0)
+    A = np.diag(S) / N ** 2                           # diag(S) = 2 * W_in
     if k == 1:
         return float(A[0])
-    E = []
-    for a in range(k):
-        for b in range(a + 1, k):
-            E.append(W[np.ix_(groups[a], groups[b])].sum() / (len(groups[a]) * len(groups[b])))
-    return float(np.mean(A) - np.mean(E))
+    iu = np.triu_indices(k, 1)
+    E = S[iu] / (N[iu[0]] * N[iu[1]])
+    return float(A.mean() - E.mean())
 
 
 def cut_weight(W: np.ndarray, labels: np.ndarray) -> float:

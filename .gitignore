@@ -8,3 +8,6 @@ __pycache__/
 *.fdb_latexmk
 *.synctex.gz
 paper/photos/
+
+# RealBench-derived per-project teams (no redistribution licence)
+results/realbench_structural.json
