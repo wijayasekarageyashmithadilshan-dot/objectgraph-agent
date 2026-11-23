@@ -148,7 +148,9 @@ class LLM:
                 if not key:
                     raise RuntimeError(f"Set {key_var} in your environment (never in code).")
                 base = os.environ.get("OPENAI_BASE_URL") if self.provider == "openai" else None
-                self._client = OpenAI(api_key=key, base_url=base or base_default, max_retries=5)
+                # free models count every attempt against a daily quota, so no silent SDK retries
+                self._client = OpenAI(api_key=key, base_url=base or base_default,
+                                      max_retries=0 if self.model.endswith(":free") else 5)
             import time
             import openai as _oa
             last = None
@@ -163,6 +165,10 @@ class LLM:
                     last = e
                     if e.status_code in (401, 402, 403, 404):   # key, credit, access or model problem: stop
                         raise RuntimeError(f"{self.provider} refused the call ({e.status_code}): {str(e)[:300]}") from e
+                    msg = str(e).lower()
+                    if e.status_code == 429 and ("per-day" in msg or "per day" in msg or "daily" in msg):
+                        raise RuntimeError(f"{self.provider} refused the call (429, daily free limit reached; "
+                                           f"run again tomorrow): {str(e)[:200]}") from e
                 except (_oa.APIConnectionError, _oa.APITimeoutError) as e:
                     last = e
             else:

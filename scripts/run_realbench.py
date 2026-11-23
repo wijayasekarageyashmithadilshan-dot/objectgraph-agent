@@ -58,6 +58,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True, help="folder that contains level1..level4")
     ap.add_argument("--plan", default=str(ROOT / "prereg" / "plan.yaml"))
+    ap.add_argument("--block", default="experiment_2", help="plan block: experiment_2 or experiment_2b")
     ap.add_argument("--task", action="append", default=[])
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--check", action="store_true", help="only score the reference code (no model calls)")
@@ -68,19 +69,24 @@ def main() -> None:
     ap.add_argument("--python", default=sys.executable, help="interpreter that runs the tests")
     ap.add_argument("--no-budget", action="store_true", help="harness check only: no token cap")
     ap.add_argument("--cache", default=str(ROOT / "cache"))
-    ap.add_argument("--out", default=str(ROOT / "runs" / "experiment_2"))
-    ap.add_argument("--results", default=str(ROOT / "results" / "experiment_2"))
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--results", default=None)
     a = ap.parse_args()
 
     import objectgraph.orchestrator as orch
     orch.MERGE_V2 = True
     plan = yaml.safe_load(Path(a.plan).read_text())
-    e2 = plan["experiment_2"]
+    e2 = plan[a.block]
+    a.out = a.out or str(ROOT / "runs" / a.block)
+    a.results = a.results or str(ROOT / "results" / a.block)
     data, res = Path(a.data), Path(a.results)
     res.mkdir(parents=True, exist_ok=True)
     tasks = e2["tasks"] if (a.all or a.check) else a.task
     if not tasks:
         raise SystemExit("give --task level/name, --all or --check")
+    src_ref = ROOT / "results" / str(e2.get("usable_from", "")) / "reference.json"
+    if e2.get("usable_from") and not (res / "reference.json").exists() and src_ref.exists():
+        (res / "reference.json").write_text(src_ref.read_text())   # same tasks, same usability rule
     ref = reference(data, tasks, res, a.python)
     if a.check:
         print(f"\n{sum(r['usable'] for r in ref.values() if r)} usable of {len(tasks)}; wrote {res}/reference.json")
@@ -95,6 +101,8 @@ def main() -> None:
         print(f"Plan matches frozen tag {frozen}.")
     conds = a.conditions or e2["conditions"]
     runs = a.runs if a.runs is not None else list(range(e2["runs_per_condition"]))
+    if e2.get("usable_from"):          # usability already decided (same tasks, same sandbox rule)
+        tasks = [t for t in tasks if ref.get(t, {}).get("usable")]
 
     for t in tasks:
         if not ref[t]["usable"]:

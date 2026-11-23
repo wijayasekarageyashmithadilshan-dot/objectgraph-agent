@@ -59,3 +59,11 @@ OpenRouter refused further calls (402, credit exhausted) after 9 runs (adx-mcp-s
 gattino 2). The same dated model is served by the Vercel AI Gateway, so Experiment 2 is run
 there in full, the 9 runs included; the OpenRouter runs are archived in
 results/experiment_2_openrouter_partial/ and not analysed. Nothing else changes.
+
+## 2026-11-23 — Experiment 2b registered (plan amendment v1.10)
+A stronger open-weight model (Nemotron 3 Ultra, OpenRouter free endpoint) reruns G2, G4 and
+G7 once on the 9 usable Experiment 2 tasks. Registered after seeing Experiment 2, before any
+call with this model. Code changes for the free endpoint: no automatic SDK retries for `:free`
+models (each attempt counts against the daily quota) and a clean stop at the daily limit;
+`run_realbench.py --block` selects the plan block; `analyse_exp2.py --conditions` analyses a
+subset of conditions with the same registered tests.

@@ -78,6 +78,15 @@ amendments:
       All Experiment 2 runs, including those 9, are made on Vercel so that every task uses one provider;
       the 9 OpenRouter runs are kept in results/experiment_2_openrouter_partial/ and excluded from the
       analysis. Model, reasoning setting, temperature, caps, tasks, hypotheses and analysis are unchanged.
+  - date: 2026-11-23
+    tag: prereg-v1.10
+    before_any_model_run: true   # no call with exp2b_model on any task
+    change: >
+      Experiment 2b registered: a stronger, open-weight model (NVIDIA Nemotron 3 Ultra, free endpoint on
+      OpenRouter) on the 9 usable Experiment 2 tasks, to test whether the Experiment 2 ties were floor effects
+      of the weaker model. To fit the free endpoint's daily request limit, only G2, G4 and G7 run, once each
+      (run 0); at temperature 0 the three Experiment 2 runs were mostly identical. Registered after Experiment 2
+      results were seen; it is a replication with a stronger model, not a new selection of tasks.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -185,3 +194,30 @@ exp2_model:
   name: deepseek/deepseek-v4.1-flash-1017   # same dated model as second_model
   reasoning_enabled: false
   why: "Experiment 2 provider after the OpenRouter credit ran out (amendment v1.9)."
+
+exp2b_model:
+  provider: openrouter          # key in OPENROUTER_API_KEY (Colab Secrets only, never in files)
+  name: nvidia/nemotron-3-ultra-550b-a55b:free   # open weights; free endpoint (prompts may be logged by the provider; only public data is sent)
+  reasoning_enabled: false
+  why: "Stronger open-weight model for Experiment 2b (amendment v1.10)."
+
+experiment_2b:
+  benchmark: "RealBench; the 9 tasks that were usable in Experiment 2 (results/experiment_2/reference.json)"
+  question: "With a stronger model, does the criterion's team pass more tests than a random team of the same sizes?"
+  usable_from: experiment_2
+  tasks: [level1/salvozappa_gattino, level1/draeician_crules, level2/aliyun_alibabacloud-dms-mcp-server,
+          level2/pab1it0_adx-mcp-server, level2/rileydakota_crx-analyzer, level2/antoine311200_torchcolor,
+          level2/FreddyRodgers_emojichef, level3/Camera, level3/Reconnaissance]
+  agent_input: same as experiment_2
+  duty_graph: same as experiment_2
+  model: exp2b_model
+  conditions: [G2, G4, G7]
+  runs_per_condition: 1
+  scoring: same as experiment_2
+  hypotheses:
+    H1_primary: "Per-task pass rate of G7 > G4 (one-sided Wilcoxon signed-rank over usable tasks, alpha 0.05; ties dropped)."
+    H1_secondary: "G7 vs G2, two-sided Wilcoxon signed-rank; reported whatever the outcome."
+    H2_cost: "Median over tasks of tokens(G7) / tokens(G4) <= 1.10."
+  floor_rule: "If fewer than 4 tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength."
+  analysis: "python scripts/analyse_exp2.py --results results/experiment_2b --conditions G2 G4 G7"
+  provider_limits: "Free endpoint: about 50 requests a day; the run stops at the daily limit and continues the next day from the cache."

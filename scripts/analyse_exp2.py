@@ -46,8 +46,10 @@ def test(a: list[float], b: list[float], alternative: str) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="results/experiment_2")
+    ap.add_argument("--conditions", nargs="*", default=CONDS)
     a = ap.parse_args()
     res = Path(a.results)
+    conds = a.conditions
     ref = json.loads((res / "reference.json").read_text())
     tasks, rows_md = {}, []
     for f in sorted(res.glob("level*.json")):
@@ -56,7 +58,7 @@ def main() -> None:
         if not ref.get(t, {}).get("usable"):
             continue
         per = {}
-        for c in CONDS:
+        for c in conds:
             rs = [r for r in d["rows"] if r["condition"] == c]
             if rs:
                 per[c] = {"pass": float(np.mean([r["pass_rate"] for r in rs])),
@@ -64,10 +66,10 @@ def main() -> None:
                           "tokens": float(np.mean([r.get("tokens") or 0 for r in rs])),
                           "k": rs[0]["k"], "same_as": rs[0].get("same_as"),
                           "stopped": sum(bool(r.get("stopped_by_budget")) for r in rs)}
-        if all(c in per for c in CONDS):
+        if all(c in per for c in conds):
             tasks[t] = per
     usable = sorted(tasks)
-    above0 = [t for t in usable if any(tasks[t][c]["pass"] > 0 for c in CONDS)]
+    above0 = [t for t in usable if any(tasks[t][c]["pass"] > 0 for c in conds)]
     out = {"usable_tasks": usable, "tasks_above_floor": above0,
            "unusable": {t: r.get("reason", "") for t, r in ref.items() if not r.get("usable")}}
     col = lambda c: [tasks[t][c]["pass"] for t in usable]
@@ -77,7 +79,7 @@ def main() -> None:
         h1 = test(col("G7"), col("G4"), "greater")
         h1["verdict"] = "supported" if h1["p"] < 0.05 else "not supported"
         out["H1_primary"] = h1
-    sec = {f"G7_vs_{c}": test(col("G7"), col(c), "two-sided") for c in ("GC", "G6")}
+    sec = {f"G7_vs_{c}": test(col("G7"), col(c), "two-sided") for c in conds if c not in ("G7", "G4")}
     adj = holm({k: v["p"] for k, v in sec.items()})
     for k in sec:
         sec[k]["p_holm"] = round(adj[k], 6)
@@ -91,10 +93,10 @@ def main() -> None:
 
     md = ["# Experiment 2 (RealBench) summary", "",
           f"Usable tasks: {len(usable)}; tasks with any condition above 0: {len(above0)}.", "",
-          "| Task | " + " | ".join(f"{c} pass (k)" for c in CONDS) + " |", "|---" * (len(CONDS) + 1) + "|"]
+          "| Task | " + " | ".join(f"{c} pass (k)" for c in conds) + " |", "|---" * (len(conds) + 1) + "|"]
     for t in usable:
         md.append(f"| {t.split('/', 1)[1]} | " + " | ".join(
-            f"{tasks[t][c]['pass']:.2f} ({tasks[t][c]['k']})" for c in CONDS) + " |")
+            f"{tasks[t][c]['pass']:.2f} ({tasks[t][c]['k']})" for c in conds) + " |")
     md += ["", f"H1 primary (G7 > G4): {out['H1_primary']}", "",
            *[f"{k}: {v}" for k, v in sec.items()], "", f"H2 cost: {out['H2_cost']}"]
     if out["unusable"]:
