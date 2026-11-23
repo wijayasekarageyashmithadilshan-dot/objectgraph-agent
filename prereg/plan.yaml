@@ -68,6 +68,16 @@ amendments:
       Merge v2 (source order, import-time dependency order, property getter+setter kept together) is used
       for every condition of Experiment 2; with the reference code split per team it reproduces the
       reference score for all 5 conditions on all usable tasks (scripts/run_realbench.py --provider fake).
+  - date: 2026-11-23
+    tag: prereg-v1.9
+    before_any_model_run: false  # 9 Experiment 2 runs were made on OpenRouter before its credit ran out
+    change: >
+      Experiment 2 provider switch, same model. The OpenRouter credit ran out after 9 runs on two tasks
+      (adx-mcp-server 7, gattino 2), so the experiment could not finish there. The same dated model,
+      deepseek/deepseek-v4.1-flash-1017, is available on the Vercel AI Gateway (checked with one test call).
+      All Experiment 2 runs, including those 9, are made on Vercel so that every task uses one provider;
+      the 9 OpenRouter runs are kept in results/experiment_2_openrouter_partial/ and excluded from the
+      analysis. Model, reasoning setting, temperature, caps, tasks, hypotheses and analysis are unchanged.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -157,7 +167,7 @@ experiment_2:
   agent_input: "README.md from proj_clean when RealBench ships one, the class diagram with its descriptions (uml_output/*_uml.json) and the file tree (uml_output/tree.txt), rendered by objectgraph/realbench_task.py; no tests, no source code"
   test_environment: "scripts/realbench_test_requirements.txt (+ torch from the host); usability is decided by scripts/run_realbench.py --check in the run sandbox before any model call"
   duty_graph: "docs/realbench_mapping.md (classes + module-function units, weak dependency/import edges, signature edges)"
-  model: second_model             # deepseek/deepseek-v4.1-flash-1017, reasoning off, temperature 0, same caps
+  model: exp2_model               # deepseek/deepseek-v4.1-flash-1017 via Vercel (amendment v1.9)
   conditions: [G2, G4, GC, G6, G7]
   runs_per_condition: 3
   scoring:
@@ -169,3 +179,9 @@ experiment_2:
     H2_cost: "Median over tasks of tokens(G7) / tokens(G4) <= 1.10."
   floor_rule: "If fewer than 4 usable tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength (not as support or rejection)."
   analysis: "Reported in results/experiment_2/; every task shown, including unusable and floor tasks."
+
+exp2_model:
+  provider: vercel              # key in AI_GATEWAY_API_KEY (Colab Secrets only, never in files)
+  name: deepseek/deepseek-v4.1-flash-1017   # same dated model as second_model
+  reasoning_enabled: false
+  why: "Experiment 2 provider after the OpenRouter credit ran out (amendment v1.9)."

@@ -53,3 +53,9 @@ reference on every condition and task. The 7 runs are re-merged from the cached 
 (no new calls); only G4 run 0 changes (0 -> 4 of 25 tests). The remaining zero scores are
 genuine (e.g. G7/GC: the agent owning server.py imported main.py while main.py imports
 server.py, a circular import created by the two agents' own code).
+
+## 2026-11-23 — Experiment 2 moved to the Vercel AI Gateway (plan amendment v1.9)
+OpenRouter refused further calls (402, credit exhausted) after 9 runs (adx-mcp-server 7,
+gattino 2). The same dated model is served by the Vercel AI Gateway, so Experiment 2 is run
+there in full, the 9 runs included; the OpenRouter runs are archived in
+results/experiment_2_openrouter_partial/ and not analysed. Nothing else changes.
