@@ -4,7 +4,7 @@
 
 Multi-agent systems built on large language models (LLMs) split one software task among several agents \citep{hong2024metagpt,qian2024chatdev,wu2023autogen}. Someone must decide how many agents to use and what each one owns. Current practice takes one of three routes: fix the roles by hand \citep{hong2024metagpt,qian2024chatdev}, let a model propose a team \citep{ke2025maszero}, or search for or learn a team from scored executions \citep{hu2025adas,zhang2025aflow,zhang2025maas}. None of these routes gives a rule that can be stated, tested and repeated before the work starts.
 
-Recent findings make the question pressing. Multi-agent variants can perform worse than a single agent on tasks with sequential dependencies \citep{kim2025scaling}. The best number of agents depends on the task and on the strength of the underlying model \citep{li2026scalingbehavior}, and the effective size of a team grows much more slowly than its head count \citep{bertalanic2026ringelmann}. Many reported efficiency gains appear in settings where a single agent or a randomly pruned system already does well \citep{zhang2026rethinking}, and automatically generated multi-agent systems can trail a single agent at several times the cost \citep{jwalapuram2026illusion}. Unclear role specification is also a major cause of multi-agent failure \citep{cemri2025why}. Together, these results suggest that the first decision, whether and how to split, deserves its own method and its own controls.
+Peer-reviewed studies make the question pressing. Automatically generated multi-agent systems often trail a single agent at several times the cost \citep{jwalapuram2026illusion}, many reported efficiency gains appear in settings where a single agent or a randomly pruned system already does well \citep{zhang2026rethinking}, and unclear role specification is a major cause of multi-agent failure \citep{cemri2025why}. Recent preprints report consistent trends: multi-agent coordination can hurt on tasks with sequential dependencies \citep{kim2025scaling}, the best number of agents may depend on the task and on the model \citep{li2026scalingbehavior}, and the effective size of a team may grow more slowly than its head count \citep{bertalanic2026ringelmann}. We cite these preprints as motivation, not as established results. Together, this work suggests that the first decision, whether and how to split, deserves its own method and its own controls.
 
 Software engineering has long studied a closely related problem. A good decomposition keeps strongly related responsibilities together and keeps dependencies between parts few \citep{parnas1972criteria,chidamber1994metrics}, and Conway observed that a system's structure mirrors the communication structure of the team that builds it \citep{conway1968committees}. We take this idea literally for LLM agents: if the parts of a design are cohesive and loosely coupled, agents that each own one part should need to communicate less.
 
@@ -14,18 +14,21 @@ Software engineering has long studied a closely related problem. A good decompos
 \item A deterministic criterion based on average-linkage clustering and modularization quality (MQ) with a per-agent cost, together with a closed-form expected cross-agent dependency for random teams of equal sizes and a locality assumption that links that dependency to messages (Section~\ref{sec:method}).
 \item A structural study on all \NProjects DevBench projects in four languages, with random, one-agent-per-class, Louvain and Infomap controls and two sensitivity analyses (Section~\ref{sec:structural}).
 \item \ContributionFour
+\item \ExpTwoContribution
 \item A fully deterministic artifact: one command regenerates every number in this paper, and cached model responses allow the agent tables to be rebuilt without calling any model.
 \end{enumerate}
+
+\paragraph{Findings in brief.} The evidence supports two claims. First, sizing from the design avoids the failure of over-split teams: one agent per class passed no test on 7 of 9 RealBench projects, whereas the criterion's compact teams had a higher mean pass rate (0.21 against 0.11). Second, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random. The evidence does not yet show that the criterion's teams write more correct code than random teams of the same sizes or than a single agent; that claim remains a hypothesis, and Sections~\ref{sec:agents} and~\ref{sec:exp2} report it as not supported in these experiments.
 
 %=====================================================================
 \section{Related Work}
 \label{sec:related}
 
-\paragraph{Hand-designed and model-designed teams.} MetaGPT and ChatDev encode software-company roles by hand \citep{hong2024metagpt,qian2024chatdev}, and AutoGen provides conversation primitives without a sizing rule \citep{wu2023autogen}. MAS-Zero lets a meta-agent design and refine the system for each problem without a validation set \citep{ke2025maszero}. OOPMAS treats agents as objects and generates query-level workflows \citep{cheng2026oopmas}. Model-driven approaches derive traceable system models from requirements before agents act \citep{wei2026modeldriven}. These systems decide roles by convention or by model judgment; they do not derive the number of agents from a measurable property of the design or compare that choice with random teams.
+\paragraph{Hand-designed and model-designed teams.} MetaGPT and ChatDev encode software-company roles by hand \citep{hong2024metagpt,qian2024chatdev}, and AutoGen provides conversation primitives without a sizing rule \citep{wu2023autogen}. MAS-Zero lets a meta-agent design and refine the system for each problem without a validation set \citep{ke2025maszero}. OOPMAS treats agents as objects and generates query-level workflows \citep{cheng2026oopmas}. Model-driven approaches derive traceable system models from requirements before agents act \citep{wei2026modeldriven}. CodeTeam lets Architect agents propose project-specific plans that fix the number of Developer agents and assign each file an owner, and a CTO agent chooses among them \citep{wang2026codeteam}. These systems decide roles by convention or by model judgment; they do not derive the number of agents from a measurable property of the design or compare that choice with random teams.
 
 \paragraph{Searched, learned and pruned teams.} ADAS and AFlow search over agent programs and workflows using scored executions \citep{hu2025adas,zhang2025aflow}, and MaAS learns a query-dependent distribution over architectures \citep{zhang2025maas}. A second line learns communication topologies over a given pool of agents: G-Designer decodes a task-adaptive topology with a graph auto-encoder \citep{zhang2025gdesigner}, AgentPrune and AgentDropout remove redundant messages and agents \citep{zhang2025agentprune,wang2025agentdropout}, and ARG-Designer generates the collaboration graph autoregressively \citep{li2026argdesigner}. For software development, EvoMAC revises a team of coding agents using test feedback \citep{hu2025evomac}. All of these methods need scored tasks, training runs or test feedback, and most start from a given pool of agents. Our criterion needs none of these and is applied once per design.
 
-\paragraph{How many agents?} \citet{kim2025scaling} model how agent-system performance depends on coordination structure, model capability and task properties, and find that multi-agent coordination can hurt on sequential tasks. \citet{li2026scalingbehavior} show that the best number of agents depends on the task and the model, and \citet{bertalanic2026ringelmann} fit a scaling law for effective team size from small pilot runs on reasoning benchmarks. \citet{zhang2026rethinking} recommend evaluating efficiency methods against random and single-agent baselines, and \citet{jwalapuram2026illusion} find that automatically generated multi-agent systems often underperform a single agent. These studies size teams from executions on reasoning or tool-use tasks; we size them from the structure of a software design, before execution, and adopt their recommended controls.
+\paragraph{How many agents?} In peer-reviewed work, \citet{zhang2026rethinking} recommend evaluating efficiency methods against random and single-agent baselines, and \citet{jwalapuram2026illusion} find that automatically generated multi-agent systems often underperform a single agent. Three recent preprints point in the same direction: \citet{kim2025scaling} model how agent-system performance depends on coordination structure, model capability and task properties and report that coordination can hurt on sequential tasks; \citet{li2026scalingbehavior} report that the best number of agents depends on the task and the model; and \citet{bertalanic2026ringelmann} fit a scaling law for effective team size from small pilot runs on reasoning benchmarks. These studies size teams from executions on reasoning or tool-use tasks; we size them from the structure of a software design, before execution, and adopt their recommended controls.
 
 \paragraph{Closest work: cohesion-aware partitioning of code.} Co-Coder formalizes multi-agent coding as graph partitioning: it builds a dependency graph of repository files by static analysis, isolates hub files, partitions the graph with Infomap community detection \citep{rosvall2008infomap}, and schedules agents along dependencies \citep{yang2026cocoder}. We differ in three ways. First, we work from the \emph{design}, before code exists, so the partition can guide generation rather than reorganize existing code. Second, we choose the team size explicitly, including a single agent, rather than letting a community-detection method set it implicitly. Third, our duties come from the domain model, so each agent action can be traced to a design element. We include Infomap on our own duty graph as a control (condition G6), which separates the partitioning step from the input representation.
 
@@ -48,7 +51,7 @@ A \emph{team} is a partition $\pi = \{C_1, \dots, C_k\}$ of $V$; agent $i$ owns 
 \end{equation}
 is the total dependency that crosses agent boundaries.
 
-\paragraph{Design-time team sizing.} Given only $\mathcal{M}$, with no code and no scored executions, choose $k$ and $\pi$ so that a team of $k$ agents, each implementing its part, produces correct software at low cost. The choice $k = 1$ must be allowed, because splitting is not always beneficial \citep{kim2025scaling}.
+\paragraph{Design-time team sizing.} Given only $\mathcal{M}$, with no code and no scored executions, choose $k$ and $\pi$ so that a team of $k$ agents, each implementing its part, produces correct software at low cost. The choice $k = 1$ must be allowed, because splitting is not always beneficial \citep{jwalapuram2026illusion}.
 
 %=====================================================================
 \section{Method}
@@ -189,7 +192,27 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 \paragraph{Scorer validity.} Before scoring any agent, we run DevBench's tests against DevBench's own reference code in our sandbox and against empty code. Of the \NRefRan Python projects we could run, \NRefFull pass every unit and acceptance test (Appendix Table~\ref{tab:ref}); a project is scored only if its reference code passes in full and empty code passes nothing. DevBench's C++ and Java reference code does not build with current compilers (g++ 13, JDK 21), so these projects are scored inside DevBench's own container image. Scorer checks for the C++ and Java pilot projects run in that image and are reported with their results.
 
 \subsection{Results}
-\input{generated/agent_results.tex}
+\input{generated/agent_results_icml_body.tex}
+
+%=====================================================================
+\section{Experiment 2: RealBench (Pre-Registered)}
+\label{sec:exp2}
+
+\paragraph{Setup.} RealBench \citep{li2026realbench} provides 61 Python repositories with class diagrams, file trees and executable tests. Without any model call, the criterion recommends a team for 41 of them, and the recommended size grows with difficulty (Appendix~\ref{app:exp2}). Tasks were chosen by a rule fixed before any model call (a criterion team of 2 to 6 agents that differs from both GC and Infomap); 9 of the 17 qualifying projects have usable tests. Before any model call, the reference code split according to every team, merged and scored reproduced the reference score on every task. The model is deepseek-v4.1-flash-1017 (temperature 0, three runs per condition); the primary test is G7 against G4 (one-sided Wilcoxon over tasks). Full protocol in Appendix~\ref{app:exp2}.
+
+\paragraph{Results.} \ExpTwoResults{} Fig.~\ref{fig:exp2} (Appendix~\ref{app:exp2}) shows every task.
+
+\begin{table}[t]
+\centering
+\caption{Experiment 2 on RealBench: mean pass rate over three runs (tests passed divided by tests the reference code passes in the same sandbox), with the number of agents in parentheses; tokens are means per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.}
+\label{tab:exp2}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{\input{generated/exp2_table.tex}}
+\end{table}
+
+
+
 
 \section{Discussion}\label{sec:discussion}
 \label{sec:discussion}
@@ -198,11 +221,15 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 
 \PilotDiscussion
 
+\paragraph{What Experiment 2 shows.} \ExpTwoDiscussion
+
 \paragraph{Threats to validity.} \emph{Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. \emph{Construct validity:} we measure correctness with DevBench's own tests and traceability with duty comments, which may undercount duties implemented without a comment. \emph{External validity:} DevBench projects are small (at most \DutyMax duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. \emph{Conclusion validity:} DevBench yields only \NMulti multi-agent tasks, below the roughly 36 that our power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work \citep{yang2026cocoder} and from requirement sets of the kind used by NOMAD \citep{giannouris2025nomad}. \ThreatExtra
 
-\paragraph{Weights and contamination.} Edge weights are set by hand. The 81-setting grid shows that $k^\ast$ is stable in most settings but not all, so we report both the default and the full grid and tune nothing on test projects. DevBench is public and may appear in model training data; we compare conditions only with each other, which controls for memorization that affects all conditions equally.
+\ExpTwoThreat
+
+\paragraph{Weights and contamination.} Edge weights are set by hand. The 81-setting grid shows that $k^\ast$ is stable in most settings but not all, so we report both the default and the full grid and tune nothing on test projects. DevBench is public and may appear in model training data; we compare conditions only with each other, which controls for memorization that affects all conditions equally. DevBench and RealBench are preprints; we use both only as data (designs, requirements and tests), ran their reference code against their own tests before any agent run and used only tasks that pass, and rely on no claim from either paper.
 
 %=====================================================================
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
-Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. We formulated this decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on \NProjects DevBench projects that it recommends a single agent for \NSingle and compact teams of \KMin to \KMax agents for the rest, with far less cross-agent dependency than random teams of the same sizes. \AgentConclusion{} Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.
+Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. We formulated this decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on \NProjects DevBench projects that it recommends a single agent for \NSingle and compact teams of \KMin to \KMax agents for the rest, with far less cross-agent dependency than random teams of the same sizes. \AgentConclusion{} \ExpTwoConclusion{} Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.

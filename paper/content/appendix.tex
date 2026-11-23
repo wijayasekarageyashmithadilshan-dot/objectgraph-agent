@@ -12,3 +12,20 @@ Every number in Sections~\ref{sec:structural} and \ref{sec:agents} is a macro ge
 
 \section{Duty-Graph Construction Details}
 Mermaid class diagrams are parsed with a tolerant parser that handles class bodies, \texttt{Class : member} lines, generic names such as \texttt{Queue\textasciitilde T\textasciitilde}, cardinalities and labels. Overloaded methods are merged into one duty. Relations to classes that are only mentioned, such as library types, are ignored because no agent implements them, and duplicate relation declarations count once.
+
+\section{Experiment 2 Details}
+\label{app:exp2}
+\paragraph{Structural study on 61 projects.} \ExpTwoStructural
+
+\paragraph{Tasks and protocol.} \ExpTwoProtocol
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/exp2.pdf}
+\caption{\ExpTwoFigCaption}
+\label{fig:exp2}
+\end{figure}
+
+\section{Pilot Details}
+\label{app:pilot}
+\input{generated/agent_results_icml_floats.tex}

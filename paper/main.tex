@@ -1,4 +1,4 @@
-%% ObjectGraph-Agent -- ICML version (anonymous for review), draft v0.2, 22 Nov 2026
+%% ObjectGraph-Agent -- ICML version (anonymous for review), draft v0.3, 23 Nov 2026 (adds Experiment 2, preprint wording)
 %% Build: python scripts/make_paper_assets.py && cd paper && latexmk -pdf main.tex
 %% Uses the official icml2026.sty/.bst when present in this folder; otherwise a labelled preview style.
 \documentclass{article}
@@ -14,6 +14,7 @@
 \IfFileExists{icml2026.sty}{\usepackage{icml2026}}{\usepackage{icmlpreview}}
 \input{macros.tex}
 \input{generated/agent_macros.tex}
+\input{generated/exp2_macros.tex}
 
 \icmltitlerunning{When Should a Software Task Be Split Across LLM Agents?}
 
