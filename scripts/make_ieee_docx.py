@@ -60,6 +60,8 @@ REFS = {
  "li2024devbench": 'B. Li {i:et al.}, “Prompting large language models to tackle the full software development lifecycle: A case study,” 2024, {i:arXiv:2403.08604} (benchmark released as DevBench/DevEval), doi: 10.48550/arXiv.2403.08604.',
  "hubert1985ari": 'L. Hubert and P. Arabie, “Comparing partitions,” {i:J. Classification}, vol. 2, no. 1, pp. 193–218, 1985, doi: 10.1007/BF01908075.',
  "blondel2008louvain": 'V. D. Blondel, J.-L. Guillaume, R. Lambiotte, and E. Lefebvre, “Fast unfolding of communities in large networks,” {i:J. Stat. Mech.: Theory Exp.}, vol. 2008, no. 10, Oct. 2008, Art. no. P10008, doi: 10.1088/1742-5468/2008/10/P10008.',
+ "li2026realbench": 'J. Li {i:et al.}, “RealBench: A repo-level code generation benchmark aligned with real-world software development practices,” 2026, {i:arXiv:2604.22659}.',
+ "wang2026codeteam": 'Y. Wang, R. Li, P. Liang, Q. Feng, Z. Li, M. Shahin, and A. A. Khan, “CodeTeam: An LLM-powered multi-agent framework for repository-level code generation,” 2026, {i:arXiv:2606.22082}.',
  "holm1979simple": 'S. Holm, “A simple sequentially rejective multiple test procedure,” {i:Scand. J. Statist.}, vol. 6, no. 2, pp. 65–70, 1979.',
 }
 
@@ -253,8 +255,9 @@ class Doc:
 # --------------------------------------------------------------------------- content
 def build_content(d: Doc, S: dict, REFT: list) -> dict:
     AG = json.loads((ROOT / "paper/generated/agent.json").read_text())
+    E2 = json.loads((ROOT / "paper/generated/exp2.json").read_text())
     has_pilot = bool(AG.get("pilot_rows"))
-    ref_tab = "Table V" if has_pilot else "Table IV"
+    ref_tab = "Table VI" if has_pilot else "Table V"
     multi = [p for p in S["projects"] if p["duty"]["k_star"] > 1]
     single = sorted([p for p in S["projects"] if p["duty"]["k_star"] == 1], key=lambda p: p["project"].lower())
     single_list = ", ".join(f'{p["project"]} ({p["duty"]["n"]})' for p in single)
@@ -269,13 +272,14 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         "2) A deterministic criterion based on average-linkage clustering and modularization quality (MQ) with a per-agent cost, together with a closed-form expected cross-agent dependency for random teams of equal sizes and a locality assumption that links that dependency to messages (Section IV).",
         "3) A structural study on all {N:NProjects} DevBench projects in four programming languages, with random, one-agent-per-class, Louvain and Infomap controls and two sensitivity analyses (Section V).",
         "4) " + AG["contribution4"],
-        "5) A fully deterministic artifact: one command regenerates every number in this article, and cached model responses allow the agent tables to be rebuilt without calling any model.",
+        E2["contribution"],
+        "6) A fully deterministic artifact: one command regenerates every number in this article, and cached model responses allow the agent tables to be rebuilt without calling any model.",
     ]:
         d.p(t)
 
     d.h1("Related Work")
     d.h2("Hand-designed and model-designed teams")
-    d.p("MetaGPT and ChatDev encode software-company roles by hand {cite:hong2024metagpt,qian2024chatdev}, and AutoGen provides conversation primitives without a sizing rule {cite:wu2023autogen}. MAS-Zero lets a meta-agent design and refine the system for each problem without a validation set {cite:ke2025maszero}. OOPMAS treats agents as objects and generates query-level workflows {cite:cheng2026oopmas}, and model-driven approaches derive traceable system models from requirements before agents act {cite:wei2026modeldriven}. These systems decide roles by convention or by model judgment; they do not derive the number of agents from a measurable property of the design or compare that choice with random teams.", first=True)
+    d.p("MetaGPT and ChatDev encode software-company roles by hand {cite:hong2024metagpt,qian2024chatdev}, and AutoGen provides conversation primitives without a sizing rule {cite:wu2023autogen}. MAS-Zero lets a meta-agent design and refine the system for each problem without a validation set {cite:ke2025maszero}. OOPMAS treats agents as objects and generates query-level workflows {cite:cheng2026oopmas}, and model-driven approaches derive traceable system models from requirements before agents act {cite:wei2026modeldriven}. CodeTeam lets Architect agents propose project-specific plans that fix the number of Developer agents and assign each file an owner, and a CTO agent chooses among them {cite:wang2026codeteam}. These systems decide roles by convention or by model judgment; they do not derive the number of agents from a measurable property of the design or compare that choice with random teams.", first=True)
     d.h2("Searched, learned and pruned teams")
     d.p("Automated design of agentic systems (ADAS) and AFlow search over agent programs and workflows using scored executions {cite:hu2025adas,zhang2025aflow}, and multi-agent architecture search (MaAS) learns a query-dependent distribution over architectures {cite:zhang2025maas}. A second line learns communication topologies over a given pool of agents: G-Designer decodes a task-adaptive topology with a graph auto-encoder {cite:zhang2025gdesigner}, AgentPrune and AgentDropout remove redundant messages and agents {cite:zhang2025agentprune,wang2025agentdropout}, and ARG-Designer generates the collaboration graph autoregressively {cite:li2026argdesigner}. For software development, EvoMAC revises a team of coding agents using test feedback {cite:hu2025evomac}. All of these methods need scored tasks, training runs or test feedback, and most start from a given pool of agents. The criterion proposed here needs none of these and is applied once per design.", first=True)
     d.h2("How many agents?")
@@ -386,8 +390,21 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
             d.figure(ROOT / "paper/figures_docx/fig_teams.png", caption="Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.")
     else:
         d.p(AG["pilot"])
-    for t in AG["main_pending"]:
-        d.p(t)
+    d.p("{bi:Next study:} The pilot’s floor effect on DevBench led to a second pre-registered experiment on a recent benchmark whose tests the reference code passes, reported in Section VII. The remaining confirmatory tests (H2–H4, a second model family and the C++ and Java projects) are planned and will be registered before they run.")
+
+    d.h1("Experiment 2: RealBench (Pre-Registered)")
+    d.h2("Structural study on 61 projects")
+    d.p(E2["structural"], first=True)
+    d.h2("Tasks and protocol")
+    d.p(E2["protocol"], first=True)
+    d.h2("Results")
+    d.p(E2["results"], first=True)
+    d.section_break(2)
+    d.table("Experiment 2 on RealBench: Pass Rate per Condition (Agents)", ["Task", "Level", "G2", "G4", "GC", "G6", "G7", "Tokens G7 / G4"],
+            E2["table_rows"], [1700, 600, 1000, 1000, 1000, 1000, 1000, 1500], size=14,
+            notes="Mean pass rate over three runs: tests passed divided by tests that RealBench’s reference code passes in the same sandbox; the number of agents is in parentheses. Tokens: mean per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.")
+    d.section_break(1)
+    d.figure(ROOT / "paper/figures_docx/fig_exp2.png", E2["fig_caption"])
 
     d.h1("Discussion")
     d.h2("What the structural results do and do not show")
@@ -395,17 +412,19 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     if AG.get("discussion_pilot"):
         d.h2("What the pilot shows")
         d.p(AG["discussion_pilot"].replace("{bi:What the pilot shows:} ", ""), first=True)
+    d.h2("What Experiment 2 shows")
+    d.p(E2["discussion"], first=True)
     d.h2("Threats to validity")
-    d.p("{i:Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. {i:Construct validity:} correctness is measured with DevBench’s own tests and traceability with duty comments, which may undercount duties implemented without a comment. {i:External validity:} DevBench projects are small (at most {N:DutyMax} duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. {i:Conclusion validity:} DevBench yields only {N:NMulti} multi-agent tasks, below the roughly 36 that the power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work {cite:yang2026cocoder} and from requirement sets of the kind used by NOMAD {cite:giannouris2025nomad}. " + AG["threat_extra"], first=True)
+    d.p("{i:Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. {i:Construct validity:} correctness is measured with DevBench’s own tests and traceability with duty comments, which may undercount duties implemented without a comment. {i:External validity:} DevBench projects are small (at most {N:DutyMax} duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. {i:Conclusion validity:} DevBench yields only {N:NMulti} multi-agent tasks, below the roughly 36 that the power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work {cite:yang2026cocoder} and from requirement sets of the kind used by NOMAD {cite:giannouris2025nomad}. " + AG["threat_extra"] + " " + E2["threat"], first=True)
     d.h2("Weights and contamination")
     d.p("Edge weights are set by hand. The 81-setting grid shows that {i:k}* is stable in most settings but not all, so both the default and the full grid are reported and nothing is tuned on test projects. DevBench is public and may appear in model training data; conditions are compared only with each other, which controls for memorization that affects all conditions equally.", first=True)
 
     d.h1("Conclusion and Future Work")
-    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. " + AG["conclusion"] + " Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
+    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. " + AG["conclusion"] + " " + E2["conclusion"] + " Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
 
     d.h1("Appendix A", numbered=False)
     d.h1("Reproducibility", numbered=False)
-    d.p("Every number in Sections V and VI is generated by scripts/make_paper_assets.py from results/structural.json and results/reference_tests.json. The command bash reproduce.sh fetches DevBench at commit {N:DevBenchCommit}, runs the unit tests and regenerates all results, and two runs give byte-identical output. Agent runs store every prompt and response with its hash, so the agent tables can be rebuilt from the cache without calling any model. The pre-registration file and its version-control tag are part of the released code. Every domain model is validated before sizing: it must declare at least one class with methods, and every relationship must connect declared classes; a design extracted by an LLM that fails these checks is returned to the model with the list of problems, for up to two repairs. Mermaid class diagrams are parsed with a tolerant parser; overloaded methods are merged into one duty, relations to classes that are only mentioned (library types) are ignored, and duplicate relation declarations count once.", first=True)
+    d.p("Every number in Sections V and VI is generated by scripts/make_paper_assets.py from results/structural.json and results/reference_tests.json, and every number in Section VII by scripts/make_exp2_assets.py from results/experiment_2/ and results/realbench_table.csv. The command bash reproduce.sh fetches DevBench at commit {N:DevBenchCommit}, runs the unit tests and regenerates all results, and two runs give byte-identical output. Agent runs store every prompt and response with its hash, so the agent tables can be rebuilt from the cache without calling any model. The pre-registration file and its version-control tag are part of the released code. Every domain model is validated before sizing: it must declare at least one class with methods, and every relationship must connect declared classes; a design extracted by an LLM that fails these checks is returned to the model with the list of problems, for up to two repairs. Mermaid class diagrams are parsed with a tolerant parser; overloaded methods are merged into one duty, relations to classes that are only mentioned (library types) are ignored, and duplicate relation declarations count once.", first=True)
     rr = []
     for r in REFT:
         name = r["project"].split("/")[1]
@@ -466,7 +485,8 @@ def build(template: Path, out: Path) -> None:
         "Corresponding author: Y. Dilshan (e-mail: yashmitha.20211432@iit.ac.lk; ORCID: 0009-0002-2591-6018).") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
         "This work did not receive any specific funding.") + "</w:p>")
-    abstract = ("Multi-agent systems built on large language models (LLMs) are increasingly used to develop software, yet team size and the division of work are usually fixed by hand, proposed by a model, or found by costly search. This article asks a prior question: given the design of the software to be built, should the work be split at all, and if so, into how many agents? The proposed framework, ObjectGraph-Agent, validates a Unified Modeling Language (UML) class diagram, converts it into a weighted graph of duties, builds every candidate team with average-linkage clustering, and selects the team size that maximizes modularization quality minus a per-agent cost; agents tag their code with the duties they implement. The decision is made before any code exists, is deterministic, and may recommend a single agent. The expected dependency of equal-size random teams is derived in closed form. On all {N:NProjects} projects of the four-language DevBench benchmark, the criterion recommends one agent for {N:NSingle} projects and teams of {N:KMin} to {N:KMax} agents for the other {N:NMulti}. Their cross-agent dependency is {N:CutRedMin} to {N:CutRedMax} percent lower than in {N:Draws} random teams of equal sizes, and the recommended size is unchanged in {N:WeightStableAll} percent of 81 edge-weight settings. " + json.loads((ROOT / "paper/generated/agent.json").read_text())["abstract"] + " All code, prompts and cached responses are public.")
+    E2 = json.loads((ROOT / "paper/generated/exp2.json").read_text())
+    abstract = ("Multi-agent systems built on large language models (LLMs) increasingly develop software, yet team size and the division of work are usually fixed by hand, proposed by a model, or found by costly search. This article asks whether, given the design of the software, the work should be split at all, and into how many agents. ObjectGraph-Agent validates a Unified Modeling Language (UML) class diagram, converts it into a weighted graph of duties, builds candidate teams with average-linkage clustering, and selects the size that maximizes modularization quality minus a per-agent cost; agents tag their code with the duties they implement. The decision is deterministic, made before any code exists, and may recommend a single agent; the expected dependency of equal-size random teams is derived in closed form. On all {N:NProjects} DevBench projects, the criterion recommends one agent for {N:NSingle} and teams of {N:KMin} to {N:KMax} agents for {N:NMulti}, with {N:CutRedMin} to {N:CutRedMax} percent less cross-agent dependency than random teams of equal sizes. " + E2["abstract"] + " All code, prompts and cached responses are public.")
     front.append('<w:p><w:pPr><w:pStyle w:val="Abstract"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>ABSTRACT</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(abstract) + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="IT"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>INDEX TERMS</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(
         "Graph partitioning, large language models, multi-agent systems, software design, software modularization, traceability") + "</w:p>")

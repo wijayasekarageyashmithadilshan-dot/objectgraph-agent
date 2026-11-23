@@ -1,0 +1,245 @@
+{
+  "task": "level2/pab1it0_adx-mcp-server",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "provider": "openrouter",
+  "plan_tag": "prereg-v1.8",
+  "git": {
+    "commit": "90ac119558723fd0732f89eb9c0de80a1204e810",
+    "tag": "prereg-v1.8",
+    "prereg_modified_since_commit": false
+  },
+  "reference_passed": 25,
+  "rows": [
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G2",
+      "description": "single agent",
+      "run_id": 0,
+      "k": 1,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 2705,
+      "input_tokens": 902,
+      "output_tokens": 1803,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G4",
+      "description": "random team, same sizes",
+      "run_id": 0,
+      "k": 2,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 7.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 4685,
+      "input_tokens": 1724,
+      "output_tokens": 2961,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "GC",
+      "description": "one agent per class",
+      "run_id": 0,
+      "k": 4,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 4693,
+      "input_tokens": 3266,
+      "output_tokens": 1427,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.7778,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G6",
+      "description": "Infomap team (Co-Coder-style)",
+      "run_id": 0,
+      "k": 4,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": "GC",
+      "design_vs_gold": null,
+      "tokens": 4693,
+      "input_tokens": 3266,
+      "output_tokens": 1427,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.7778,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G7",
+      "description": "criterion team (ours)",
+      "run_id": 0,
+      "k": 2,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 3591,
+      "input_tokens": 1684,
+      "output_tokens": 1907,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.7778,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G2",
+      "description": "single agent",
+      "run_id": 1,
+      "k": 1,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 2394,
+      "input_tokens": 902,
+      "output_tokens": 1492,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 25,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/pab1it0_adx-mcp-server",
+      "condition": "G4",
+      "description": "random team, same sizes",
+      "run_id": 1,
+      "k": 2,
+      "k_star": 2,
+      "duties": 11,
+      "cut": 7.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 4203,
+      "input_tokens": 1724,
+      "output_tokens": 2479,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 5,
+      "reference_passed": 25,
+      "pass_rate": 0.2,
+      "files_written": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/adx_mcp_server/__init__.py",
+        "src/adx_mcp_server/main.py",
+        "src/adx_mcp_server/server.py"
+      ]
+    }
+  ],
+  "failed_runs": [
+    {
+      "condition": "GC",
+      "run_id": 1,
+      "error": "RuntimeError: openrouter refused the call (402): Error code: 402 - {'error': {'message': 'This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits.', 'code': 402, 'metadata': {'reason': 'in_flight_budget_exhausted', 'limit_source': 'openrouter_in_flight_budget', '"
+    }
+  ]
+}

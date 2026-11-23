@@ -1,0 +1,113 @@
+{
+  "contribution": "5) A second pre-registered experiment on RealBench {cite:li2026realbench}: a zero-call structural study of all 61 projects, and five team designs compared on 9 real Python projects with their own tests, after a harness check in which every team design reproduces the reference score (Section VII).",
+  "abstract": "A second pre-registered experiment on 9 RealBench projects found no significant quality difference between the criterion’s teams and random teams of the same sizes (p = 0.44), but the criterion’s teams had the highest mean pass rate (0.21 versus 0.19), used 27% fewer tokens than random teams, and avoided the collapse of one agent per class, which passed no test on 7 of 9 projects.",
+  "structural": "RealBench {cite:li2026realbench} provides 61 Python repositories in four difficulty levels, each with natural-language descriptions, a class diagram generated from the code, a file tree and executable tests. Its diagrams name files without folders and contain no inheritance or composition, so the duty graph reads file paths from the file tree, gives every file an owner (classes, and one unit per file for module-level functions or constants), and uses dependency, import and signature edges. With no model call, the criterion recommends a team for 41 of the 61 projects, and the recommended size grows with difficulty: on average 2.8, 8.2, 4.2 and 18.3 agents for levels 1 to 4 (designs of 3.9, 13.4, 7.7 and 30.4 units). Its team differs from one agent per unit in 39 projects.",
+  "protocol": "The tasks were chosen by a rule fixed before any model call: a criterion team of 2 to 6 agents that differs from both one agent per class and Infomap, so that the comparison is informative. Seventeen projects qualify; 8 are unusable because RealBench ships no tests for them or their reference code fails its own tests in the sandbox, which leaves 9. Agents receive the README (when RealBench ships one), the class diagram with its descriptions and the file tree, but never code or tests. Before any model call, the reference code was split according to every team, merged and scored; every team design reproduced the reference score on every task, which rules out losses caused by splitting or merging. This check found and fixed three faults in reading the designs and several in merging; one further merging fault (parenthesized multi-line imports) appeared in the first paid runs and was fixed, and those runs re-merged, before the full run. All fixes are logged. The model is DeepSeek V4.1 Flash (deepseek-v4.1-flash-1017, reasoning off, temperature 0) with three runs per condition and the same token cap as the pilot. The primary hypothesis is that G7 passes more tests than G4 (one-sided Wilcoxon signed-rank test over tasks); G7 against GC and G6 are secondary (Holm-corrected); and the token ratio of G7 to G4 is expected to be at most 1.10. When the first provider’s credit ran out after 9 runs, the experiment was moved to a second provider serving the same dated model and rerun in full, as recorded in an amendment.",
+  "results": "Six of the 9 tasks have a condition above zero, so the primary hypothesis is testable. It is not supported: G7 wins on 2 tasks, loses on 2 and ties on 5 (p = 0.44; Table V). The secondary comparisons point the same way but are not significant either (G7 against GC: 3 wins, 1 loss, Holm-adjusted p = 0.75; against G6: 3 wins, 1 loss, p = 0.75). The criterion’s teams nonetheless have the highest mean pass rate (0.21, against 0.19 for random teams, 0.17 for a single agent, 0.15 for Infomap and 0.11 for one agent per class), with their clearest gain on emojichef (0.37 against 0.13 for random teams and 0.12 for a single agent). The cost expectation holds: G7 uses a median 27% fewer tokens than G4 and 53% fewer than GC, but 1.6 times as many as a single agent. One agent per class collapses: it passes no test on 7 of the 9 tasks; on crx-analyzer its 22 agents spend about 170k tokens per run and pass nothing, whereas the criterion’s 3 agents pass 0.48 of the tests with 18k.",
+  "discussion": "Two results are robust across both experiments. First, the criterion avoids the failure of large teams: splitting by class creates many small agents that each see one class, and the resulting interface mismatches (for example, two agents importing each other’s modules) break whole projects. Second, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random. Whether that grouping also improves correctness remains open: with 4 non-tied tasks, even 4 wins of 4 would give p = 0.0625, so this experiment could not reach significance, and 3 tasks sat at zero for every condition with this model. A stronger model, which lifts more tasks off the floor, and more tasks are the direct next steps; both will be registered before they run.",
+  "threat": "RealBench’s diagrams are generated from the code by a static-analysis tool, and its tests may call helpers that the diagram does not list. Only 9 of 17 selected RealBench tasks are usable, and runs at temperature 0 are often identical, which limits the effective sample size.",
+  "conclusion": "On 9 RealBench projects, the criterion’s teams did not significantly beat random teams of the same sizes, but they had the highest mean pass rate, used 27% fewer tokens than random teams and far fewer than one agent per class, which failed on 7 of 9 projects.",
+  "table_rows": [
+    [
+      "crules",
+      "L1",
+      "0.80 (1)",
+      "0.80 (2)",
+      "0.80 (6)",
+      "0.80 (6)",
+      "0.80 (2)",
+      "10k / 11k"
+    ],
+    [
+      "gattino",
+      "L1",
+      "0.00 (1)",
+      "0.00 (3)",
+      "0.00 (6)",
+      "0.00 (6)",
+      "0.00 (3)",
+      "5k / 6k"
+    ],
+    [
+      "adx-mcp",
+      "L2",
+      "0.07 (1)",
+      "0.01 (2)",
+      "0.00 (4)",
+      "0.00 (4)",
+      "0.00 (2)",
+      "3k / 4k"
+    ],
+    [
+      "alibaba-dms-mcp",
+      "L2",
+      "0.00 (1)",
+      "0.00 (2)",
+      "0.00 (17)",
+      "0.00 (10)",
+      "0.00 (2)",
+      "15k / 25k"
+    ],
+    [
+      "crx-analyzer",
+      "L2",
+      "0.32 (1)",
+      "0.48 (3)",
+      "0.00 (22)",
+      "0.22 (4)",
+      "0.48 (3)",
+      "18k / 35k"
+    ],
+    [
+      "emojichef",
+      "L2",
+      "0.12 (1)",
+      "0.13 (3)",
+      "0.00 (9)",
+      "0.12 (4)",
+      "0.37 (3)",
+      "14k / 20k"
+    ],
+    [
+      "torchcolor",
+      "L2",
+      "0.00 (1)",
+      "0.00 (4)",
+      "0.00 (19)",
+      "0.00 (7)",
+      "0.00 (4)",
+      "23k / 46k"
+    ],
+    [
+      "Camera",
+      "L3",
+      "0.13 (1)",
+      "0.13 (4)",
+      "0.00 (5)",
+      "0.00 (5)",
+      "0.04 (4)",
+      "24k / 25k"
+    ],
+    [
+      "Reconnaissance",
+      "L3",
+      "0.12 (1)",
+      "0.12 (2)",
+      "0.21 (6)",
+      "0.21 (6)",
+      "0.17 (2)",
+      "17k / 22k"
+    ],
+    [
+      "Mean",
+      "",
+      "0.17",
+      "0.19",
+      "0.11",
+      "0.15",
+      "0.21",
+      "15k / 22k"
+    ]
+  ],
+  "fig_caption": "Experiment 2 on RealBench: mean pass rate over three runs per task and condition (top) and median tokens per run (bottom). Cells show the share of the reference code’s passing tests that each condition passes."
+}

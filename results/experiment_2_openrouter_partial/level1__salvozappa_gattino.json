@@ -1,0 +1,93 @@
+{
+  "task": "level1/salvozappa_gattino",
+  "model": "deepseek/deepseek-v4.1-flash-1017",
+  "provider": "openrouter",
+  "plan_tag": "prereg-v1.8",
+  "git": {
+    "commit": "1aafc2a6d309bae72836bc289122505a7a52013d",
+    "tag": null,
+    "prereg_modified_since_commit": false
+  },
+  "reference_passed": 13,
+  "rows": [
+    {
+      "project": "level1/salvozappa_gattino",
+      "condition": "G2",
+      "description": "single agent",
+      "run_id": 0,
+      "k": 1,
+      "k_star": 3,
+      "duties": 11,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 2484,
+      "input_tokens": 1363,
+      "output_tokens": 1121,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 13,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/config.py",
+        "src/model.py",
+        "src/parser.py",
+        "src/system_utils.py",
+        "src/ui.py"
+      ],
+      "source_files_expected": [
+        "src/config.py",
+        "src/model.py",
+        "src/parser.py",
+        "src/system_utils.py",
+        "src/ui.py"
+      ]
+    },
+    {
+      "project": "level1/salvozappa_gattino",
+      "condition": "G4",
+      "description": "random team, same sizes",
+      "run_id": 0,
+      "k": 3,
+      "k_star": 3,
+      "duties": 11,
+      "cut": 4.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 5963,
+      "input_tokens": 4016,
+      "output_tokens": 1947,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 13,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/config.py",
+        "src/model.py",
+        "src/parser.py",
+        "src/system_utils.py",
+        "src/ui.py"
+      ],
+      "source_files_expected": [
+        "src/config.py",
+        "src/model.py",
+        "src/parser.py",
+        "src/system_utils.py",
+        "src/ui.py"
+      ]
+    }
+  ],
+  "failed_runs": [
+    {
+      "condition": "GC",
+      "run_id": 0,
+      "error": "RuntimeError: openrouter refused the call (402): Error code: 402 - {'error': {'message': 'This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits.', 'code': 402, 'metadata': {'reason': 'in_flight_budget_exhausted', 'limit_source': 'openrouter_in_flight_budget', '"
+    }
+  ]
+}
