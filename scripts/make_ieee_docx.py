@@ -406,6 +406,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
             notes="Mean pass rate over three runs: tests passed divided by tests that RealBench’s reference code passes in the same sandbox; the number of agents is in parentheses. Tokens: mean per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.")
     d.section_break(1)
     d.figure(ROOT / "paper/figures_docx/fig_exp2.png", E2["fig_caption"])
+    d.p(E2["exploratory"])
 
     d.h1("Discussion")
     d.h2("What the structural results do and do not show")
@@ -415,6 +416,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         d.p(AG["discussion_pilot"].replace("{bi:What the pilot shows:} ", ""), first=True)
     d.h2("What Experiment 2 shows")
     d.p(E2["discussion"], first=True)
+    d.p(E2["h2_note"])
     d.h2("Threats to validity")
     d.p("{i:Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. {i:Construct validity:} correctness is measured with DevBench’s own tests and traceability with duty comments, which may undercount duties implemented without a comment. {i:External validity:} DevBench projects are small (at most {N:DutyMax} duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. {i:Conclusion validity:} DevBench yields only {N:NMulti} multi-agent tasks, below the roughly 36 that the power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work {cite:yang2026cocoder} and from requirement sets of the kind used by NOMAD {cite:giannouris2025nomad}. " + AG["threat_extra"] + " " + E2["threat"], first=True)
     d.h2("Weights and contamination")

@@ -202,6 +202,8 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 
 \paragraph{Results.} \ExpTwoResults{} Fig.~\ref{fig:exp2} (Appendix~\ref{app:exp2}) shows every task.
 
+\ExpTwoExploratory
+
 \begin{table}[t]
 \centering
 \caption{Experiment 2 on RealBench: mean pass rate over three runs (tests passed divided by tests the reference code passes in the same sandbox), with the number of agents in parentheses; tokens are means per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.}
@@ -221,7 +223,7 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 
 \PilotDiscussion
 
-\paragraph{What Experiment 2 shows.} \ExpTwoDiscussion
+\paragraph{What Experiment 2 shows.} \ExpTwoDiscussion \ExpTwoHTwoNote
 
 \paragraph{Threats to validity.} \emph{Internal validity:} LLM outputs vary between calls, so every condition runs three times with identical prompts, and identical teams receive identical prompts and cached responses. \emph{Construct validity:} we measure correctness with DevBench's own tests and traceability with duty comments, which may undercount duties implemented without a comment. \emph{External validity:} DevBench projects are small (at most \DutyMax duties), cover four languages and use gold designs written together with the reference code; H4 repeats the main test with designs extracted from requirements, which a real team would have. \emph{Conclusion validity:} DevBench yields only \NMulti multi-agent tasks, below the roughly 36 that our power analysis requires for H1, so the main study will add tasks from benchmarks used in closely related work \citep{yang2026cocoder} and from requirement sets of the kind used by NOMAD \citep{giannouris2025nomad}. \ThreatExtra
 
