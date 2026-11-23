@@ -11,7 +11,33 @@ permissions:
   contents: read
 
 jobs:
+  data:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download RealBench once and keep the 9 projects
+        run: |
+          python3 -m venv /tmp/main && /tmp/main/bin/pip -q install gdown pyyaml
+          /tmp/main/bin/gdown 1RB3jUmD-6JvqvE5M1E5w_xYaxz3PC_T3 -O /tmp/rb.zip
+          /tmp/main/bin/python - <<'EOF'
+          import zipfile, yaml, re
+          tasks = yaml.safe_load(open("prereg/plan.yaml"))["experiment_2b"]["tasks"]
+          names = {t.split("/", 1)[1] for t in tasks}
+          z = zipfile.ZipFile("/tmp/rb.zip")
+          keep = [n for n in z.namelist() if not n.startswith("__MACOSX")
+                  and re.search(r"projs_filtered_uml/level\d/[^/]+/([^/]+)/", n)
+                  and re.search(r"projs_filtered_uml/level\d/[^/]+/([^/]+)/", n).group(1) in names]
+          z.extractall("/tmp/subset", keep)
+          print(len(keep), "files kept for", len(names), "projects")
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: realbench-subset
+          path: /tmp/subset
+          retention-days: 1
+
   task:
+    needs: data
     runs-on: ubuntu-24.04
     timeout-minutes: 350
     strategy:
@@ -29,14 +55,15 @@ jobs:
         run: sudo apt-get update -q && sudo apt-get install -y -q python3-venv python3-tk
       - name: Python packages
         run: |
-          python3 -m venv /tmp/main && /tmp/main/bin/pip -q install numpy scipy networkx pandas matplotlib scikit-learn infomap pyyaml openai gdown
+          python3 -m venv /tmp/main && /tmp/main/bin/pip -q install numpy scipy networkx pandas matplotlib scikit-learn infomap pyyaml openai
           python3 -m venv /tmp/rbenv && /tmp/rbenv/bin/pip -q install torch --index-url https://download.pytorch.org/whl/cpu
           /tmp/rbenv/bin/pip -q install -r scripts/realbench_test_requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: realbench-subset
+          path: /tmp/rb
       - name: RealBench data
-        run: |
-          /tmp/main/bin/gdown --fuzzy "https://drive.google.com/file/d/1RB3jUmD-6JvqvE5M1E5w_xYaxz3PC_T3/view" -O /tmp/rb.zip
-          /tmp/main/bin/python -c "import zipfile; z=zipfile.ZipFile('/tmp/rb.zip'); z.extractall('/tmp/rb', [n for n in z.namelist() if not n.startswith('__MACOSX')])"
-          echo "DATA=$(find /tmp/rb -type d -name projs_filtered_uml | head -1)" >> "$GITHUB_ENV"
+        run: echo "DATA=$(find /tmp/rb -type d -name projs_filtered_uml | head -1)" >> "$GITHUB_ENV"
       - name: Scorer check (free) - the reference code must pass its tests here too
         run: |
           /tmp/main/bin/python scripts/run_realbench.py --block experiment_2b --data "$DATA" --task "${{ matrix.task }}" \
