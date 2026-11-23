@@ -157,15 +157,19 @@ def icml_split() -> None:
     def take(m):
         block = m.group(0)
         if any(lbl in block for lbl in (r"\label{tab:probe}", r"\label{tab:pilot}", r"\label{fig:teams}")):
-            if "table*" in block:          # fit the wide pilot table to the text width
+            # the appendix is one column: every float goes exactly where it is written ([H]), at a readable size
+            block = block.replace("\\begin{table*}[t]", "\\begin{table}[H]").replace("\\end{table*}", "\\end{table}")
+            block = block.replace("[t]", "[H]").replace("[h]", "[H]")
+            block = block.replace("width=\\linewidth", "width=0.5\\linewidth")
+            if r"\label{tab:pilot}" in block:       # 8 columns: scale to the text width
                 block = re.sub(r"(\\begin\{tabular\}.*?\\end\{tabular\})", lambda m: "\\resizebox{\\textwidth}{!}{" + m.group(1) + "}", block, flags=re.S)
-                floats.append(block)
-            else:
-                floats.append(block.replace("[t]", "[h]"))
+            floats.append(block)
             return ""
         return block
     body = re.sub(r"\\begin\{(table\*?|figure\*?)\}.*?\\end\{\1\}", take, src, flags=re.S)
     (ROOT / "paper/generated/agent_results_icml_body.tex").write_text(body)
+    order = [r"\label{tab:pilot}", r"\label{tab:probe}", r"\label{fig:teams}"]   # largest first: no gap before it
+    floats.sort(key=lambda b: next((i for i, l in enumerate(order) if l in b), 9))
     (ROOT / "paper/generated/agent_results_icml_floats.tex").write_text("\n\n".join(floats) + "\n")
 
 

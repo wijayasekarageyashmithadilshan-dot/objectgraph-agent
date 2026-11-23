@@ -152,7 +152,7 @@ class Doc:
 
     def h1(self, title: str, first: bool = False, numbered: bool = True):
         style = ("H1ListNoSpace" if first else "H1ListSpace") if numbered else "H1"
-        self.body.append(para(style, title.upper()))
+        self.body.append(para(style, title.upper(), "<w:keepNext/><w:keepLines/>"))   # never strand a heading at a column foot
         self.h2num = None
 
     def h2(self, title: str):
@@ -161,11 +161,11 @@ class Doc:
             self.next_num += 1
             self.new_nums.append(f'<w:num w:numId="{self.h2num}"><w:abstractNumId w:val="1"/>'
                                  f'<w:lvlOverride w:ilvl="0"><w:startOverride w:val="1"/></w:lvlOverride></w:num>')
-        self.body.append(f'<w:p><w:pPr><w:pStyle w:val="H2Cont"/><w:numPr><w:ilvl w:val="0"/>'
+        self.body.append(f'<w:p><w:pPr><w:pStyle w:val="H2Cont"/><w:keepNext/><w:keepLines/><w:numPr><w:ilvl w:val="0"/>'
                          f'<w:numId w:val="{self.h2num}"/></w:numPr></w:pPr>{runs(title.upper())}</w:p>')
 
     def p(self, text: str, first: bool = False):
-        self.body.append(para("PARA" if first else "PARAIndent", text))
+        self.body.append(para("PARA" if first else "PARAIndent", text, "<w:widowControl/>"))
 
     def eq(self, text: str, number: int):
         # column width = (11520 - 2*740 - 400) / 2 = 4820 twips: centre tab mid-column, right tab at the edge
@@ -194,7 +194,7 @@ class Doc:
                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic>'
                    '</wp:inline></w:drawing></w:r>')
         self.body.append(f'<w:p><w:pPr><w:pStyle w:val="FigureCaption"/><w:keepNext/><w:jc w:val="center"/></w:pPr>{drawing}</w:p>')
-        self.body.append(para("FigCaption", caption))
+        self.body.append(para("FigCaption", caption, "<w:keepLines/>"))
 
     def photo(self, png: Path, n: int) -> str:
         """Author photo, 1 in x 1.25 in, floating at the left of the biography (square wrap)."""
@@ -225,20 +225,20 @@ class Doc:
         self.body.append(para("TableTitle", title, "<w:keepNext/>"))
         base = f'<w:sz w:val="{size}"/><w:szCs w:val="{size}"/>'
 
-        def cell(t: str, w: int, bold: bool = False, top: bool = False, bottom: bool = False) -> str:
+        def cell(t: str, w: int, bold: bool = False, top: bool = False, bottom: bool = False, keep: bool = True) -> str:
             borders = ""
             if top or bottom:
                 borders = "<w:tcBorders>" + ('<w:top w:val="single" w:sz="6" w:space="0" w:color="000000"/>' if top else "") + \
                           ('<w:bottom w:val="single" w:sz="6" w:space="0" w:color="000000"/>' if bottom else "") + "</w:tcBorders>"
             txt = f"{{b:{t}}}" if bold and t else t
             return (f'<w:tc><w:tcPr><w:tcW w:w="{w}" w:type="dxa"/>{borders}</w:tcPr>'
-                    f'<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="left"/></w:pPr>{runs(txt, base)}</w:p></w:tc>')
+                    f'<w:p><w:pPr>{"<w:keepNext/>" if keep else ""}<w:spacing w:before="0" w:after="0"/><w:jc w:val="left"/></w:pPr>{runs(txt, base)}</w:p></w:tc>')
 
         grid = "".join(f'<w:gridCol w:w="{w}"/>' for w in widths)
         trs = ["<w:tr><w:trPr><w:tblHeader/></w:trPr>" + "".join(cell(h, w, True, True, True) for h, w in zip(header, widths)) + "</w:tr>"]
         for k, row in enumerate(rows):
             last = k == len(rows) - 1
-            trs.append("<w:tr>" + "".join(cell(c, w, bottom=last) for c, w in zip(row, widths)) + "</w:tr>")
+            trs.append("<w:tr><w:trPr><w:cantSplit/></w:trPr>" + "".join(cell(c, w, bottom=last, keep=not last) for c, w in zip(row, widths)) + "</w:tr>")
         self.body.append(f'<w:tbl><w:tblPr><w:tblW w:w="{sum(widths)}" w:type="dxa"/><w:jc w:val="center"/>'
                          f'<w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="50" w:type="dxa"/><w:right w:w="50" w:type="dxa"/></w:tblCellMar>'
                          f'</w:tblPr><w:tblGrid>{grid}</w:tblGrid>{"".join(trs)}</w:tbl>')
@@ -383,7 +383,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         d.p(AG["pilot"].replace("Table V", "Table IV"))
         d.section_break(2)
         d.table("Pilot on DevBench’s Python Projects", ["Project", "Condition", "Agents", "Tests (mean ± SD)", "Runs", "Tokens (mean ± SD)", "Messages", "Note"],
-                AG["pilot_rows"], [1200, 2000, 700, 1100, 900, 900, 900, 1600], size=14,
+                AG["pilot_rows"], [1950, 1700, 600, 1100, 750, 1450, 800, 1350], size=14,
                 notes="Mean ± standard deviation over three runs (run identifiers 0, 1, 2); Runs lists tests passed per run. Identical teams receive identical prompts and cached responses.")
         d.section_break(1)
         d.figure(ROOT / "paper/figures_docx/fig_pilot.png", "Pilot: tests passed (left) and tokens per run (right) for each condition.")
@@ -394,10 +394,10 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     d.h1("Experiment 2: RealBench (Pre-Registered)")
     d.h2("Structural study on 61 projects")
     d.p(E2["structural"], first=True)
-    if (ROOT / "paper/figures_docx/fig_teams.png").exists():
-        d.figure(ROOT / "paper/figures_docx/fig_teams.png", width_in=3.2, caption="Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.")
     d.h2("Tasks and protocol")
     d.p(E2["protocol"], first=True)
+    if (ROOT / "paper/figures_docx/fig_teams.png").exists():
+        d.figure(ROOT / "paper/figures_docx/fig_teams.png", width_in=3.0, caption="Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.")
     d.h2("Results")
     d.p(E2["results"], first=True)
     d.section_break(2)
@@ -405,7 +405,6 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
             E2["table_rows"], [1700, 600, 1000, 1000, 1000, 1000, 1000, 1500], size=14,
             notes="Mean pass rate over three runs: tests passed divided by tests that RealBench’s reference code passes in the same sandbox; the number of agents is in parentheses. Tokens: mean per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.")
     d.section_break(1)
-    d.figure(ROOT / "paper/figures_docx/fig_exp2.png", E2["fig_caption"])
     d.p(E2["exploratory"])
 
     d.h1("Discussion")
@@ -414,6 +413,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     if AG.get("discussion_pilot"):
         d.h2("What the pilot shows")
         d.p(AG["discussion_pilot"].replace("{bi:What the pilot shows:} ", ""), first=True)
+        d.figure(ROOT / "paper/figures_docx/fig_exp2.png", E2["fig_caption"])
     d.h2("What Experiment 2 shows")
     d.p(E2["discussion"], first=True)
     d.p(E2["h2_note"])
