@@ -62,6 +62,7 @@ def main() -> None:
     ap.add_argument("--task", action="append", default=[])
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--check", action="store_true", help="only score the reference code (no model calls)")
+    ap.add_argument("--fresh-reference", action="store_true", help="re-run the reference tests here instead of reusing usable_from")
     ap.add_argument("--conditions", nargs="*")
     ap.add_argument("--runs", nargs="*", type=int)
     ap.add_argument("--provider", default=None, help="'fake' for a dry run")
@@ -81,11 +82,11 @@ def main() -> None:
     a.results = a.results or str(ROOT / "results" / a.block)
     data, res = Path(a.data), Path(a.results)
     res.mkdir(parents=True, exist_ok=True)
-    tasks = e2["tasks"] if (a.all or a.check) else a.task
+    tasks = a.task or (e2["tasks"] if (a.all or a.check) else [])
     if not tasks:
         raise SystemExit("give --task level/name, --all or --check")
     src_ref = ROOT / "results" / str(e2.get("usable_from", "")) / "reference.json"
-    if e2.get("usable_from") and not (res / "reference.json").exists() and src_ref.exists():
+    if e2.get("usable_from") and not a.fresh_reference and not (res / "reference.json").exists() and src_ref.exists():
         (res / "reference.json").write_text(src_ref.read_text())   # same tasks, same usability rule
     ref = reference(data, tasks, res, a.python)
     if a.check:

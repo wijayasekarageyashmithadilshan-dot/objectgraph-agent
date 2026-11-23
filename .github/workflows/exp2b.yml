@@ -1,0 +1,99 @@
+# Experiment 2b on GitHub's servers (no laptop needed).
+# Start it from the Actions tab: "Experiment 2b (Nemotron, RealBench)" -> Run workflow.
+# Needs one repository secret: NVIDIA_API_KEY (Settings -> Secrets and variables -> Actions).
+# Each RealBench task runs in its own job; a final job merges the results and runs the registered analysis.
+name: Experiment 2b (Nemotron, RealBench)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  task:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        task: [level1/salvozappa_gattino, level1/draeician_crules, level2/aliyun_alibabacloud-dms-mcp-server,
+               level2/pab1it0_adx-mcp-server, level2/rileydakota_crx-analyzer, level2/antoine311200_torchcolor,
+               level2/FreddyRodgers_emojichef, level3/Camera, level3/Reconnaissance]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # the run checks plan.yaml against the prereg-* tags
+      - name: System packages
+        run: sudo apt-get update -q && sudo apt-get install -y -q python3-venv python3-tk
+      - name: Python packages
+        run: |
+          python3 -m venv /tmp/main && /tmp/main/bin/pip -q install numpy scipy networkx pandas matplotlib scikit-learn infomap pyyaml openai gdown
+          python3 -m venv /tmp/rbenv && /tmp/rbenv/bin/pip -q install torch --index-url https://download.pytorch.org/whl/cpu
+          /tmp/rbenv/bin/pip -q install -r scripts/realbench_test_requirements.txt
+      - name: RealBench data
+        run: |
+          /tmp/main/bin/gdown --fuzzy "https://drive.google.com/file/d/1RB3jUmD-6JvqvE5M1E5w_xYaxz3PC_T3/view" -O /tmp/rb.zip
+          /tmp/main/bin/python -c "import zipfile; z=zipfile.ZipFile('/tmp/rb.zip'); z.extractall('/tmp/rb', [n for n in z.namelist() if not n.startswith('__MACOSX')])"
+          echo "DATA=$(find /tmp/rb -type d -name projs_filtered_uml | head -1)" >> "$GITHUB_ENV"
+      - name: Scorer check (free) - the reference code must pass its tests here too
+        run: |
+          /tmp/main/bin/python scripts/run_realbench.py --block experiment_2b --data "$DATA" --task "${{ matrix.task }}" \
+              --check --fresh-reference --python /tmp/rbenv/bin/python --results /tmp/refcheck || true
+          /tmp/main/bin/python - <<'EOF'
+          import json, sys
+          t = "${{ matrix.task }}"
+          here = json.load(open("/tmp/refcheck/reference.json"))[t]
+          colab = json.load(open("results/experiment_2/reference.json"))[t]
+          print("reference tests passed here:", here["passed"], "| in Colab (Experiment 2):", colab["passed"])
+          if here["passed"] != colab["passed"]:
+              sys.exit("Test environment differs from Experiment 2: stopping before any model call.")
+          EOF
+      - name: Run the task (model calls)
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          /tmp/main/bin/python scripts/run_realbench.py --block experiment_2b --data "$DATA" --task "${{ matrix.task }}" \
+              --python /tmp/rbenv/bin/python --cache cache
+      - name: Name for the artifact
+        if: always()
+        run: echo "ART=$(echo '${{ matrix.task }}' | tr '/' '_')" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exp2b-${{ env.ART }}
+          path: |
+            results/experiment_2b
+            runs/experiment_2b
+            cache/nvidia__*
+          if-no-files-found: warn
+
+  analyse:
+    needs: task
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: exp2b-*
+          path: /tmp/parts
+      - name: Merge and analyse
+        run: |
+          python3 -m venv /tmp/main && /tmp/main/bin/pip -q install numpy scipy
+          mkdir -p results/experiment_2b runs/experiment_2b cache
+          for d in /tmp/parts/*; do
+            cp -r "$d"/results/experiment_2b/. results/experiment_2b/ 2>/dev/null || true
+            cp -r "$d"/runs/experiment_2b/. runs/experiment_2b/ 2>/dev/null || true
+            cp "$d"/cache/nvidia__* cache/ 2>/dev/null || true
+          done
+          /tmp/main/bin/python scripts/analyse_exp2.py --results results/experiment_2b | tee results/experiment_2b/summary_print.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp2b_results
+          path: |
+            results/experiment_2b
+            runs/experiment_2b
+            cache/nvidia__*

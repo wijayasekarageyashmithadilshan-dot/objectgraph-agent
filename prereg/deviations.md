@@ -72,3 +72,12 @@ subset of conditions with the same registered tests.
 Same model (Nemotron 3 Ultra) served directly by NVIDIA, which removes the free OpenRouter
 endpoint's daily limit; Experiment 2b therefore runs all five conditions once. Only two
 one-line connectivity checks were made with this model before registration.
+
+## 2026-11-23 — Experiment 2b moved from Colab to GitHub Actions (infrastructure only)
+The first Colab attempt of Experiment 2b could not be kept running for the several hours
+the large model needs (the browser session must stay open). Experiment 2b is therefore run
+on GitHub Actions (`.github/workflows/exp2b.yml`), one job per task, with the same plan,
+model, prompts, scorer pins and analysis. No result of the Colab attempt was looked at; it
+is discarded and the Actions run is the registered run. Each job first re-runs RealBench's
+reference tests and stops before any model call unless they pass exactly as many tests as in
+Experiment 2, so the test environment cannot differ silently.
