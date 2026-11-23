@@ -60,10 +60,10 @@ is the total dependency that crosses agent boundaries.
 \subsection{Criterion}
 For a team $\pi$ with group sizes $N_i = |C_i|$, let $\mu_i = \sum_{u,v \in C_i} W_{uv}$ (both orders) and $\varepsilon_{ij} = \sum_{u \in C_i, v \in C_j} W_{uv}$. Following \citet{mancoridis1998bunch}, the intra-connectivity (cohesion) of group $i$ is $A_i = \mu_i / N_i^2$, the inter-connectivity (coupling) of groups $i$ and $j$ is $E_{ij} = \varepsilon_{ij} / (N_i N_j)$, and
 \begin{equation}
-\mathrm{MQ}(\pi) = \frac{1}{k}\sum_{i} A_i \;-\; \binom{k}{2}^{-1}\!\sum_{i<j} E_{ij}, \qquad \mathrm{MQ}(\pi) = A_1 \text{ if } k = 1 .
+\mathrm{MQ}(\pi) = \frac{1}{k}\sum_{i} A_i \;-\; \binom{k}{2}^{-1}\!\sum_{i<j} E_{ij},
 \label{eq:mq}
 \end{equation}
-Average-linkage agglomerative clustering on the distance $1 - W$ yields a nested family $\pi_1, \dots, \pi_n$ with exactly $k$ groups at level $k$. We select
+with $\mathrm{MQ}(\pi) = A_1$ if $k = 1$. Average-linkage agglomerative clustering on the distance $1 - W$ yields a nested family $\pi_1, \dots, \pi_n$ with exactly $k$ groups at level $k$. We select
 \begin{equation}
 k^\ast = \arg\max_{k} \; \mathrm{MQ}(\pi_k) - \lambda \frac{k-1}{n-1},
 \label{eq:kstar}
@@ -195,10 +195,10 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 \input{generated/agent_results_icml_body.tex}
 
 %=====================================================================
-\section{Experiment 2: RealBench (Pre-Registered)}
+\section{Experiment 2: RealBench}
 \label{sec:exp2}
 
-\paragraph{Setup.} RealBench \citep{li2026realbench} provides 61 Python repositories with class diagrams, file trees and executable tests. Without any model call, the criterion recommends a team for 41 of them, and the recommended size grows with difficulty (Appendix~\ref{app:exp2}). Tasks were chosen by a rule fixed before any model call (a criterion team of 2 to 6 agents that differs from both GC and Infomap); 9 of the 17 qualifying projects have usable tests. Before any model call, the reference code split according to every team, merged and scored reproduced the reference score on every task. The model is deepseek-v4.1-flash-1017 (temperature 0, three runs per condition); the primary test is G7 against G4 (one-sided Wilcoxon over tasks). Full protocol in Appendix~\ref{app:exp2}.
+\paragraph{Setup.} This experiment was pre-registered like the pilot. RealBench \citep{li2026realbench} provides 61 Python repositories with class diagrams, file trees and executable tests. Without any model call, the criterion recommends a team for 41 of them, and the recommended size grows with difficulty (Appendix~\ref{app:exp2}). Tasks were chosen by a rule fixed before any model call (a criterion team of 2 to 6 agents that differs from both GC and Infomap); 9 of the 17 qualifying projects have usable tests. Before any model call, the reference code split according to every team, merged and scored reproduced the reference score on every task. The model is deepseek-v4.1-flash-1017 (temperature 0, three runs per condition); the primary test is G7 against G4 (one-sided Wilcoxon over tasks). Full protocol in Appendix~\ref{app:exp2}.
 
 \paragraph{Results.} \ExpTwoResults{} Fig.~\ref{fig:exp2} (Appendix~\ref{app:exp2}) shows every task.
 

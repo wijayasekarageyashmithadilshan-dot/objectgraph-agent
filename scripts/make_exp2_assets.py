@@ -157,7 +157,11 @@ def icml_split() -> None:
     def take(m):
         block = m.group(0)
         if any(lbl in block for lbl in (r"\label{tab:probe}", r"\label{tab:pilot}", r"\label{fig:teams}")):
-            floats.append(block.replace("[t]", "[h]").replace("table*", "table"))
+            if "table*" in block:          # fit the wide pilot table to the text width
+                block = re.sub(r"(\\begin\{tabular\}.*?\\end\{tabular\})", lambda m: "\\resizebox{\\textwidth}{!}{" + m.group(1) + "}", block, flags=re.S)
+                floats.append(block)
+            else:
+                floats.append(block.replace("[t]", "[h]"))
             return ""
         return block
     body = re.sub(r"\\begin\{(table\*?|figure\*?)\}.*?\\end\{\1\}", take, src, flags=re.S)

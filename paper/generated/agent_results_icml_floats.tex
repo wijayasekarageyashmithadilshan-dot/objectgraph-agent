@@ -10,9 +10,9 @@ qwen3.6-35b-a3b & yes & stocktrends & 1/9 & 13,480\\
 qwen3.6-35b-a3b & yes & lice & 0/31 & 27,266\\
 \bottomrule\end{tabular}\end{table}
 
-\begin{table}[h]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Pilot on DevBench's Python projects: tests passed and tokens per run (mean $\pm$ standard deviation over three runs; Runs lists tests passed per run) and messages per run. Identical teams receive identical prompts and cached responses.}\label{tab:pilot}
-\begin{tabular}{lllllrrl}\toprule
+\resizebox{\textwidth}{!}{\begin{tabular}{lllllrrl}\toprule
 Project & Condition & Agents & Tests (mean $\pm$ SD) & Runs & Tokens (mean $\pm$ SD) & Messages & Note\\\midrule
 geotext & G2 Single agent & 1 & 0.0 $\pm$ 0.0 / 9 & 0, 0, 0 & 2,775 $\pm$ 84 & 0.0 & --\\
 geotext & G4 Random team & 2 & 0.0 $\pm$ 0.0 / 9 & 0, 0, 0 & 4,768 $\pm$ 122 & 0.0 & --\\
@@ -34,7 +34,7 @@ stocktrends & G4 Random team & 3 & 1.0 $\pm$ 0.0 / 9 & 1, 1, 1 & 13,511 $\pm$ 40
 stocktrends & GC One agent per class & 4 & 1.0 $\pm$ 0.0 / 9 & 1, 1, 1 & 17,879 $\pm$ 1,413 & 3.0 & --\\
 stocktrends & G6 Infomap team & 4 & 1.0 $\pm$ 0.0 / 9 & 1, 1, 1 & 17,879 $\pm$ 1,413 & 3.0 & same team as GC\\
 stocktrends & G7 Criterion team & 3 & 1.0 $\pm$ 0.0 / 9 & 1, 1, 1 & 14,162 $\pm$ 1,010 & 2.0 & --\\
-\bottomrule\end{tabular}\end{table}
+\bottomrule\end{tabular}}\end{table*}
 
 \begin{figure}[h]\centering\includegraphics[width=\linewidth]{figures/teams.pdf}
 \caption{Run 0 on stocktrends. (a, b) Cohesion (diagonal) and coupling (off-diagonal) between agents, as in MQ, for the criterion team and a random team of the same sizes; the classes each agent owns are listed below. (c) Input and output tokens per agent in that run.}\label{fig:teams}\end{figure}
