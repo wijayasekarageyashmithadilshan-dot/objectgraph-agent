@@ -88,6 +88,7 @@ def main() -> None:
     ax[1].set_ylim(0, max(vals) * 1.25)
     fig.tight_layout()
     fig.savefig(ROOT / "paper/figures_docx/fig_exp2.png", dpi=220)
+    fig.savefig(ROOT / "paper/figures/exp2.pdf")          # vector version for the ICML draft
     print(json.dumps({k: v for k, v in out.items() if k not in ("table_rows",)}, indent=1)[:3000])
 
 
@@ -121,14 +122,7 @@ def latex() -> None:
     (ROOT / "paper/generated/exp2_table.tex").write_text(
         "\\begin{tabular}{@{}llrrrrrr@{}}\n\\toprule\nTask & Lvl & G2 & G4 & GC & G6 & G7 & Tokens G7/G4 \\\\\n\\midrule\n"
         + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
-    import shutil
-    from matplotlib import image as mpimg  # noqa: F401
-    png = ROOT / "paper/figures_docx/fig_exp2.png"
-    if png.exists():
-        im = plt.imread(png)
-        f = plt.figure(figsize=(3.3, 3.3 * im.shape[0] / im.shape[1]))
-        ax = f.add_axes([0, 0, 1, 1]); ax.imshow(im); ax.axis("off")
-        f.savefig(ROOT / "paper/figures/exp2.pdf", dpi=300)
+
 
 
 if __name__ == "__main__":
