@@ -268,6 +268,26 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
             per = [_py_units(f) for f in fragments]
         except SyntaxError:
             per = None
+        if per is not None and MERGE_V2 and owners:
+            # Only fragments whose author owns something in this file (a class defined
+            # here or this file's module unit) count; a stub written by a non-owner
+            # would otherwise bring in its imports and module code (e.g. a circular
+            # import). A non-owner fragment still counts if it is the only source of
+            # some class or function.
+            mod = "mod_" + re.sub(r"\W", "_", path[:-3])
+            here = {name for units in per for kind, name, _, _ in units if kind == "class"}
+            rel = [any(d.split(".", 1)[0] in here or d.split(".", 1)[0] == mod for d in owners[i])
+                   if i < len(owners) else True for i in range(len(per))]
+            if any(rel):
+                have = {(k, n) for i, u in enumerate(per) if rel[i] for k, n, _, _ in u if k in ("class", "def")}
+                for i, u in enumerate(per):
+                    if not rel[i] and any(k in ("class", "def") and (k, n) not in have for k, n, _, _ in u):
+                        rel[i] = True
+                keep = [i for i in range(len(per)) if rel[i]]
+                if len(keep) == 1:
+                    return fragments[keep[0]]
+                per = [per[i] for i in keep]
+                owners = [owners[i] for i in keep]
         if per is not None:
             seq: list[tuple] = []          # unit keys in source order across fragments
             imports, seen_imp, stmts, defs, mains = [], set(), [], {}, []
@@ -284,7 +304,12 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
                         else:
                             prev += 1
                             seq.insert(prev, key)
-                    if kind == "import":
+                    if kind == "import" and MERGE_V2:
+                        norm = " ".join(text.split())      # whole statement: keeps (...) imports intact
+                        if norm not in seen_imp:
+                            seen_imp.add(norm)
+                            imports.append(text.strip())
+                    elif kind == "import":
                         for line in text.splitlines():
                             if line.strip() and line.strip() not in seen_imp:
                                 seen_imp.add(line.strip())
@@ -332,7 +357,12 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
                         items.append((key, defs[key]))
                     elif kind == "stmt":
                         items.append((key, key))
-                parts = ["\n".join(imports)] + [t for _, t in _order_by_need(items)] + mains
+                fut = [x for x in imports if x.startswith("from __future__")]
+                rest = [x for x in imports if not x.startswith("from __future__")]
+                doc = []
+                if items and items[0][0] == items[0][1] and _is_docstring(items[0][1]):
+                    doc = [items.pop(0)[1]]           # module docstring stays on top
+                parts = doc + ["\n".join(fut + rest)] + [t for _, t in _order_by_need(items)] + mains
             return "\n\n\n".join(p for p in parts if p.strip()) + "\n"
         imports, bodies, seen = [], [], set()
         for frag in fragments:

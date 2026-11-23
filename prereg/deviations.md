@@ -39,3 +39,17 @@ split per team, merged and scored with `--provider fake`) found and fixed:
   (`scripts/realbench_test_requirements.txt`, pins from the reference check: mcp 1.8.1,
   pydantic < 2.11). Empty source files (bare `__init__.py`) are kept, since they hold no code.
 After the fixes, every condition reproduces the reference score on every usable task.
+
+## 2026-11-23 — Merge v2 fix after the first 7 paid Experiment 2 runs (one task)
+The first paid runs (pab1it0_adx-mcp-server, 7 runs, then the OpenRouter credit ran out)
+showed a merge fault the reference-code harness could not reveal, because RealBench's own
+code never puts a multi-line `from x import (...)` in two fragments: imports were
+de-duplicated line by line, which broke parenthesised imports (G4 run 0: IndentationError).
+Merge v2 now (a) de-duplicates whole import statements, (b) puts `from __future__` imports
+and the module docstring first, and (c) ignores a fragment whose author owns nothing in
+that file (a stub of another agent's file), unless it is the only source of some class or
+function. The rule is the same for every condition. The harness check still reproduces the
+reference on every condition and task. The 7 runs are re-merged from the cached replies
+(no new calls); only G4 run 0 changes (0 -> 4 of 25 tests). The remaining zero scores are
+genuine (e.g. G7/GC: the agent owning server.py imported main.py while main.py imports
+server.py, a circular import created by the two agents' own code).

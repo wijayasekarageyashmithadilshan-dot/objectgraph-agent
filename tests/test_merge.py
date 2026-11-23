@@ -57,3 +57,21 @@ def test_block_ends_only_at_fence_line():
     text = '### FILE: a.py\n```python\ndef f():\n    """Use ```code``` here."""\n    return 1\n```\n'
     (path, code), = parse_blocks(text)
     assert path == "a.py" and "return 1" in code
+
+
+def test_merge_v2_multiline_import_and_non_owner_stub():
+    import objectgraph.orchestrator as o
+    o.MERGE_V2 = True
+    try:
+        owner = "from __future__ import annotations\nfrom typing import (\n    Any,\n    Dict,\n)\nclass S:\n    def run(self) -> Dict[str, Any]:\n        return {}\n"
+        stub = "from pkg.main import helper\nclass S:\n    def run(self):\n        pass\n"
+        out = o.merge_fragments("pkg/server.py", [stub, owner], [{"mod_pkg_main.helper"}, {"S.run"}])
+        assert "pkg.main" not in out and out.startswith("from __future__")
+        compile(out, "x", "exec")
+        a = "import os\nfrom typing import (\n    Any,\n)\ndef f():\n    return os\n"
+        b = "from typing import (\n    Any,\n)\nclass C:\n    pass\n"
+        out = o.merge_fragments("m.py", [a, b], [{"mod_m.f"}, {"C.<state>"}])
+        compile(out, "x", "exec")
+        assert out.count("from typing import") == 1
+    finally:
+        o.MERGE_V2 = False
