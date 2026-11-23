@@ -45,6 +45,14 @@ amendments:
       budget on hidden reasoning in 37 of 45 calls and returned no code, so no condition could be scored.
       The model is re-run with hidden reasoning switched off (reasoning_enabled: false), everything else
       unchanged. Attempt 1 is kept in results/second_model_attempt1_invalid/ and in the cache.
+  - date: 2026-11-23
+    tag: prereg-v1.7
+    before_any_model_run: true   # for experiment_2; no model has seen any RealBench task
+    change: >
+      Experiment 2 registered on RealBench (arXiv 2604.22659) before any model call on it. The 12 tasks were
+      chosen by a fixed structural rule from the zero-call analysis (results/realbench_table.csv), without
+      any agent output: criterion team size 2 to 6 and a partition different from both one-agent-per-class
+      (GC) and Infomap (G6). These are the projects where the criterion makes a choice the baselines do not.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -119,3 +127,25 @@ third_model:
   why: "Stronger model: tests whether conditions separate once scores leave the floor."
   tasks: [python/stocktrends, python/lice, python/geotext, python/particle-swarm-optimization]
   analysis: "Same go/no-go rules and H3a/H3b as the primary model, reported separately (results/third_model/)."
+
+experiment_2:
+  benchmark: "RealBench, projs_filtered_uml (61 Python projects); design files as distributed"
+  question: "On real projects where the criterion's team differs from the baselines, does it pass more tests than a random team of the same sizes?"
+  selection_rule: "full view, lambda 0: 2 <= k* <= 6, ARI(G7, GC) < 1 and ARI(G7, G6) < 1 (scripts/run_realbench_structural.py)"
+  tasks: [level1/AasaiAlangaram__PySecOC, level1/tcsenpai__sigmon, level1/salvozappa_gattino, level1/draeician_crules,
+          level2/aliyun_alibabacloud-dms-mcp-server, level2/pab1it0_adx-mcp-server, level2/antoine311200_torchcolor,
+          level2/FreddyRodgers_emojichef, level3/AI-Games-Hex, level3/Camera, level3/Reconnaissance, level4/eqld_nlsh]
+  agent_input: "the project's requirement document as distributed by RealBench, plus its class diagram (uml_output/*_uml.json rendered by objectgraph/realbench.py); no tests, no source code"
+  duty_graph: "docs/realbench_mapping.md (classes + module-function units, weak dependency/import edges, signature edges)"
+  model: second_model             # deepseek/deepseek-v4.1-flash-1017, reasoning off, temperature 0, same caps
+  conditions: [G2, G4, GC, G6, G7]
+  runs_per_condition: 3
+  scoring:
+    metric: "pass_rate = RealBench tests passed / tests passed by RealBench's own reference code"
+    usable_task: "the reference code passes at least one test in our sandbox; unusable tasks are reported and not replaced"
+  hypotheses:
+    H1_primary: "Across usable tasks, per-task mean pass rate of G7 > G4 (one-sided Wilcoxon signed-rank, alpha 0.05; ties dropped)."
+    H1_secondary: "G7 vs GC and G7 vs G6, two-sided Wilcoxon signed-rank, Holm-corrected; reported whatever the outcome."
+    H2_cost: "Median over tasks of tokens(G7) / tokens(G4) <= 1.10."
+  floor_rule: "If fewer than 4 usable tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength (not as support or rejection)."
+  analysis: "Reported in results/experiment_2/; every task shown, including unusable and floor tasks."
