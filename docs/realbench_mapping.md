@@ -9,12 +9,14 @@ duty graph, the criterion and every baseline run unchanged.
 | RealBench element | Duty-graph element |
 |---|---|
 | class + its methods | one unit; each method is a duty (member-less class → one `<state>` duty) |
-| module-level functions of a file | one pseudo-unit `mod_<file>`; each function is a duty (main "full" view only) |
+| module-level functions of a file | one pseudo-unit `mod_<file path>`; each function is a duty (main "full" view only) |
+| file with no function (constants, package `__init__.py`) and no class | one pseudo-unit `mod_<file path>` with one `<state>` duty, so every file has an owner |
+| module name (RealBench gives the file name only) | full path from RealBench's `tree.txt`, matched in order (two `server.py` files stay two files) |
 | class `relationships` (all `dependency`) to a declared class | weak relation (0.25) |
 | relationship to an undeclared type (`int`, library classes) | ignored, as for DevBench |
 | parameter / return type naming a declared class | signature edge (0.5), found by `build_duty_graph` |
 | `dag.json` edge A → B | weak relation between every unit of file A and every unit of file B |
-| class name declared in two files | qualified as `<file>_<Class>` |
+| class name declared in two files | qualified as `<file path>_<Class>` |
 
 RealBench diagrams contain no inheritance, composition or aggregation, so the
 strong weight (0.5) is never used. This is a property of the data.

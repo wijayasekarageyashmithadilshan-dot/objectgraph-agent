@@ -53,6 +53,21 @@ amendments:
       chosen by a fixed structural rule from the zero-call analysis (results/realbench_table.csv), without
       any agent output: criterion team size 2 to 6 and a partition different from both one-agent-per-class
       (GC) and Infomap (G6). These are the projects where the criterion makes a choice the baselines do not.
+  - date: 2026-11-23
+    tag: prereg-v1.8
+    before_any_model_run: true   # still no model call on any RealBench task
+    change: >
+      The zero-call harness check found three faults in reading RealBench designs, fixed before any model
+      call: (1) UML modules are named by file name only, so two files called server.py or __init__.py were
+      merged into one unit; full paths now come from RealBench's own tree.txt; (2) files with no class and
+      no function (package __init__.py with imports, constant-only files) had no owner, so no agent wrote
+      them; every file now has a unit; (3) class names shared by two files are qualified by full path.
+      The registered selection rule is re-applied unchanged to the corrected duty graphs: 17 projects
+      qualify (10 of the 12 listed in v1.7 plus 7 new; AI-Games-Hex and eqld_nlsh no longer qualify). The
+      task list below is the rule's output; the rule itself, hypotheses, model and analysis are unchanged.
+      Merge v2 (source order, import-time dependency order, property getter+setter kept together) is used
+      for every condition of Experiment 2; with the reference code split per team it reproduces the
+      reference score for all 5 conditions on all usable tasks (scripts/run_realbench.py --provider fake).
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -132,10 +147,15 @@ experiment_2:
   benchmark: "RealBench, projs_filtered_uml (61 Python projects); design files as distributed"
   question: "On real projects where the criterion's team differs from the baselines, does it pass more tests than a random team of the same sizes?"
   selection_rule: "full view, lambda 0: 2 <= k* <= 6, ARI(G7, GC) < 1 and ARI(G7, G6) < 1 (scripts/run_realbench_structural.py)"
-  tasks: [level1/AasaiAlangaram__PySecOC, level1/tcsenpai__sigmon, level1/salvozappa_gattino, level1/draeician_crules,
-          level2/aliyun_alibabacloud-dms-mcp-server, level2/pab1it0_adx-mcp-server, level2/antoine311200_torchcolor,
-          level2/FreddyRodgers_emojichef, level3/AI-Games-Hex, level3/Camera, level3/Reconnaissance, level4/eqld_nlsh]
-  agent_input: "the project's requirement document as distributed by RealBench, plus its class diagram (uml_output/*_uml.json rendered by objectgraph/realbench.py); no tests, no source code"
+  tasks: [level1/AasaiAlangaram__PySecOC, level1/tcsenpai__sigmon, level1/salvozappa_gattino,
+          level1/tsensei_Semantic-Markdown-Parser, level1/draeician_crules,
+          level2/aliyun_alibabacloud-dms-mcp-server, level2/pab1it0_adx-mcp-server, level2/rileydakota_crx-analyzer,
+          level2/antoine311200_torchcolor, level2/FreddyRodgers_emojichef, level2/phihung_fh_utils,
+          level3/Camera, level3/Reconnaissance, level3/symeval,
+          level4/integral-business-intelligence_chroma-auditor, level4/Crypt-Guard_CryptGuard,
+          level4/simons-freedom_X-monitor]
+  agent_input: "README.md from proj_clean when RealBench ships one, the class diagram with its descriptions (uml_output/*_uml.json) and the file tree (uml_output/tree.txt), rendered by objectgraph/realbench_task.py; no tests, no source code"
+  test_environment: "scripts/realbench_test_requirements.txt (+ torch from the host); usability is decided by scripts/run_realbench.py --check in the run sandbox before any model call"
   duty_graph: "docs/realbench_mapping.md (classes + module-function units, weak dependency/import edges, signature edges)"
   model: second_model             # deepseek/deepseek-v4.1-flash-1017, reasoning off, temperature 0, same caps
   conditions: [G2, G4, GC, G6, G7]

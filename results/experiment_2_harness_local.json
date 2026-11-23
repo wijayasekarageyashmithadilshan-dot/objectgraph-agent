@@ -1,0 +1,338 @@
+{
+ "what": "zero-call harness check: reference code split per team, merged (merge v2) and scored with RealBench tests; local sandbox, run 0",
+ "reference": {
+  "level1/AasaiAlangaram__PySecOC": {
+   "usable": false,
+   "reason": "RealBench ships no tests for this project",
+   "passed": 0
+  },
+  "level1/tcsenpai__sigmon": {
+   "usable": false,
+   "reason": "RealBench ships no tests for this project",
+   "passed": 0
+  },
+  "level1/salvozappa_gattino": {
+   "usable": true,
+   "passed": 13,
+   "failed": 0,
+   "errors": 0,
+   "total": 13,
+   "reason": ""
+  },
+  "level1/draeician_crules": {
+   "usable": true,
+   "passed": 15,
+   "failed": 0,
+   "errors": 0,
+   "total": 15,
+   "reason": ""
+  },
+  "level2/aliyun_alibabacloud-dms-mcp-server": {
+   "usable": true,
+   "passed": 26,
+   "failed": 0,
+   "errors": 0,
+   "total": 26,
+   "reason": ""
+  },
+  "level2/pab1it0_adx-mcp-server": {
+   "usable": true,
+   "passed": 25,
+   "failed": 0,
+   "errors": 0,
+   "total": 25,
+   "reason": ""
+  },
+  "level2/antoine311200_torchcolor": {
+   "usable": true,
+   "passed": 21,
+   "failed": 1,
+   "errors": 0,
+   "total": 22,
+   "reason": ""
+  },
+  "level2/FreddyRodgers_emojichef": {
+   "usable": true,
+   "passed": 75,
+   "failed": 0,
+   "errors": 0,
+   "total": 75,
+   "reason": ""
+  },
+  "level3/AI-Games-Hex": {
+   "usable": true,
+   "passed": 34,
+   "failed": 0,
+   "errors": 0,
+   "total": 34,
+   "reason": ""
+  },
+  "level3/Camera": {
+   "usable": false,
+   "passed": 0,
+   "failed": 0,
+   "errors": 1,
+   "total": 1,
+   "reason": "reference code passes no test here: ixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\". Set it to \"fixture-scope\" to keep the current behavior.\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n"
+  },
+  "level3/Reconnaissance": {
+   "usable": false,
+   "passed": 0,
+   "failed": 0,
+   "errors": 1,
+   "total": 1,
+   "reason": "reference code passes no test here: ixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: \"function\", \"class\", \"module\", \"package\", \"session\". Set it to \"fixture-scope\" to keep the current behavior.\n\n  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))\n"
+  },
+  "level4/eqld_nlsh": {
+   "usable": true,
+   "passed": 97,
+   "failed": 0,
+   "errors": 0,
+   "total": 97,
+   "reason": ""
+  }
+ },
+ "rows": [
+  {
+   "task": "level1/draeician_crules",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/draeician_crules",
+   "condition": "G4",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/draeician_crules",
+   "condition": "GC",
+   "k": 6,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/draeician_crules",
+   "condition": "G6",
+   "k": 6,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/draeician_crules",
+   "condition": "G7",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/salvozappa_gattino",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/salvozappa_gattino",
+   "condition": "G4",
+   "k": 3,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/salvozappa_gattino",
+   "condition": "GC",
+   "k": 6,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/salvozappa_gattino",
+   "condition": "G6",
+   "k": 6,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level1/salvozappa_gattino",
+   "condition": "G7",
+   "k": 3,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/FreddyRodgers_emojichef",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/FreddyRodgers_emojichef",
+   "condition": "G4",
+   "k": 3,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/FreddyRodgers_emojichef",
+   "condition": "GC",
+   "k": 9,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/FreddyRodgers_emojichef",
+   "condition": "G6",
+   "k": 4,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/FreddyRodgers_emojichef",
+   "condition": "G7",
+   "k": 3,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+   "condition": "G4",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+   "condition": "GC",
+   "k": 17,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+   "condition": "G6",
+   "k": 10,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+   "condition": "G7",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/antoine311200_torchcolor",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/antoine311200_torchcolor",
+   "condition": "G4",
+   "k": 4,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/antoine311200_torchcolor",
+   "condition": "GC",
+   "k": 19,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/antoine311200_torchcolor",
+   "condition": "G6",
+   "k": 7,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/antoine311200_torchcolor",
+   "condition": "G7",
+   "k": 4,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/pab1it0_adx-mcp-server",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/pab1it0_adx-mcp-server",
+   "condition": "G4",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/pab1it0_adx-mcp-server",
+   "condition": "GC",
+   "k": 4,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/pab1it0_adx-mcp-server",
+   "condition": "G6",
+   "k": 4,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level2/pab1it0_adx-mcp-server",
+   "condition": "G7",
+   "k": 2,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level3/AI-Games-Hex",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level3/AI-Games-Hex",
+   "condition": "G4",
+   "k": 15,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level3/AI-Games-Hex",
+   "condition": "GC",
+   "k": 15,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level3/AI-Games-Hex",
+   "condition": "G6",
+   "k": 9,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level3/AI-Games-Hex",
+   "condition": "G7",
+   "k": 15,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level4/eqld_nlsh",
+   "condition": "G2",
+   "k": 1,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level4/eqld_nlsh",
+   "condition": "G4",
+   "k": 11,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level4/eqld_nlsh",
+   "condition": "GC",
+   "k": 21,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level4/eqld_nlsh",
+   "condition": "G6",
+   "k": 19,
+   "pass_rate": 1.0
+  },
+  {
+   "task": "level4/eqld_nlsh",
+   "condition": "G7",
+   "k": 11,
+   "pass_rate": 1.0
+  }
+ ],
+ "all_reproduce_reference": true
+}

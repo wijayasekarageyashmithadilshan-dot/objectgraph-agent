@@ -35,3 +35,25 @@ def test_class_split_across_agents_keeps_every_method():
     exec(compile(m, "m", "exec"), ns)
     c = ns["C"]()
     assert c.f() == "f" and c.g() == "g" and ns["C"].X == 1 and "# duty: C.f" in m
+
+
+def test_merge_v2_orders_by_import_time_need_and_keeps_properties():
+    import objectgraph.orchestrator as o
+    o.MERGE_V2 = True
+    try:
+        a = "from typing import List\ndef f() -> List[B]:\n    return []\nclass T:\n    @property\n    def c(self):\n        return self._c\n\n    @c.setter\n    def c(self, v):\n        self._c = v\n"
+        b = "class B:\n    TEXT = '''x\ny'''\n"
+        out = o.merge_fragments("m.py", [a, b], [{"mod_m.f", "T.c"}, {"B.<state>"}])
+        assert out.index("class B") < out.index("def f(")
+        assert "@c.setter" in out and "TEXT = '''x\ny'''" in out
+        ns = {}
+        exec(out, ns)
+    finally:
+        o.MERGE_V2 = False
+
+
+def test_block_ends_only_at_fence_line():
+    from objectgraph.orchestrator import parse_blocks
+    text = '### FILE: a.py\n```python\ndef f():\n    """Use ```code``` here."""\n    return 1\n```\n'
+    (path, code), = parse_blocks(text)
+    assert path == "a.py" and "return 1" in code

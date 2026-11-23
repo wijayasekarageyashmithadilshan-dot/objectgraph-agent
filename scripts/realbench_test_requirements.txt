@@ -1,0 +1,28 @@
+# Test environment for scoring Experiment 2 (RealBench). torch comes from the host (Colab).
+# Pins were fixed by the zero-call reference check (prereg/deviations.md, 2026-11-23).
+pytest
+pytest-timeout
+pytest-asyncio
+click
+pyyaml
+mcp[cli]==1.8.1
+pydantic>=2.7,<2.11
+python-dotenv
+requests
+beautifulsoup4
+ipwhois
+python-whois
+shodan
+colorama
+openai
+customtkinter
+azure-kusto-data
+azure-identity
+alibabacloud-dms-enterprise20181101
+alibabacloud-dts20200101
+httpx
+transformers
+diffusers
+peft
+accelerate
+matplotlib

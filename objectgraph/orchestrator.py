@@ -49,7 +49,8 @@ Duties you must implement (ID = Class.method):
 {received}
 Write your code now."""
 
-_BLOCK = re.compile(r"###\s*FILE:\s*(?P<path>\S+)\s*\n```[^\n]*\n(?P<code>.*?)```", re.S)
+# the closing fence must stand on its own line, so ``` inside a docstring does not end the block
+_BLOCK = re.compile(r"###\s*FILE:\s*`?(?P<path>[^\s`]+)`?\s*\n```[^\n]*\n(?P<code>.*?)^```[ \t]*$", re.S | re.M)
 
 
 @dataclass
@@ -111,7 +112,11 @@ def _py_units(code: str):
             for el in node.body:
                 t, _ = _seg(lines, el)
                 if isinstance(el, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    methods.append((el.name, t))
+                    if MERGE_V2 and methods and methods[-1][0] == el.name:
+                        # property getter + setter (or overloads) travel together
+                        methods[-1] = (el.name, methods[-1][1] + "\n\n" + t)
+                    else:
+                        methods.append((el.name, t))
                 else:
                     members.append(t)
             units.append(("class", node.name, {"bases": bases, "header": header,
@@ -128,7 +133,75 @@ def _py_units(code: str):
 
 def _indent(text: str) -> str:
     import textwrap
+    if MERGE_V2 and text[:1] in (" ", "\t"):
+        return text            # already a class-body member; re-indenting would change string literals
     return textwrap.indent(textwrap.dedent(text), "    ")
+
+
+def _load_names(text: str) -> tuple[set[str], set[str]]:
+    """(names a top-level unit defines, names it needs when the module is imported).
+    Function bodies run later, so only decorators, defaults and annotations count."""
+    import ast
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return set(), set()
+    defined, used = set(), set()
+
+    def visit(node, top=True):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if top:
+                defined.add(node.name)
+            a = node.args
+            anns = [x.annotation for x in a.posonlyargs + a.args + a.kwonlyargs + [a.vararg, a.kwarg]
+                    if x is not None and x.annotation is not None]
+            for x in node.decorator_list + a.defaults + [d for d in a.kw_defaults if d] + anns \
+                    + ([node.returns] if node.returns else []):
+                visit(x, False)
+            return
+        if isinstance(node, ast.Lambda):
+            return
+        if isinstance(node, ast.ClassDef):
+            if top:
+                defined.add(node.name)
+            for x in node.bases + node.decorator_list + [k.value for k in node.keywords]:
+                visit(x, False)
+            for x in node.body:
+                visit(x, False)
+            return
+        if isinstance(node, ast.Name):
+            (defined if isinstance(node.ctx, ast.Store) and top else used).add(node.id)
+            return
+        for child in ast.iter_child_nodes(node):
+            visit(child, top and isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.Tuple, ast.List)))
+    for n in tree.body:
+        visit(n, True)
+    return defined, used - defined
+
+
+def _order_by_need(items: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Stable topological order of (key, text): a unit comes after the units
+    defining names it needs at import time; cycles keep source order."""
+    info = [_load_names(t) for _, t in items]
+    owner = {}
+    for i, (d, _) in enumerate(info):
+        for n in d:
+            owner.setdefault(n, i)
+    deps = [{owner[n] for n in u if n in owner and owner[n] != i} for i, (_, u) in enumerate(info)]
+    out, done, visiting = [], set(), set()
+
+    def go(i):
+        if i in done or i in visiting:
+            return
+        visiting.add(i)
+        for j in sorted(deps[i]):
+            go(j)
+        visiting.discard(i)
+        done.add(i)
+        out.append(items[i])
+    for i in range(len(items)):
+        go(i)
+    return out
 
 
 def _is_docstring(t: str) -> bool:
@@ -168,6 +241,13 @@ def _merge_class(name: str, versions: list) -> str:
     return skel[1]["header"].rstrip() + "\n" + ("\n\n".join(body) if body else "    pass")
 
 
+# Merge v2 (Experiment 2, RealBench): units keep source order and are then sorted
+# so that every name used at import time is defined first; class members keep their
+# own indentation. The pilot keeps merge v1 so its cached runs reproduce exactly
+# (prereg/deviations.md).
+MERGE_V2 = False
+
+
 def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | None = None) -> str:
     """Merge several agents' fragments of one file.
 
@@ -189,11 +269,21 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
         except SyntaxError:
             per = None
         if per is not None:
+            seq: list[tuple] = []          # unit keys in source order across fragments
             imports, seen_imp, stmts, defs, mains = [], set(), [], {}, []
+            def_owned: dict[str, bool] = {}
             classes, first_seen = {}, {}
             for i, units in enumerate(per):
                 own = owners[i] if owners and i < len(owners) else set()
+                prev = -1
                 for kind, name, info, text in units:
+                    if kind != "import":
+                        key = (kind, name if kind in ("class", "def") else text)
+                        if key in seq:
+                            prev = seq.index(key)
+                        else:
+                            prev += 1
+                            seq.insert(prev, key)
                     if kind == "import":
                         for line in text.splitlines():
                             if line.strip() and line.strip() not in seen_imp:
@@ -203,8 +293,13 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
                         classes.setdefault(name, []).append((own, info, text, i))
                         first_seen.setdefault(name, len(first_seen))
                     elif kind == "def":
-                        if name not in defs or len(text) > len(defs[name]):
+                        # a top-level function comes from the agent that owns it (RealBench
+                        # module-function duties are "mod_<file>.<name>"); otherwise the longest
+                        mine = any(d.startswith("mod_") and d.endswith("." + name) for d in own)
+                        cur = def_owned.get(name, False)
+                        if name not in defs or (mine and not cur) or (mine == cur and len(text) > len(defs[name])):
                             defs[name] = text
+                            def_owned[name] = mine
                     elif kind == "main":
                         if text not in mains:
                             mains.append(text)
@@ -222,9 +317,22 @@ def merge_fragments(path: str, fragments: list[str], owners: list[set[str]] | No
                         place(bse, stack + (n,))
                 placed.add(n)
                 out_cls.append(built[n][0])
-            for n in sorted(built, key=first_seen.get):
-                place(n)
-            parts = ["\n".join(imports)] + stmts + list(defs.values()) + out_cls + mains
+            if not MERGE_V2:
+                for n in sorted(built, key=first_seen.get):
+                    place(n)
+                parts = ["\n".join(imports)] + stmts + list(defs.values()) + out_cls + mains
+            else:
+                # keep the units in source order (module code may use a class defined
+                # above it), still placing every base class before its subclasses
+                items = []
+                for kind, key in seq:
+                    if kind == "class":
+                        items.append((key, built[key][0]))
+                    elif kind == "def":
+                        items.append((key, defs[key]))
+                    elif kind == "stmt":
+                        items.append((key, key))
+                parts = ["\n".join(imports)] + [t for _, t in _order_by_need(items)] + mains
             return "\n\n\n".join(p for p in parts if p.strip()) + "\n"
         imports, bodies, seen = [], [], set()
         for frag in fragments:
