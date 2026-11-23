@@ -33,6 +33,7 @@ OPENAI_COMPATIBLE = {
     "vercel": ("https://ai-gateway.vercel.sh/v1", "AI_GATEWAY_API_KEY"),
     "deepseek": ("https://api.deepseek.com", "DEEPSEEK_API_KEY"),
     "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai/", "GEMINI_API_KEY"),
+    "nvidia": ("https://integrate.api.nvidia.com/v1", "NVIDIA_API_KEY"),   # NVIDIA API catalog (build.nvidia.com)
     "ollama": ("http://localhost:11434/v1", None),
 }
 
