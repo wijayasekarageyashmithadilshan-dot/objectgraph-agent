@@ -450,7 +450,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     d.h1("Conflict of Interest", numbered=False)
     d.p("The authors declare no competing interests.", first=True)
     d.h1("Acknowledgment", numbered=False)
-    d.p("The authors thank Achala Aponso, Informatics Institute of Technology, for his feedback on drafts of this article. Claude (Anthropic) served as an AI assistant during this work in November 2026: it helped to write the experiment and analysis code, the pre-registration and figure scripts and early versions of the text, and it helped to search and check the literature. The authors designed the study, made every pre-registration and analysis decision, checked all code, results and references, revised the text, and are fully responsible for the article.", first=True)
+    d.p("Claude (Anthropic) served as an AI assistant during this work in November 2026: it helped to write the experiment and analysis code, the pre-registration and figure scripts and early versions of the text, and it helped to search and check the literature. The authors designed the study, made every pre-registration and analysis decision, checked all code, results and references, revised the text, and are fully responsible for the article.", first=True)
     return {}
 
 
@@ -481,9 +481,11 @@ def build(template: Path, out: Path) -> None:
     front.append('<w:p><w:pPr><w:pStyle w:val="PaperTitle"/></w:pPr>' + runs(
         "ObjectGraph-Agent: Compiling Validated Domain Models Into Traceable and Complexity-Adaptive Large Language Model Agent Architectures") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="AU"/><w:spacing w:after="0"/></w:pPr>' + runs(
-        "Yashmitha Dilshan{sup:1} and Maninda Edirisooriya{sup:1}") + "</w:p>")
-    front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
+        "Yashmitha Dilshan{sup:1}, Achala Aponso{sup:2}, (Member, IEEE), and Maninda Edirisooriya{sup:1}") + "</w:p>")
+    front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:after="0"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
         "{sup:1}School of Computing, University of Westminster, 309 Regent Street, London W1B 2HW, U.K., in collaboration with the Informatics Institute of Technology, Colombo, Sri Lanka (e-mail: yashmitha.20211432@iit.ac.lk; maninda.e@iit.ac.lk)") + "</w:p>")
+    front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:before="0"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
+        "{sup:2}School of Electrical Engineering, Computing and Mathematical Sciences, Curtin University, Bentley, WA 6102, Australia") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:before="100" w:after="100"/><w:ind w:right="1598" w:firstLine="0"/></w:pPr>' + runs(
         "Corresponding author: Y. Dilshan (e-mail: yashmitha.20211432@iit.ac.lk; ORCID: 0009-0002-2591-6018).") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
@@ -512,13 +514,16 @@ def build(template: Path, out: Path) -> None:
     unused = [k for k in REFS if k not in ORDER]
     if unused:
         raise SystemExit(f"references never cited: {unused}")
-    photos = [ROOT / "paper/photos/dilshan.png", ROOT / "paper/photos/edirisooriya.png"]
+    photos = [ROOT / "paper/photos/dilshan.png", ROOT / "paper/photos/aponso.png", ROOT / "paper/photos/edirisooriya.png"]
     ph = [d.photo(x, i + 1) if x.exists() else "" for i, x in enumerate(photos)]
     bios = [
         '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="240"/></w:pPr>' + ph[0] +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>YASHMITHA DILSHAN</w:t></w:r>' + runs(
             " is currently pursuing the B.Sc. degree in computer science at the Informatics Institute of Technology, Colombo, Sri Lanka, in collaboration with the University of Westminster, London, U.K., with expected graduation in 2027. His research interests include large language model agents, multi-agent systems for software engineering, human–computer interaction, and the reproducible evaluation of machine learning.") + "</w:p>",
         '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="480"/></w:pPr>' + ph[1] +
+        '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>ACHALA APONSO</w:t></w:r>' + runs(
+            " (Member, IEEE) received the Ph.D. degree from Edith Cowan University, Joondalup, WA, Australia, in 2026. He also holds the M.Sc. degree in artificial intelligence from the University of Moratuwa, Sri Lanka (2018), and the B.Sc. (Hons.) degree in software engineering from the University of Westminster, U.K. (2011). He is currently a Sessional Academic with the School of Electrical Engineering, Computing and Mathematical Sciences, Curtin University, Bentley, WA, Australia, a Sessional Lecturer with Academies Australasia Polytechnic, Perth, WA, Australia, and a Facilitator with Kaplan Business School, Perth, WA, Australia. He was previously a Senior Lecturer and Level Coordinator with the Informatics Institute of Technology, Colombo, Sri Lanka, on University of Westminster and Robert Gordon University degree programs, and a Software Engineer with WSO2, Cambio Healthcare Systems, and Zone24x7. He has supervised undergraduate and postgraduate research projects in machine learning and data analytics, and his work has been published in international peer-reviewed venues. His research interests include personalized machine learning, multimodal affective computing, trustworthy and secure large language model systems, and AI-augmented software engineering. Dr. Aponso received the President's Award for Scientific Research Publication, and his early work was cited as prior art in two Nissan Motor Co. patents.") + "</w:p>",
+        '<w:p><w:pPr><w:pStyle w:val="AUBios"/><w:spacing w:before="480"/></w:pPr>' + ph[2] +
         '<w:r><w:rPr><w:rStyle w:val="AUBiosbd"/></w:rPr><w:t>MANINDA EDIRISOORIYA</w:t></w:r>' + runs(
             " received the B.Sc. Engineering (Hons.) degree in computer science and engineering in 2011 and the MBA degree in management of technology in 2019, both from the University of Moratuwa, Sri Lanka. He is currently a Senior Lecturer at the IIT School of Computing, Informatics Institute of Technology, Sri Lanka, where he teaches machine vision and applied artificial intelligence and supports undergraduate research projects. Previously, he held academic teaching appointments at the University of Moratuwa, covering machine learning, deep learning, big data analytics, and related disciplines. From 2011 to 2023, he served in several software engineering and technical leadership roles at WSO2 (now Choreo Labs), most recently as an Associate Technical Lead. His industry contributions include an AI-powered customer support chatbot, deep learning-based sentiment analysis of enterprise support tickets, and large-scale distributed software systems. His research interests include trustworthy and explainable artificial intelligence, machine learning, deep learning, generative and agentic AI systems, natural language processing, computer vision, and conversational agents. His recent research encompasses policy-controlled conversational AI, explainable machine learning, and graph-based learning approaches. Mr. Edirisooriya is an Associate Member of the Institution of Engineers, Sri Lanka (IESL), and a Corporate Life Member of the Radio Society of Sri Lanka (RSSL).") + "</w:p>",
     ]
@@ -536,7 +541,7 @@ def build(template: Path, out: Path) -> None:
         f.write_text(f.read_text(encoding="utf-8").replace("VOLUME XX, 2017", "VOLUME XX, 2026"), encoding="utf-8")
     # running header text and page-number field in the body footer
     hdr = (W / "header2.xml").read_text(encoding="utf-8")
-    hdr = hdr.replace("<w:t>Author Name</w:t>", "<w:t>Y. Dilshan and M. Edirisooriya</w:t>")
+    hdr = hdr.replace("<w:t>Author Name</w:t>", "<w:t>Y. Dilshan et al.</w:t>")
     hdr = hdr.replace("<w:t>Preparation of Papers for IEEE Access (February 2017)</w:t>",
                       "<w:t>ObjectGraph-Agent</w:t>")
     (W / "header2.xml").write_text(hdr, encoding="utf-8")
