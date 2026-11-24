@@ -99,3 +99,10 @@ so no agent received a different hand-over. Camera was stopped by the scorer che
 (its reference code passed 0 instead of 25 tests there) and is reported as unusable for 2b.
 Remaining zeros are genuine: missing names, circular imports and replies cut off at the
 registered 8,000-token output cap.
+
+## 2026-11-24 — Experiment 3 registered (plan amendment v1.12)
+Adds G8, an LLM Architect baseline (CodeTeam-style, `objectgraph/architect.py`), and raises the
+per-call output cap to 16,000 tokens. Zero-call harness check: G8 reproduces the reference score
+like every other condition (fake Architect splitting units into two developers). Runs on GitHub
+Actions (`.github/workflows/exp3.yml`) with the scorer check before any call and a one-call check
+that the provider accepts the 16,000-token cap.

@@ -97,6 +97,16 @@ amendments:
       (G2, G4, GC, G6, G7), still once each (run 0). No reasoning parameter is sent; a check call returned
       plain code without hidden reasoning. Hypotheses: primary unchanged (G7 > G4); secondary G7 vs G2, GC
       and G6, Holm-corrected.
+  - date: 2026-11-24
+    tag: prereg-v1.12
+    before_any_model_run: true   # no call has been made with exp3_model settings or condition G8
+    change: >
+      Experiment 3 registered after reviewing Experiments 2 and 2b. Two changes, decided before any run:
+      (1) a sixth condition, G8, an LLM Architect that sizes the team and assigns unit ownership
+      (a simplified, CodeTeam-style re-implementation: one Architect call, no CTO step), so that the
+      criterion is compared with a published-style, model-designed team; (2) the per-call output cap is
+      raised from 8,000 to 16,000 tokens, because in Experiment 2b many replies were cut off at the cap.
+      Same model (Nemotron 3 Ultra via NVIDIA), same 8 tasks that were usable in Experiment 2b, one run.
 date_frozen: 2026-11-22            # fill in when you tag
 question: >
   On the same model, prompts and token cap, does the criterion team (G7) pass
@@ -230,3 +240,31 @@ experiment_2b:
   floor_rule: "If fewer than 4 tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength."
   analysis: "python scripts/analyse_exp2.py --results results/experiment_2b"
   provider_limits: "If the provider refuses calls (credit or limit), the run stops and continues later from the cache."
+
+exp3_model:
+  provider: nvidia              # key in NVIDIA_API_KEY (GitHub repository secret; never in files)
+  name: nvidia/nemotron-3-ultra-550b-a55b
+  max_tokens_per_call: 16000    # raised from 8,000 (amendment v1.12)
+  why: "Experiment 3 (amendment v1.12)."
+
+experiment_3:
+  benchmark: "RealBench; the 8 tasks usable in Experiment 2b"
+  question: "With a larger output cap, does the criterion's team pass more tests than a random team of the same sizes, and how does it compare with a team designed by an LLM Architect?"
+  usable_from: experiment_2
+  tasks: [level1/salvozappa_gattino, level1/draeician_crules, level2/aliyun_alibabacloud-dms-mcp-server,
+          level2/pab1it0_adx-mcp-server, level2/rileydakota_crx-analyzer, level2/antoine311200_torchcolor,
+          level2/FreddyRodgers_emojichef, level3/Reconnaissance]
+  agent_input: same as experiment_2
+  duty_graph: same as experiment_2
+  model: exp3_model
+  conditions: [G2, G4, GC, G6, G7, G8]
+  G8: "objectgraph/architect.py: one Architect call (same inputs as the developers) proposes the number of developers and assigns every unit; units it omits go to developer 1; its tokens count towards G8."
+  runs_per_condition: 1
+  scoring: same as experiment_2
+  hypotheses:
+    H1_primary: "Per-task pass rate of G7 > G4 (one-sided Wilcoxon signed-rank over usable tasks, alpha 0.05; ties dropped)."
+    H5_architect: "G7 vs G8 (LLM Architect): two-sided Wilcoxon signed-rank on pass rate; median token ratio G7/G8 reported."
+    H1_secondary: "G7 vs G2, GC and G6, two-sided Wilcoxon signed-rank; Holm-corrected together with H5."
+    H2_cost: "Median over tasks of tokens(G7) / tokens(G4) <= 1.10."
+  floor_rule: "If fewer than 4 tasks have any condition above 0 pass rate, H1 is reported as untestable at this model strength."
+  analysis: "python scripts/analyse_exp2.py --results results/experiment_3 --conditions G2 G4 GC G6 G7 G8"

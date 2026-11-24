@@ -47,6 +47,16 @@ def run_condition(proj: dict, project: str, design: dict, condition: str, llm, r
     diagram = design["diagram"]
     g = build_duty_graph(diagram)
     conds = build_conditions(g, lam)
+    arch_info, arch_tokens = None, 0
+    if condition == "G8":                      # LLM Architect sizes the team (one extra call, counted)
+        from .architect import architect_labels
+        from .conditions import same_partition
+        before = llm.usage.total
+        lab8, arch_info = architect_labels(llm, proj["prd"], design["text"], proj["arch"], g, run_id)
+        arch_tokens = llm.usage.total - before
+        dup = next((o for o in ("G2", "G4", "GC", "G6", "G7") if same_partition(lab8, conds[o]["labels"])), None)
+        conds["G8"] = {"labels": lab8, "k": int(len(set(lab8.tolist()))), "same_as": dup}
+        (out / "architect.json").write_text(json.dumps(arch_info, indent=2))
     labels = conds[condition]["labels"]
     team = build_team(condition, labels, g, diagram)
     k_star, crit_labels, curve = select_k(g.W, lam)
@@ -94,7 +104,8 @@ def run_condition(proj: dict, project: str, design: dict, condition: str, llm, r
                          f"{100 * res.traceability:.0f}%."
                          + (" <b>Stopped at the token cap.</b>" if res.stopped_by_budget else ""),
                          [R.fig_run(team, run)], ""))
-        summary.update({"tokens": llm.usage.total, "input_tokens": llm.usage.input_tokens,
+        summary.update({"tokens": llm.usage.total + arch_tokens, "architect_tokens": arch_tokens,
+                        "input_tokens": llm.usage.input_tokens,
                         "output_tokens": llm.usage.output_tokens, "messages": len(res.messages),
                         "message_tokens": sum(m["tokens"] for m in res.messages),
                         "traceability": res.traceability, "stopped_by_budget": res.stopped_by_budget})

@@ -8,6 +8,7 @@ of the same duty graph; the orchestrator, prompts and token cap are identical.
   GC  one agent per class
   G6  Infomap partition of the same duty graph (Co-Coder's partitioner)
   G7  the criterion (average linkage + MQ, k*)
+  G8  LLM Architect team (CodeTeam-style; built in pipeline.run_condition, needs a model call)
 """
 from __future__ import annotations
 
@@ -23,6 +24,7 @@ DESCRIPTION = {
     "GC": "one agent per class",
     "G6": "Infomap team (Co-Coder-style)",
     "G7": "criterion team (ours)",
+    "G8": "LLM Architect team (CodeTeam-style)",
 }
 
 

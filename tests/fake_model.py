@@ -29,6 +29,7 @@ def fake_reply(system: str, user: str, gold_text: str) -> str:
 
 
 def fake_reply_realbench(system: str, user: str, project_dir) -> str:
+    import json
     """Harness check for RealBench: each agent answers with the *reference* code
     of exactly the duties it owns (whole files cut down to its classes/methods and
     top-level functions, plus imports and module statements). If splitting,
@@ -39,6 +40,10 @@ def fake_reply_realbench(system: str, user: str, project_dir) -> str:
     from objectgraph.realbench import parse_tree, resolve_paths, _ident
 
     project_dir = Path(project_dir)
+    if system.startswith("You are the software Architect"):
+        units = re.findall(r"^- (\S+)$", user.split("Units:", 1)[1].split("Reply with JSON", 1)[0], flags=re.M)
+        devs = [{"id": i + 1, "units": units[i::2]} for i in range(min(2, len(units)))]
+        return json.dumps({"developers": devs})
     duties = set(re.findall(r"^- (\S+\.\S+)$", user, flags=re.M))
     uml = next((project_dir / "uml_output").glob("*_uml.json"))
     mods = json.loads(uml.read_text())["modules"]
