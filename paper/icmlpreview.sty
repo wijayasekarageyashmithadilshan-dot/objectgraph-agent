@@ -10,16 +10,30 @@
 \RequirePackage{natbib}
 \RequirePackage{xcolor}
 \newcommand{\icmltitlerunning}[1]{\gdef\@icmlrunning{#1}}
-\newcommand{\icmltitle}[1]{\begin{center}{\Large\bfseries #1\par}\vskip 0.15in
-  {\small Anonymous Authors\par}\vskip 0.05in
-  {\footnotesize\color{red} PREVIEW BUILD (icmlpreview.sty) -- replace with official icml2026.sty before submission\par}\end{center}}
-\newenvironment{icmlauthorlist}{}{}
-\newcommand{\icmlauthor}[2]{}
-\newcommand{\icmlaffiliation}[2]{}
-\newcommand{\icmlcorrespondingauthor}[2]{}
+% Author version: \def\icmlshowauthors{} before loading this style prints names and affiliations
+% (as ICML does for accepted papers); otherwise the paper is anonymous, as required for review.
+\newcounter{icmlaff}
+\newcommand{\icmltitle}[1]{\begin{center}{\Large\bfseries #1\par}\end{center}
+  \ifdefined\icmlshowauthors\else
+  \begin{center}{\small Anonymous Authors\par}\vskip 0.05in
+  {\footnotesize\color{red} PREVIEW BUILD (icmlpreview.sty) -- replace with official icml2026.sty before submission\par}\end{center}\fi}
+\newif\ificml@first
+\newenvironment{icmlauthorlist}{\ifdefined\icmlshowauthors\begin{center}\small\bfseries\icml@firsttrue\fi}%
+  {\ifdefined\icmlshowauthors\end{center}\fi}
+\newcommand{\icml@affnum}[1]{\@ifundefined{icmlaff@#1}{\stepcounter{icmlaff}%
+  \expandafter\xdef\csname icmlaff@#1\endcsname{\arabic{icmlaff}}}{}\csname icmlaff@#1\endcsname}
+\newcommand{\icmlauthor}[2]{\ifdefined\icmlshowauthors\ificml@first\icml@firstfalse\else\ \ \fi
+  #1\textsuperscript{\icml@affnum{#2}}\fi}
+\gdef\icml@affs{}
+\newcommand{\icmlaffiliation}[2]{\ifdefined\icmlshowauthors
+  \g@addto@macro\icml@affs{\textsuperscript{\csname icmlaff@#1\endcsname}#2. }\fi}
+\gdef\icml@corr{}
+\newcommand{\icmlcorrespondingauthor}[2]{\ifdefined\icmlshowauthors\gdef\icml@corr{Correspondence to: #1 \textless#2\textgreater.}\fi}
 \newcommand{\icmlkeywords}[1]{}
 \newcommand{\icmlsetsymbol}[2]{}
-\newcommand{\printAffiliationsAndNotice}[1]{}
+\newcommand{\printAffiliationsAndNotice}[1]{\ifdefined\icmlshowauthors
+  \begingroup\let\thefootnote\relax\footnotetext{\footnotesize\icml@affs\icml@corr\ #1
+  \textit{Author version of a paper prepared for ICML 2027; the submission is anonymous.}}\endgroup\fi}
 \newcommand{\icmlEqualContribution}{}
 \gdef\@icmlrunning{}
 \pagestyle{fancy}\fancyhf{}
