@@ -81,3 +81,21 @@ model, prompts, scorer pins and analysis. No result of the Colab attempt was loo
 is discarded and the Actions run is the registered run. Each job first re-runs RealBench's
 reference tests and stops before any model call unless they pass exactly as many tests as in
 Experiment 2, so the test environment cannot differ silently.
+
+## 2026-11-24 — Experiment 2b: two reply-format faults fixed, runs re-scored from the saved replies
+Nemotron sometimes (a) wrote the closing code fence and the next "### FILE:" header on one
+line ("```### FILE: b.py") and (b) copied the file tree's root folder into paths
+("proj_clean/emoji_codec.py"). The parser then dropped files or wrote them where the tests
+could not find them, so runs scored 0 for reasons unrelated to the code. DeepSeek's 135
+Experiment 2 replies contain neither pattern, so Experiment 2 is unaffected. The parser now
+accepts a fence directly followed by the next header and drops the tree's root folder from
+paths. Every Experiment 2b run was rebuilt from its saved raw replies (agent_*.md) with the
+fixed parser and merge (`scripts/rescore_from_replies.py`, no model calls); 7 runs changed
+(emojichef G2, G4, GC, G6, G7; Reconnaissance GC, G6) and are listed with before/after scores
+in results/experiment_2b/rescore_log.json. The fault was found after the results were seen;
+it is a mechanical parsing fault (files missing or misplaced), and the fix applies to every
+condition. Re-parsing is exact here: the only reply with a glued fence was a single-agent run,
+so no agent received a different hand-over. Camera was stopped by the scorer check on GitHub
+(its reference code passed 0 instead of 25 tests there) and is reported as unusable for 2b.
+Remaining zeros are genuine: missing names, circular imports and replies cut off at the
+registered 8,000-token output cap.

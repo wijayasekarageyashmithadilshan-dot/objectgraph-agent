@@ -1,0 +1,185 @@
+{
+  "task": "level2/aliyun_alibabacloud-dms-mcp-server",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "provider": "nvidia",
+  "plan_tag": "prereg-v1.11",
+  "git": {
+    "commit": "b79b157bd12cc9e942669f407ae4325b2f0071f2",
+    "tag": null,
+    "prereg_modified_since_commit": false
+  },
+  "reference_passed": 26,
+  "rows": [
+    {
+      "project": "level2/aliyun_alibabacloud-dms-mcp-server",
+      "condition": "G2",
+      "description": "single agent",
+      "run_id": 0,
+      "k": 1,
+      "k_star": 2,
+      "duties": 39,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 11450,
+      "input_tokens": 3496,
+      "output_tokens": 7954,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 1.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 26,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/aliyun_alibabacloud-dms-mcp-server",
+      "condition": "G4",
+      "description": "random team, same sizes",
+      "run_id": 0,
+      "k": 2,
+      "k_star": 2,
+      "duties": 39,
+      "cut": 40.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 27285,
+      "input_tokens": 12823,
+      "output_tokens": 14462,
+      "messages": 1,
+      "message_tokens": 6604,
+      "traceability": 0.1071,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 26,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/aliyun_alibabacloud-dms-mcp-server",
+      "condition": "GC",
+      "description": "one agent per class",
+      "run_id": 0,
+      "k": 17,
+      "k_star": 2,
+      "duties": 39,
+      "cut": 3.75,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 74435,
+      "input_tokens": 54647,
+      "output_tokens": 19788,
+      "messages": 8,
+      "message_tokens": 2135,
+      "traceability": 0.6429,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 26,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/aliyun_alibabacloud-dms-mcp-server",
+      "condition": "G6",
+      "description": "Infomap team (Co-Coder-style)",
+      "run_id": 0,
+      "k": 10,
+      "k_star": 2,
+      "duties": 39,
+      "cut": 0.5,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 41841,
+      "input_tokens": 31202,
+      "output_tokens": 10639,
+      "messages": 1,
+      "message_tokens": 611,
+      "traceability": 0.6429,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 26,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ]
+    },
+    {
+      "project": "level2/aliyun_alibabacloud-dms-mcp-server",
+      "condition": "G7",
+      "description": "criterion team (ours)",
+      "run_id": 0,
+      "k": 2,
+      "k_star": 2,
+      "duties": 39,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 15665,
+      "input_tokens": 6471,
+      "output_tokens": 9194,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.8214,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 26,
+      "pass_rate": 0.0,
+      "files_written": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ],
+      "source_files_expected": [
+        "src/alibabacloud_dms_mcp_server/__init__.py",
+        "src/alibabacloud_dms_mcp_server/server.py",
+        "src/alibabacloud_dts_mcp_server/__init__.py",
+        "src/alibabacloud_dts_mcp_server/server.py"
+      ]
+    }
+  ],
+  "failed_runs": []
+}

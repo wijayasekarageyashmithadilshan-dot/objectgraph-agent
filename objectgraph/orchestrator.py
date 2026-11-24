@@ -50,7 +50,13 @@ Duties you must implement (ID = Class.method):
 Write your code now."""
 
 # the closing fence must stand on its own line, so ``` inside a docstring does not end the block
-_BLOCK = re.compile(r"###\s*FILE:\s*`?(?P<path>[^\s`]+)`?\s*\n```[^\n]*\n(?P<code>.*?)^```[ \t]*$", re.S | re.M)
+# A closing fence may be followed directly by the next "### FILE:" header on the same line
+# (some models write "```### FILE: b.py").
+_BLOCK = re.compile(r"###\s*FILE:\s*`?(?P<path>[^\s`]+)`?\s*\n```[^\n]*\n(?P<code>.*?)^```[ \t]*(?=$|###)", re.S | re.M)
+
+# Leading folders to drop from file paths (set per task by the RealBench runner: the root
+# folder printed on the first line of the file tree, which some models copy into paths).
+STRIP_PREFIXES: tuple[str, ...] = ()
 
 
 @dataclass
@@ -82,8 +88,14 @@ _THINK = re.compile(r"<think>.*?</think>", re.S)
 
 def parse_blocks(text: str) -> list[tuple[str, str]]:
     text = _THINK.sub("", text)      # reasoning models may echo their thinking
-    return [(m.group("path").strip("`"), fix_duty_markers(m.group("path").strip("`"), m.group("code")))
-            for m in _BLOCK.finditer(text)]
+    out = []
+    for m in _BLOCK.finditer(text):
+        path = m.group("path").strip("`").lstrip("./") if m.group("path").startswith("./") else m.group("path").strip("`")
+        for pre in STRIP_PREFIXES:
+            if path.startswith(pre):
+                path = path[len(pre):]
+        out.append((path, fix_duty_markers(path, m.group("code"))))
+    return out
 
 
 def _seg(lines, node):

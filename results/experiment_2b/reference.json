@@ -1,0 +1,132 @@
+{
+  "level1/AasaiAlangaram__PySecOC": {
+    "usable": false,
+    "reason": "RealBench ships no tests for this project",
+    "passed": 0
+  },
+  "level1/tcsenpai__sigmon": {
+    "usable": false,
+    "reason": "RealBench ships no tests for this project",
+    "passed": 0
+  },
+  "level1/salvozappa_gattino": {
+    "usable": true,
+    "passed": 13,
+    "failed": 0,
+    "errors": 0,
+    "total": 13,
+    "reason": ""
+  },
+  "level1/tsensei_Semantic-Markdown-Parser": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 1,
+    "total": 1,
+    "reason": "reference code passes no test here: ma_index'\n---------------- generated xml file: /tmp/tmpto5u48vx/junit.xml ----------------\n=========================== short test summary info ============================\nERROR test_markdown_parser.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.22s\n"
+  },
+  "level1/draeician_crules": {
+    "usable": true,
+    "passed": 15,
+    "failed": 0,
+    "errors": 0,
+    "total": 15,
+    "reason": ""
+  },
+  "level2/aliyun_alibabacloud-dms-mcp-server": {
+    "usable": true,
+    "passed": 26,
+    "failed": 0,
+    "errors": 0,
+    "total": 26,
+    "reason": ""
+  },
+  "level2/pab1it0_adx-mcp-server": {
+    "usable": true,
+    "passed": 25,
+    "failed": 0,
+    "errors": 0,
+    "total": 25,
+    "reason": ""
+  },
+  "level2/rileydakota_crx-analyzer": {
+    "usable": true,
+    "passed": 23,
+    "failed": 0,
+    "errors": 0,
+    "total": 23,
+    "reason": ""
+  },
+  "level2/antoine311200_torchcolor": {
+    "usable": true,
+    "passed": 21,
+    "failed": 1,
+    "errors": 0,
+    "total": 22,
+    "reason": ""
+  },
+  "level2/FreddyRodgers_emojichef": {
+    "usable": true,
+    "passed": 75,
+    "failed": 0,
+    "errors": 0,
+    "total": 75,
+    "reason": ""
+  },
+  "level2/phihung_fh_utils": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 7,
+    "total": 7,
+    "reason": "reference code passes no test here: ===\nERROR examples/demo.py\nERROR examples/demo2.py\nERROR tests/test_cli.py\nERROR tests/test_icons.py\nERROR tests/test_ipython_ext.py\nERROR tests/test_server.py\nERROR tests/test_tailwind.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 warnings, 7 errors in 0.61s\n"
+  },
+  "level3/Camera": {
+    "usable": true,
+    "passed": 25,
+    "failed": 1,
+    "errors": 0,
+    "total": 26,
+    "reason": ""
+  },
+  "level3/Reconnaissance": {
+    "usable": true,
+    "passed": 25,
+    "failed": 0,
+    "errors": 10,
+    "total": 35,
+    "reason": ""
+  },
+  "level3/symeval": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 2,
+    "total": 2,
+    "reason": "reference code passes no test here: ---- generated xml file: /tmp/tmpq9vzb152/junit.xml ----------------\n=========================== short test summary info ============================\nERROR test/_modidx_test.py\nERROR test/core_test.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 3.17s\n"
+  },
+  "level4/integral-business-intelligence_chroma-auditor": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 1,
+    "total": 1,
+    "reason": "reference code passes no test here: adb'\n---------------- generated xml file: /tmp/tmpp519sgk9/junit.xml ----------------\n=========================== short test summary info ============================\nERROR tests/test_cleanup_chroma.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.16s\n"
+  },
+  "level4/Crypt-Guard_CryptGuard": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 11,
+    "total": 11,
+    "reason": "reference code passes no test here: yptguard/tests/test_password_utils.py\nERROR cryptguard/tests/test_rs_codec.py\nERROR cryptguard/tests/test_secure_bytes.py\nERROR cryptguard/tests/test_streaming.py\nERROR cryptguard/tests/test_utils.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 11 errors during collection !!!!!!!!!!!!!!!!!!!\n11 errors in 0.39s\n"
+  },
+  "level4/simons-freedom_X-monitor": {
+    "usable": false,
+    "passed": 0,
+    "failed": 0,
+    "errors": 3,
+    "total": 3,
+    "reason": "reference code passes no test here: junit.xml ----------------\n=========================== short test summary info ============================\nERROR tests/test_notice.py\nERROR tests/test_processor.py\nERROR tests/test_webhook_monitor.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.25s\n"
+  }
+}

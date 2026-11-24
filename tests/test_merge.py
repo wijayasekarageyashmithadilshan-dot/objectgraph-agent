@@ -75,3 +75,13 @@ def test_merge_v2_multiline_import_and_non_owner_stub():
         assert out.count("from typing import") == 1
     finally:
         o.MERGE_V2 = False
+
+
+def test_block_close_glued_to_next_header_and_root_prefix():
+    import objectgraph.orchestrator as o
+    o.STRIP_PREFIXES = ("proj_clean/",)
+    try:
+        text = "### FILE: proj_clean/a.py\n```python\nx = 1\n```### FILE: proj_clean/b.py\n```python\ny = 2\n```\n"
+        assert o.parse_blocks(text) == [("a.py", "x = 1\n"), ("b.py", "y = 2\n")]
+    finally:
+        o.STRIP_PREFIXES = ()

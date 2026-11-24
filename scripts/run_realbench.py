@@ -111,6 +111,9 @@ def main() -> None:
             continue
         d = task_dir(data, t)
         task = load_task(d)
+        tree = next((d / "uml_output").glob("tree.txt"), None)
+        root = tree.read_text(encoding="utf-8").splitlines()[0].strip().rstrip("/") if tree else ""
+        orch.STRIP_PREFIXES = (root + "/",) if root else ()
         fake_fn = None
         if provider == "fake":
             from tests.fake_model import fake_reply_realbench

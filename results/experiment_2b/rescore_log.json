@@ -1,0 +1,119 @@
+[
+  {
+    "task": "level2/FreddyRodgers_emojichef",
+    "condition": "G2",
+    "run_id": 0,
+    "files_before": [],
+    "files_after": [
+      "emoji_codec.py",
+      "emojichef.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.0
+  },
+  {
+    "task": "level2/FreddyRodgers_emojichef",
+    "condition": "G4",
+    "run_id": 0,
+    "files_before": [
+      "emoji_codec.py",
+      "proj_clean/emoji_codec.py",
+      "proj_clean/emojichef.py",
+      "proj_clean/emojichef_cli.py"
+    ],
+    "files_after": [
+      "emoji_codec.py",
+      "emojichef.py",
+      "emojichef_cli.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.16
+  },
+  {
+    "task": "level2/FreddyRodgers_emojichef",
+    "condition": "GC",
+    "run_id": 0,
+    "files_before": [
+      "proj_clean/emoji_codec.py",
+      "proj_clean/emojichef.py",
+      "proj_clean/emojichef_cli.py"
+    ],
+    "files_after": [
+      "emoji_codec.py",
+      "emojichef.py",
+      "emojichef_cli.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.0
+  },
+  {
+    "task": "level2/FreddyRodgers_emojichef",
+    "condition": "G6",
+    "run_id": 0,
+    "files_before": [
+      "proj_clean/emoji_codec.py",
+      "proj_clean/emojichef.py",
+      "proj_clean/emojichef_cli.py"
+    ],
+    "files_after": [
+      "emoji_codec.py",
+      "emojichef.py",
+      "emojichef_cli.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.1467
+  },
+  {
+    "task": "level2/FreddyRodgers_emojichef",
+    "condition": "G7",
+    "run_id": 0,
+    "files_before": [
+      "proj_clean/emoji_codec.py",
+      "proj_clean/emojichef_cli.py"
+    ],
+    "files_after": [
+      "emoji_codec.py",
+      "emojichef_cli.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.0
+  },
+  {
+    "task": "level3/Reconnaissance",
+    "condition": "GC",
+    "run_id": 0,
+    "files_before": [
+      "main.py",
+      "modules/save_results.py",
+      "modules/tooltip.py",
+      "proj_clean/scripts/shodan_api.py"
+    ],
+    "files_after": [
+      "main.py",
+      "modules/save_results.py",
+      "modules/tooltip.py",
+      "scripts/shodan_api.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.2
+  },
+  {
+    "task": "level3/Reconnaissance",
+    "condition": "G6",
+    "run_id": 0,
+    "files_before": [
+      "main.py",
+      "modules/save_results.py",
+      "modules/tooltip.py",
+      "proj_clean/scripts/shodan_api.py"
+    ],
+    "files_after": [
+      "main.py",
+      "modules/save_results.py",
+      "modules/tooltip.py",
+      "scripts/shodan_api.py"
+    ],
+    "pass_before": 0.0,
+    "pass_after": 0.2
+  }
+]

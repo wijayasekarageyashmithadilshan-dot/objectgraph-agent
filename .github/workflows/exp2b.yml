@@ -86,7 +86,10 @@ jobs:
               --python /tmp/rbenv/bin/python --cache cache
       - name: Name for the artifact
         if: always()
-        run: echo "ART=$(echo '${{ matrix.task }}' | tr '/' '_')" >> "$GITHUB_ENV"
+        run: |
+          echo "ART=$(echo '${{ matrix.task }}' | tr '/' '_')" >> "$GITHUB_ENV"
+          # one cache file per task, so merging the artifacts cannot overwrite replies
+          for f in cache/nvidia__*.jsonl; do [ -f "$f" ] && mv "$f" "${f%.jsonl}__$(echo '${{ matrix.task }}' | tr '/' '_').jsonl"; done; true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

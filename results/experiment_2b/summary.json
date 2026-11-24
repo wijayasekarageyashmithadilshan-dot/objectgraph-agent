@@ -1,0 +1,492 @@
+{
+  "usable_tasks": [
+    "level1/draeician_crules",
+    "level1/salvozappa_gattino",
+    "level2/FreddyRodgers_emojichef",
+    "level2/aliyun_alibabacloud-dms-mcp-server",
+    "level2/antoine311200_torchcolor",
+    "level2/pab1it0_adx-mcp-server",
+    "level2/rileydakota_crx-analyzer",
+    "level3/Reconnaissance"
+  ],
+  "tasks_above_floor": [
+    "level1/draeician_crules",
+    "level1/salvozappa_gattino",
+    "level2/FreddyRodgers_emojichef",
+    "level3/Reconnaissance"
+  ],
+  "unusable": {
+    "level1/AasaiAlangaram__PySecOC": "RealBench ships no tests for this project",
+    "level1/tcsenpai__sigmon": "RealBench ships no tests for this project",
+    "level1/tsensei_Semantic-Markdown-Parser": "reference code passes no test here: ma_index'\n---------------- generated xml file: /tmp/tmpto5u48vx/junit.xml ----------------\n=========================== short test summary info ============================\nERROR test_markdown_parser.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.22s\n",
+    "level2/phihung_fh_utils": "reference code passes no test here: ===\nERROR examples/demo.py\nERROR examples/demo2.py\nERROR tests/test_cli.py\nERROR tests/test_icons.py\nERROR tests/test_ipython_ext.py\nERROR tests/test_server.py\nERROR tests/test_tailwind.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 warnings, 7 errors in 0.61s\n",
+    "level3/symeval": "reference code passes no test here: ---- generated xml file: /tmp/tmpq9vzb152/junit.xml ----------------\n=========================== short test summary info ============================\nERROR test/_modidx_test.py\nERROR test/core_test.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 3.17s\n",
+    "level4/integral-business-intelligence_chroma-auditor": "reference code passes no test here: adb'\n---------------- generated xml file: /tmp/tmpp519sgk9/junit.xml ----------------\n=========================== short test summary info ============================\nERROR tests/test_cleanup_chroma.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.16s\n",
+    "level4/Crypt-Guard_CryptGuard": "reference code passes no test here: yptguard/tests/test_password_utils.py\nERROR cryptguard/tests/test_rs_codec.py\nERROR cryptguard/tests/test_secure_bytes.py\nERROR cryptguard/tests/test_streaming.py\nERROR cryptguard/tests/test_utils.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 11 errors during collection !!!!!!!!!!!!!!!!!!!\n11 errors in 0.39s\n",
+    "level4/simons-freedom_X-monitor": "reference code passes no test here: junit.xml ----------------\n=========================== short test summary info ============================\nERROR tests/test_notice.py\nERROR tests/test_processor.py\nERROR tests/test_webhook_monitor.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.25s\n"
+  },
+  "H1_primary": {
+    "n_tasks": 8,
+    "n_nonzero": 2,
+    "wins": 0,
+    "losses": 2,
+    "ties": 6,
+    "mean_diff": -0.0533,
+    "p": 1.0,
+    "verdict": "not supported"
+  },
+  "H1_secondary": {
+    "G7_vs_G2": {
+      "n_tasks": 8,
+      "n_nonzero": 1,
+      "wins": 0,
+      "losses": 1,
+      "ties": 7,
+      "mean_diff": -0.025,
+      "p": 1.0,
+      "p_holm": 1.0
+    },
+    "G7_vs_GC": {
+      "n_tasks": 8,
+      "n_nonzero": 1,
+      "wins": 0,
+      "losses": 1,
+      "ties": 7,
+      "mean_diff": -0.025,
+      "p": 1.0,
+      "p_holm": 1.0
+    },
+    "G7_vs_G6": {
+      "n_tasks": 8,
+      "n_nonzero": 2,
+      "wins": 0,
+      "losses": 2,
+      "ties": 6,
+      "mean_diff": -0.0433,
+      "p": 0.5,
+      "p_holm": 1.0
+    }
+  },
+  "H2_cost": {
+    "median_ratio_G7_over_G4": 0.5915,
+    "verdict": "supported"
+  },
+  "per_task": {
+    "level1/draeician_crules": {
+      "G2": {
+        "pass": 0.8,
+        "runs": [
+          0.8
+        ],
+        "tokens": 7347.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.8667,
+        "runs": [
+          0.8667
+        ],
+        "tokens": 18071.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.6,
+        "runs": [
+          0.6
+        ],
+        "tokens": 23035.0,
+        "k": 6,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.6,
+        "runs": [
+          0.6
+        ],
+        "tokens": 23035.0,
+        "k": 6,
+        "same_as": "GC",
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.6,
+        "runs": [
+          0.6
+        ],
+        "tokens": 15066.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level1/salvozappa_gattino": {
+      "G2": {
+        "pass": 0.6923,
+        "runs": [
+          0.6923
+        ],
+        "tokens": 2932.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.6923,
+        "runs": [
+          0.6923
+        ],
+        "tokens": 13676.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.6923,
+        "runs": [
+          0.6923
+        ],
+        "tokens": 10194.0,
+        "k": 6,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.6923,
+        "runs": [
+          0.6923
+        ],
+        "tokens": 10194.0,
+        "k": 6,
+        "same_as": "GC",
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.6923,
+        "runs": [
+          0.6923
+        ],
+        "tokens": 5957.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level2/FreddyRodgers_emojichef": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 10176.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.16,
+        "runs": [
+          0.16
+        ],
+        "tokens": 30528.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 39500.0,
+        "k": 9,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.1467,
+        "runs": [
+          0.1467
+        ],
+        "tokens": 20047.0,
+        "k": 4,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 18585.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level2/aliyun_alibabacloud-dms-mcp-server": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 11450.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 27285.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 74435.0,
+        "k": 17,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 41841.0,
+        "k": 10,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 15665.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level2/antoine311200_torchcolor": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 11687.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 50832.0,
+        "k": 4,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 121876.0,
+        "k": 19,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 46357.0,
+        "k": 7,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 25626.0,
+        "k": 4,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level2/pab1it0_adx-mcp-server": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 2736.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 4921.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 6203.0,
+        "k": 4,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 6203.0,
+        "k": 4,
+        "same_as": "GC",
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 4771.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level2/rileydakota_crx-analyzer": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 10160.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 41210.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 161510.0,
+        "k": 22,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 24267.0,
+        "k": 4,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 21635.0,
+        "k": 3,
+        "same_as": null,
+        "stopped": 0
+      }
+    },
+    "level3/Reconnaissance": {
+      "G2": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 12106.0,
+        "k": 1,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G4": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 23933.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      },
+      "GC": {
+        "pass": 0.2,
+        "runs": [
+          0.2
+        ],
+        "tokens": 35454.0,
+        "k": 6,
+        "same_as": null,
+        "stopped": 0
+      },
+      "G6": {
+        "pass": 0.2,
+        "runs": [
+          0.2
+        ],
+        "tokens": 35454.0,
+        "k": 6,
+        "same_as": "GC",
+        "stopped": 0
+      },
+      "G7": {
+        "pass": 0.0,
+        "runs": [
+          0.0
+        ],
+        "tokens": 17257.0,
+        "k": 2,
+        "same_as": null,
+        "stopped": 0
+      }
+    }
+  }
+}

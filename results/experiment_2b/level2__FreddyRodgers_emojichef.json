@@ -1,0 +1,178 @@
+{
+  "task": "level2/FreddyRodgers_emojichef",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "provider": "nvidia",
+  "plan_tag": "prereg-v1.11",
+  "git": {
+    "commit": "b79b157bd12cc9e942669f407ae4325b2f0071f2",
+    "tag": null,
+    "prereg_modified_since_commit": false
+  },
+  "reference_passed": 75,
+  "rows": [
+    {
+      "project": "level2/FreddyRodgers_emojichef",
+      "condition": "G2",
+      "description": "single agent",
+      "run_id": 0,
+      "k": 1,
+      "k_star": 3,
+      "duties": 40,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 10176,
+      "input_tokens": 2176,
+      "output_tokens": 8000,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.0,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 75,
+      "pass_rate": 0.0,
+      "files_written": [
+        "emoji_codec.py",
+        "emojichef.py"
+      ],
+      "source_files_expected": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "rescored": true
+    },
+    {
+      "project": "level2/FreddyRodgers_emojichef",
+      "condition": "G4",
+      "description": "random team, same sizes",
+      "run_id": 0,
+      "k": 3,
+      "k_star": 3,
+      "duties": 40,
+      "cut": 86.5,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 30528,
+      "input_tokens": 12169,
+      "output_tokens": 18359,
+      "messages": 1,
+      "message_tokens": 6010,
+      "traceability": 0.0278,
+      "stopped_by_budget": false,
+      "passed": 12,
+      "reference_passed": 75,
+      "pass_rate": 0.16,
+      "files_written": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "source_files_expected": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "rescored": true
+    },
+    {
+      "project": "level2/FreddyRodgers_emojichef",
+      "condition": "GC",
+      "description": "one agent per class",
+      "run_id": 0,
+      "k": 9,
+      "k_star": 3,
+      "duties": 40,
+      "cut": 58.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 39500,
+      "input_tokens": 25365,
+      "output_tokens": 14135,
+      "messages": 8,
+      "message_tokens": 8844,
+      "traceability": 0.2222,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 75,
+      "pass_rate": 0.0,
+      "files_written": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "source_files_expected": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "rescored": true
+    },
+    {
+      "project": "level2/FreddyRodgers_emojichef",
+      "condition": "G6",
+      "description": "Infomap team (Co-Coder-style)",
+      "run_id": 0,
+      "k": 4,
+      "k_star": 3,
+      "duties": 40,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 20047,
+      "input_tokens": 7744,
+      "output_tokens": 12303,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.25,
+      "stopped_by_budget": false,
+      "passed": 11,
+      "reference_passed": 75,
+      "pass_rate": 0.1467,
+      "files_written": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "source_files_expected": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "rescored": true
+    },
+    {
+      "project": "level2/FreddyRodgers_emojichef",
+      "condition": "G7",
+      "description": "criterion team (ours)",
+      "run_id": 0,
+      "k": 3,
+      "k_star": 3,
+      "duties": 40,
+      "cut": 0.0,
+      "same_as": null,
+      "design_vs_gold": null,
+      "tokens": 18585,
+      "input_tokens": 5879,
+      "output_tokens": 12706,
+      "messages": 0,
+      "message_tokens": 0,
+      "traceability": 0.25,
+      "stopped_by_budget": false,
+      "passed": 0,
+      "reference_passed": 75,
+      "pass_rate": 0.0,
+      "files_written": [
+        "emoji_codec.py",
+        "emojichef_cli.py"
+      ],
+      "source_files_expected": [
+        "emoji_codec.py",
+        "emojichef.py",
+        "emojichef_cli.py"
+      ],
+      "rescored": true
+    }
+  ],
+  "failed_runs": []
+}
