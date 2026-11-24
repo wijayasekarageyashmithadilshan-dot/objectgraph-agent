@@ -276,7 +276,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
         "6) A fully deterministic artifact: one command regenerates every number in this article, and cached model responses allow the agent tables to be rebuilt without calling any model.",
     ]:
         d.p(t)
-    d.p("{bi:Findings in brief:} The evidence supports two claims. First, sizing from the design avoids the failure of over-split teams: one agent per class passed no test on 7 of 9 RealBench projects, whereas the criterion’s compact teams had a higher mean pass rate (0.21 against 0.11). Second, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random. The evidence does not yet show that the criterion’s teams write more correct code than random teams of the same sizes or than a single agent; that claim remains a hypothesis, and Sections VI and VII report it as not supported in these experiments.")
+    d.p("{bi:Findings in brief:} The evidence supports two claims. First, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random, in two model families (27% and 41% fewer tokens). Second, sizing from the design avoids the failure of over-split teams: with the first model, one agent per class passed no test on 7 of 9 RealBench projects, whereas the criterion’s compact teams had a higher mean pass rate (0.21 against 0.11). The evidence does not yet show that the criterion’s teams write more correct code than random teams of the same sizes or than a single agent; that claim remains a hypothesis, and Sections VI and VII report it as not supported in these experiments.")
 
     d.h1("Related Work")
     d.h2("Hand-designed and model-designed teams")
@@ -406,6 +406,8 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
             notes="Mean pass rate over three runs: tests passed divided by tests that RealBench’s reference code passes in the same sandbox; the number of agents is in parentheses. Tokens: mean per run (Mean row: medians). Model: deepseek-v4.1-flash-1017, temperature 0.")
     d.section_break(1)
     d.p(E2["exploratory"])
+    if E2.get("exp2b"):
+        d.p(E2["exp2b"])
 
     d.h1("Discussion")
     d.h2("What the structural results do and do not show")
@@ -423,7 +425,7 @@ def build_content(d: Doc, S: dict, REFT: list) -> dict:
     d.p("Edge weights are set by hand. The 81-setting grid shows that {i:k}* is stable in most settings but not all, so both the default and the full grid are reported and nothing is tuned on test projects. DevBench is public and may appear in model training data; conditions are compared only with each other, which controls for memorization that affects all conditions equally. DevBench and RealBench are preprints; both are used only as data (designs, requirements and tests), their reference code was run against their own tests before any agent run and only tasks that pass were used, and no claim from either paper is relied on.", first=True)
 
     d.h1("Conclusion and Future Work")
-    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. " + AG["conclusion"] + " " + E2["conclusion"] + " Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
+    d.p("Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. This article formulated that decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on {N:NProjects} DevBench projects that it recommends a single agent for {N:NSingle} and compact teams of {N:KMin} to {N:KMax} agents for the rest, with far less cross-agent dependency than random teams of the same sizes. " + E2["conclusion_all"] + " Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.", first=True)
 
     d.h1("Appendix A", numbered=False)
     d.h1("Reproducibility", numbered=False)
@@ -479,7 +481,7 @@ def build(template: Path, out: Path) -> None:
     front.append(paras[0])   # date of publication line (filled by IEEE)
     front.append(paras[1].replace("ACCESS.2024.Doi Number", "ACCESS.2026.Doi Number") if "Doi Number" in paras[1] else paras[1])
     front.append('<w:p><w:pPr><w:pStyle w:val="PaperTitle"/></w:pPr>' + runs(
-        "ObjectGraph-Agent: Compiling Validated Domain Models Into Traceable and Complexity-Adaptive Large Language Model Agent Architectures") + "</w:p>")
+        "ObjectGraph-Agent: Cost-Efficient Sizing of Large Language Model Agent Teams From Validated Domain Models") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="AU"/><w:spacing w:after="0"/></w:pPr>' + runs(
         "Yashmitha Dilshan{sup:1}, Achala Aponso{sup:2}, (Member, IEEE), and Maninda Edirisooriya{sup:1}") + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="PI"/><w:spacing w:after="0"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
@@ -491,10 +493,10 @@ def build(template: Path, out: Path) -> None:
     front.append('<w:p><w:pPr><w:pStyle w:val="FootnoteText"/><w:spacing w:after="540"/><w:ind w:firstLine="0"/></w:pPr>' + runs(
         "This work did not receive any specific funding.") + "</w:p>")
     E2 = json.loads((ROOT / "paper/generated/exp2.json").read_text())
-    abstract = ("Multi-agent systems built on large language models (LLMs) increasingly develop software, yet team size and the division of work are usually fixed by hand, proposed by a model, or found by costly search. This article asks whether, given the design of the software, the work should be split at all, and into how many agents. ObjectGraph-Agent validates a Unified Modeling Language (UML) class diagram, converts it into a weighted graph of duties, builds candidate teams with average-linkage clustering, and selects the size that maximizes modularization quality minus a per-agent cost; agents tag their code with the duties they implement. The decision is deterministic, made before any code exists, and may recommend a single agent; the expected dependency of equal-size random teams is derived in closed form. On all {N:NProjects} DevBench projects, the criterion recommends one agent for {N:NSingle} and teams of {N:KMin} to {N:KMax} agents for {N:NMulti}, with {N:CutRedMin} to {N:CutRedMax} percent less cross-agent dependency than random teams of equal sizes. " + E2["abstract"] + " All code, prompts and cached responses are public.")
+    abstract = ("Multi-agent systems built on large language models (LLMs) increasingly develop software, yet team size and the division of work are usually fixed by hand, proposed by a model, or found by costly search, and every extra agent adds tokens and coordination. This article presents ObjectGraph-Agent, a deterministic, design-time method that sizes an agent team before any code exists. It converts a validated Unified Modeling Language (UML) class diagram into a weighted graph of duties, builds candidate teams with average-linkage clustering, and selects the size that maximizes modularization quality minus a per-agent cost, which may be a single agent; the expected dependency of equal-size random teams is derived in closed form. On all {N:NProjects} DevBench projects, the criterion recommends one agent for {N:NSingle} and teams of {N:KMin} to {N:KMax} agents for {N:NMulti}, with {N:CutRedMin} to {N:CutRedMax} percent less cross-agent dependency than random teams of equal sizes. " + E2["abstract"] + " Design-time sizing is therefore a cheap, reproducible way to reduce the token cost of multi-agent software development and to avoid over-split teams; a correctness advantage was not found.")
     front.append('<w:p><w:pPr><w:pStyle w:val="Abstract"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>ABSTRACT</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(abstract) + "</w:p>")
     front.append('<w:p><w:pPr><w:pStyle w:val="IT"/></w:pPr><w:r><w:rPr><w:rStyle w:val="H5CharChar"/></w:rPr><w:t>INDEX TERMS</w:t></w:r><w:r><w:t xml:space="preserve"> </w:t></w:r>' + runs(
-        "Graph partitioning, large language models, multi-agent systems, software design, software modularization, traceability") + "</w:p>")
+        "Cost efficiency, graph partitioning, large language models, multi-agent systems, software design, software modularization") + "</w:p>")
     # end of the single-column title section: logo header/first footer on page 1, running header/footer after
     title_sect = paras[11].replace('<w:headerReference w:type="default" r:id="rId9"/><w:footerReference w:type="default" r:id="rId10"/>',
         '<w:headerReference w:type="default" r:id="rId12"/><w:footerReference w:type="default" r:id="rId13"/>'

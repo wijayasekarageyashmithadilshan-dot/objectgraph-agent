@@ -18,7 +18,7 @@ Software engineering has long studied a closely related problem. A good decompos
 \item A fully deterministic artifact: one command regenerates every number in this paper, and cached model responses allow the agent tables to be rebuilt without calling any model.
 \end{enumerate}
 
-\paragraph{Findings in brief.} The evidence supports two claims. First, sizing from the design avoids the failure of over-split teams: one agent per class passed no test on 7 of 9 RealBench projects, whereas the criterion's compact teams had a higher mean pass rate (0.21 against 0.11). Second, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random. The evidence does not yet show that the criterion's teams write more correct code than random teams of the same sizes or than a single agent; that claim remains a hypothesis, and Sections~\ref{sec:agents} and~\ref{sec:exp2} report it as not supported in these experiments.
+\paragraph{Findings in brief.} The evidence supports two claims. First, at equal team sizes, grouping duties by the design costs fewer tokens than grouping them at random, in two model families (27\% and 41\% fewer tokens). Second, sizing from the design avoids the failure of over-split teams: with the first model, one agent per class passed no test on 7 of 9 RealBench projects, whereas the criterion's compact teams had a higher mean pass rate (0.21 against 0.11). The evidence does not yet show that the criterion's teams write more correct code than random teams of the same sizes or than a single agent; that claim remains a hypothesis, and Sections~\ref{sec:agents} and~\ref{sec:exp2} report it as not supported in these experiments.
 
 %=====================================================================
 \section{Related Work}
@@ -202,7 +202,7 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 
 \paragraph{Results.} \ExpTwoResults{} Fig.~\ref{fig:exp2} (Appendix~\ref{app:exp2}) shows every task.
 
-\ExpTwoExploratory
+\ExpTwoBShort
 
 \begin{table}[t]
 \centering
@@ -234,4 +234,4 @@ G7 & criterion team ($k^\ast$, $\pi_{k^\ast}$) \\
 %=====================================================================
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
-Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. We formulated this decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on \NProjects DevBench projects that it recommends a single agent for \NSingle and compact teams of \KMin to \KMax agents for the rest, with far less cross-agent dependency than random teams of the same sizes. \AgentConclusion{} \ExpTwoConclusion{} Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.
+Before choosing how to coordinate LLM agents, one must decide whether to split the work at all. We formulated this decision as design-time team sizing, gave a deterministic criterion with a closed-form random baseline, and found on \NProjects DevBench projects that it recommends a single agent for \NSingle and compact teams of \KMin to \KMax agents for the rest, with far less cross-agent dependency than random teams of the same sizes. \ConclusionAll{} Future work will test the criterion on larger, multi-language benchmarks and with designs that LLMs write from requirements, learn edge weights on development projects instead of setting them by hand, and extend the criterion to teams whose roles change during execution.

@@ -23,6 +23,34 @@ SHORT = {"draeician_crules": "crules", "salvozappa_gattino": "gattino", "FreddyR
          "Reconnaissance": "Reconnaissance"}
 
 
+def r2b_saving() -> int:
+    S = json.loads((ROOT / "results/experiment_2b/summary.json").read_text())
+    T = S["per_task"]
+    return round(100 * (1 - float(np.median([T[t]["G7"]["tokens"] / T[t]["G4"]["tokens"] for t in T]))))
+
+
+def exp2b_text() -> str:
+    f = ROOT / "results/experiment_2b/summary.json"
+    if not f.exists():
+        return ""
+    S = json.loads(f.read_text())
+    T = S["per_task"]
+    m = {c: float(np.mean([T[t][c]["pass"] for t in T])) for c in CONDS}
+    r74 = float(np.median([T[t]["G7"]["tokens"] / T[t]["G4"]["tokens"] for t in T]))
+    r72 = float(np.median([T[t]["G7"]["tokens"] / T[t]["G2"]["tokens"] for t in T]))
+    h1 = S["H1_primary"]
+    return (f"{{bi:Second model family (Experiment 2b, pre-registered):}} A stronger open-weight model, NVIDIA Nemotron 3 Ultra "
+            f"(550B parameters, temperature 0, one run per condition), was run on the same tasks; one task (Camera) was excluded "
+            f"because its reference tests did not run in the second sandbox, leaving {len(T)}. Two reply-format faults of this model "
+            f"(a code fence joined to the next file header, and a root folder copied into paths) were fixed in the parser and all runs "
+            f"were rebuilt from the saved replies without new model calls; seven runs changed and are listed in the repository. "
+            f"{['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][len(S['tasks_above_floor'])]} tasks have a condition above zero. The criterion's teams again used fewer tokens than random "
+            f"teams of the same sizes (median ratio {r74:.2f}, {100 * (1 - r74):.0f}% fewer), but they did not pass more tests "
+            f"({h1['wins']} wins, {h1['losses']} losses, {h1['ties']} ties; mean pass rate {m['G7']:.2f} against {m['G4']:.2f}). "
+            f"Many failures with this model are replies cut off at the 8,000-token output cap, which is why a larger cap is registered "
+            f"for the next experiment. Across both model families, the token saving replicates and a correctness advantage does not.")
+
+
 def exploratory(T: dict, tasks: list) -> str:
     import collections
     rows = [r for f in sorted((ROOT / "results/experiment_2").glob("level*.json"))
@@ -71,7 +99,7 @@ def main() -> None:
 
     out = {
         "contribution": f"5) A second pre-registered experiment on RealBench {{cite:li2026realbench}}: a zero-call structural study of all {n61} projects, and five team designs compared on {len(tasks)} real Python projects with their own tests, after a harness check in which every team design reproduces the reference score (Section VII).",
-        "abstract": f"A second pre-registered experiment on {len(tasks)} RealBench projects found no significant quality difference between the criterion’s teams and random teams of the same sizes (p = {h1['p']:.2f}), but the criterion’s teams had the highest mean pass rate ({mean['G7']:.2f} versus {mean['G4']:.2f}), used {100 * (1 - float(np.median(r74))):.0f}% fewer tokens than random teams, and avoided the collapse of one agent per class, which passed no test on {gc_zero} of {len(tasks)} projects.",
+        "abstract": f"In pre-registered experiments on RealBench with two model families, the criterion’s teams used {100 * (1 - float(np.median(r74))):.0f}% and {r2b_saving()}% fewer tokens than random teams of the same sizes, with no significant difference in tests passed (p = {h1['p']:.2f} with the first model), and avoided the collapse of one agent per class, which passed no test on {gc_zero} of {len(tasks)} projects with the first model.",
         "structural": f"RealBench {{cite:li2026realbench}} provides {n61} Python repositories in four difficulty levels, each with natural-language descriptions, a class diagram generated from the code, a file tree and executable tests. Its diagrams name files without folders and contain no inheritance or composition, so the duty graph reads file paths from the file tree, gives every file an owner (classes, and one unit per file for module-level functions or constants), and uses dependency, import and signature edges. With no model call, the criterion recommends a team for {split} of the {n61} projects, and the recommended size grows with difficulty: on average {lv.get('level1', 0)}, {lv.get('level2', 0)}, {lv.get('level3', 0)} and {lv.get('level4', 0)} agents for levels 1 to 4 (designs of {lvu.get('level1', 0)}, {lvu.get('level2', 0)}, {lvu.get('level3', 0)} and {lvu.get('level4', 0)} units). Its team differs from one agent per unit in {differ} projects.",
         "protocol": f"The tasks were chosen by a rule fixed before any model call: a criterion team of 2 to 6 agents that differs from both one agent per class and Infomap, so that the comparison is informative. Seventeen projects qualify; {len(S['unusable'])} are unusable because RealBench ships no tests for them or their reference code fails its own tests in the sandbox, which leaves {len(tasks)}. Agents receive the README (when RealBench ships one), the class diagram with its descriptions and the file tree, but never code or tests. Before any model call, the reference code was split according to every team, merged and scored; every team design reproduced the reference score on every task, which rules out losses caused by splitting or merging. This check found and fixed three faults in reading the designs and several in merging; one further merging fault (parenthesized multi-line imports) appeared in the first paid runs and was fixed, and those runs re-merged, before the full run. All fixes are logged. The model is DeepSeek V4.1 Flash (deepseek-v4.1-flash-1017, reasoning off, temperature 0) with three runs per condition and the same token cap as the pilot. The primary hypothesis is that G7 passes more tests than G4 (one-sided Wilcoxon signed-rank test over tasks); G7 against GC and G6 are secondary (Holm-corrected); and the token ratio of G7 to G4 is expected to be at most 1.10. When the first provider’s credit ran out after 9 runs, the experiment was moved to a second provider serving the same dated model and rerun in full, as recorded in an amendment.",
         "results": f"{['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'][above]} of the {len(tasks)} tasks have a condition above zero, so the primary hypothesis is testable. It is not supported: G7 wins on {h1['wins']} tasks, loses on {h1['losses']} and ties on {h1['ties']} (p = {h1["p"]:.2f}; Table V). The secondary comparisons point the same way but are not significant either (G7 against GC: {sec['G7_vs_GC']['wins']} wins, {sec['G7_vs_GC']['losses']} loss, Holm-adjusted p = {sec['G7_vs_GC']['p_holm']:.2f}; against G6: {sec['G7_vs_G6']['wins']} wins, {sec['G7_vs_G6']['losses']} loss, p = {sec['G7_vs_G6']['p_holm']:.2f}). The criterion’s teams nonetheless have the highest mean pass rate ({mean['G7']:.2f}, against {mean['G4']:.2f} for random teams, {mean['G2']:.2f} for a single agent, {mean['G6']:.2f} for Infomap and {mean['GC']:.2f} for one agent per class), with their clearest gain on emojichef ({emo['G7']['pass']:.2f} against {emo['G4']['pass']:.2f} for random teams and {emo['G2']['pass']:.2f} for a single agent). The cost expectation holds: G7 uses a median {100 * (1 - float(np.median(r74))):.0f}% fewer tokens than G4 and {100 * (1 - float(np.median(r7c))):.0f}% fewer than GC, but {float(np.median(r72)):.1f} times as many as a single agent. One agent per class collapses: it passes no test on {gc_zero} of the {len(tasks)} tasks; on crx-analyzer its {crx['GC']['k']} agents spend about {crx['GC']['tokens'] / 1000:.0f}k tokens per run and pass nothing, whereas the criterion’s {crx['G7']['k']} agents pass {crx['G7']['pass']:.2f} of the tests with {crx['G7']['tokens'] / 1000:.0f}k.",
@@ -79,6 +107,10 @@ def main() -> None:
         "threat": f"RealBench’s diagrams are generated from the code by a static-analysis tool, and its tests may call helpers that the diagram does not list. Only {len(tasks)} of 17 selected RealBench tasks are usable, and runs at temperature 0 are often identical, which limits the effective sample size.",
         "conclusion": f"On {len(tasks)} RealBench projects, the criterion’s teams did not significantly beat random teams of the same sizes, but they had the highest mean pass rate, used {100 * (1 - float(np.median(r74))):.0f}% fewer tokens than random teams and far fewer than one agent per class, which failed on {gc_zero} of {len(tasks)} projects. The criterion’s demonstrated value is therefore efficient, robust team sizing; whether it also improves correctness needs a stronger model and more tasks.",
         "exploratory": exploratory(T, tasks),
+        "exp2b": exp2b_text(),
+        "exp2b_short": f"With a second model family (Nemotron 3 Ultra, Experiment 2b, {len(json.loads((ROOT / 'results/experiment_2b/summary.json').read_text())['per_task'])} tasks), the token saving replicated ({r2b_saving()}% fewer tokens than random teams of the same sizes), but the criterion’s teams did not pass more tests ({json.loads((ROOT / 'results/experiment_2b/summary.json').read_text())['H1_primary']['wins']} wins, {json.loads((ROOT / 'results/experiment_2b/summary.json').read_text())['H1_primary']['losses']} losses); details are in Appendix C.",
+        "conclusion_all": json.loads((ROOT / "paper/generated/agent.json").read_text())["conclusion"].split(" The main study will")[0]
+            + f" In pre-registered experiments on RealBench with two model families, the criterion’s teams used {100 * (1 - float(np.median(r74))):.0f}% and {r2b_saving()}% fewer tokens than random teams of the same sizes, with no significant difference in tests passed, and with the first model they avoided the collapse of one agent per class, which failed on {gc_zero} of {len(tasks)} projects. The criterion’s demonstrated value is therefore cost-efficient, robust team sizing; whether it also improves correctness is being tested with a larger output cap and against a team sized by an LLM Architect.",
         "h2_note": "Hypothesis H2 (cross-agent dependency predicts messages) cannot be tested with this orchestrator: it hands code to an agent along the design’s dependency edges by construction, so the logged message count follows the cut and a correlation would be circular. Testing H2 needs agents that choose whom to contact, which is left to future work.",
         "table_rows": rows,
         "fig_caption": "Experiment 2 on RealBench: mean pass rate over three runs per task and condition (top) and median tokens per run (bottom). Cells show the share of the reference code’s passing tests that each condition passes.",
@@ -130,7 +162,7 @@ def latex() -> None:
         return t
     names = {"contribution": "ExpTwoContribution", "abstract": "ExpTwoAbstract", "structural": "ExpTwoStructural",
              "protocol": "ExpTwoProtocol", "results": "ExpTwoResults", "discussion": "ExpTwoDiscussion",
-             "threat": "ExpTwoThreat", "exploratory": "ExpTwoExploratory", "h2_note": "ExpTwoHTwoNote", "conclusion": "ExpTwoConclusion", "fig_caption": "ExpTwoFigCaption"}
+             "threat": "ExpTwoThreat", "exploratory": "ExpTwoExploratory", "exp2b": "ExpTwoB", "exp2b_short": "ExpTwoBShort", "conclusion_all": "ConclusionAll", "h2_note": "ExpTwoHTwoNote", "conclusion": "ExpTwoConclusion", "fig_caption": "ExpTwoFigCaption"}
     lines = ["% generated by scripts/make_exp2_assets.py"]
     for k, n in names.items():
         v = E[k][3:] if k == "contribution" else E[k]          # drop the "5) " numbering
